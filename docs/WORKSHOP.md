@@ -79,8 +79,9 @@ named `OPENROUTER_API_KEY` (github.com → Settings → Codespaces), then restar
 - **Keys.** Students bring their own OpenRouter key (above). The platform never needs one to show the
   recorded datasets.
 - **The public repository.** Students open <https://github.com/aura-lab-wm/harnesslab-workshop>,
-  a public copy of the school package: the same allow-list, so no instructor solutions, captured
-  sessions, keys or Git history. Anyone with a GitHub account can open it without being invited,
+  a public copy of the school package: the same allow-list, so no instructor solutions, keys or
+  Git history, and one captured session (`captured_claude_code`, paths scrubbed) instead of the
+  capture store. Anyone with a GitHub account can open it without being invited,
   and each codespace counts against the student's own free monthly allowance, not yours.
 - **Updating it.** The development repository stays private. After changing anything students
   should see, commit it there and run `python3 scripts/publish_workshop_repo.py` (add `--dry-run`

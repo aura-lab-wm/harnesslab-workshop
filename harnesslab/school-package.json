@@ -8,9 +8,11 @@
     "prerecorded_mock",
     "prerecorded_mock_weak",
     "families_mock",
-    "demo_mock"
+    "demo_mock",
+    "captured_claude_code"
   ],
   "dataset_notes": {
+    "captured_claude_code": "Real, captured: one Claude Code session (Claude Sonnet 5, 28 steps) implementing a task in this repository, recorded by the capture spine with machine paths replaced. No oracle and one repeat: a session nobody launched as an experiment.",
     "demo_mock": "A compact demonstration: the mock model under two harnesses (permissive, permissive+sentinel), across 3 tasks.",
     "families_mock": "Mock models (mock, mock-b) under four harnesses, across 5 tasks — a small model × harness grid for trying the Experiment step.",
     "prerecorded_mock": "Mock model, for exercises that must behave identically on every machine: the mock model under all six harnesses, across all 8 task probes.",
@@ -66,7 +68,7 @@
   ],
   "excluded": [
     "Any results directory not listed above",
-    "Captured coding sessions and capture watcher state",
+    "Captured coding sessions (except one curated sample) and capture watcher state",
     "API keys, environment files, and local model selection",
     "The macOS menu-bar app and machine census tools",
     "Personal outputs, internal notes, caches, and Git history",

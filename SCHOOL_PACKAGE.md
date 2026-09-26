@@ -104,8 +104,9 @@ does. Treat the sandbox this way: fine for a classroom laptop, not something to 
 | `prerecorded_mock_weak` | 160 | Weaker mock model — the 2 × 2 mock version of exercise 8. |
 | `families_mock` | 80 | Two mock models × four harnesses × 5 tasks. |
 | `demo_mock` | 24 | A compact mock demonstration. |
+| `captured_claude_code` | 1 | **Real, captured.** One Claude Code session (Claude Sonnet 5, 28 steps) implementing a task in this repository: `results_scope.py` and its test, nine test runs, tested before it stopped. Recorded by the capture spine, machine paths replaced with `/workspace/harnesslab`. A session nobody launched as an experiment: no oracle, one repeat, a harness you did not choose. |
 
-2,708 of the 3,452 included runs are real model runs. They are replayed from disk: reading and
+2,709 of the 3,453 included runs are real model runs. They are replayed from disk: reading and
 reanalysing them needs no API key. Only running *new* experiments against live models does.
 
 ## Reproduce the exercises
@@ -133,13 +134,14 @@ become part of the school package; to ship one, add it to the manifest and rebui
 
 The package includes the application source and built UI, exercises, task
 repositories, harness configurations, trajectory checks, infrastructure tests,
-attribution, and the four datasets above. The mock sentinel model is selected in
+attribution, and the datasets above. The mock sentinel model is selected in
 the archive independently of the developer's local model selection.
 
-It excludes live datasets, captured sessions, credentials, environment files,
+It excludes every other results directory, the captured-session store (only the one
+curated session above ships), credentials, environment files,
 caches, local model selection, personal outputs, Git history, the macOS menu-bar
 app, machine census tools, internal notes, and instructor solutions. Reusable
-capture modules remain application dependencies, but no captured data or watcher
+capture modules remain application dependencies; no watcher state or
 configuration is included. Some integration tests target optional corpora or
 machine tooling outside this teaching package; they require the full checkout.
 

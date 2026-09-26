@@ -127,7 +127,9 @@ class RunCountsMatchTheData(unittest.TestCase):
             for real, total in re.findall(r"([\d,]+) of the ([\d,]+) included runs are real", text):
                 shipped = sum(_count(d) for d in os.listdir(RUNS)
                               if os.path.isfile(os.path.join(RUNS, d, "index.jsonl")) and d in _package_datasets())
-                self.assertEqual(int(real.replace(",", "")), expected["collected"] + swe, f"{rel}: real-run total")
+                captured = _count("captured_claude_code") if "captured_claude_code" in _package_datasets() else 0
+                self.assertEqual(int(real.replace(",", "")), expected["collected"] + swe + captured,
+                                 f"{rel}: real-run total")
                 self.assertEqual(int(total.replace(",", "")), shipped, f"{rel}: included-run total")
             for d in ("llma4se_live", "live", "real_swe_agent_500"):
                 for n in re.findall(r"`" + d + r"` \| ([\d,]+) \|", text):

@@ -1,0 +1,83 @@
+--- a/workspace/harnesslab/tests_agentlab/test_capture_scope.py
++++ b/workspace/harnesslab/tests_agentlab/test_capture_scope.py
+@@ -43,7 +43,11 @@
+         self.assertEqual(RS.count_runs(self.root, "captured"), 1)
+         self.assertEqual(RS.count_runs(self.root, "absent"), 0)
+ 
++    def test_a_symlink_alias_of_captured_is_not_listed(self):
++        os.symlink(os.path.join(self.root, "captured"), os.path.join(self.root, "alias"))
++        self.assertEqual(RS.list_results_dirs(self.root), ["demo_mock"])
+ 
++
+ class TestConfirmPrivateExport(unittest.TestCase):
+     def setUp(self):
+         self.root = tempfile.mkdtemp(prefix="hl-scope-")
+--- a/workspace/harnesslab/tests_agentlab/test_capture_scope.py
++++ b/workspace/harnesslab/tests_agentlab/test_capture_scope.py
+@@ -78,6 +78,17 @@
+         self.assertIn("1 captured", seen[0])
+         self.assertFalse(RS.confirm_private_export(["captured"], self.root, False, True, lambda p: "y"))
+ 
++    def test_spelling_variants_of_a_private_dir_still_need_a_yes(self):
++        for name in ("Captured", "CAPTURED", "captured/", " captured ", "./captured"):
++            with self.subTest(name=name):
++                self.assertTrue(RS.is_private(self.root, name))
++                self.assertFalse(RS.confirm_private_export([name], self.root, False, False, self.never))
+ 
++    def test_a_symlink_alias_of_a_private_dir_is_private(self):
++        os.symlink(os.path.join(self.root, "captured"), os.path.join(self.root, "alias"))
++        self.assertTrue(RS.is_private(self.root, "alias"))
++        self.assertFalse(RS.confirm_private_export(["alias"], self.root, False, False, self.never))
++
++
+ if __name__ == "__main__":
+     unittest.main()
+--- a/workspace/harnesslab/harnesslab/backend/results_scope.py
++++ b/workspace/harnesslab/harnesslab/backend/results_scope.py
+@@ -14,13 +14,34 @@
+ PRIVATE_DIRS = frozenset({"captured"})
+ 
+ 
++def is_private(runs_root: str, name: str) -> bool:
++    """True when `name` refers to a private results directory.
++
++    Decided by what the name refers to, not how it is spelled: on a case-insensitive filesystem
++    (the macOS default) 'Captured', 'captured/' and './captured' all open the private directory,
++    and a symlink can alias it under another name. Anything we cannot resolve fails closed.
++    """
++    cleaned = (name or "").strip()
++    if os.path.normpath(cleaned).casefold() in {p.casefold() for p in PRIVATE_DIRS}:
++        return True
++    target = os.path.join(runs_root, cleaned)
++    for p in PRIVATE_DIRS:
++        private = os.path.join(runs_root, p)
++        try:
++            if os.path.exists(target) and os.path.exists(private) and os.path.samefile(target, private):
++                return True
++        except OSError:
++            return True
++    return False
++
++
+ def list_results_dirs(runs_root: str, include_private: bool = False) -> list[str]:
+     """Names of results directories under `runs_root` that have an index.jsonl, sorted."""
+     if not os.path.isdir(runs_root):
+         return []
+     return sorted(
+         name for name in os.listdir(runs_root)
+-        if (include_private or name not in PRIVATE_DIRS)
++        if (include_private or not is_private(runs_root, name))
+         and os.path.exists(os.path.join(runs_root, name, "index.jsonl")))
+ 
+ 
+--- a/workspace/harnesslab/harnesslab/backend/results_scope.py
++++ b/workspace/harnesslab/harnesslab/backend/results_scope.py
+@@ -59,7 +59,7 @@
+     `assume_yes` in a script, or a typed 'yes' at an interactive prompt that states the run count.
+     A non-interactive caller without `assume_yes` is refused, so a pipeline can never ship
+     captured sessions by accident."""
+-    private = [d for d in picked if d in PRIVATE_DIRS]
++    private = [d for d in picked if is_private(runs_root, d)]
+     if not private:
+         return True
+     if assume_yes:
