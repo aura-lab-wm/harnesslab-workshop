@@ -1,0 +1,9 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..6e924fa
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,2 @@
++expectedResult = ':example.com тест ник\r\n'.encode()
++print(expectedResult)

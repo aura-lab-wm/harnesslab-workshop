@@ -1,0 +1,23 @@
+
+diff --git a/src/pyjen/plugin_manager.py b/src/pyjen/plugin_manager.py
+index 243bf31..27acf61 100644
+--- a/src/pyjen/plugin_manager.py
++++ b/src/pyjen/plugin_manager.py
+@@ -30,6 +30,17 @@ class PluginManager(object):
+             tmp_plugin = Plugin(cur_plugin)
+             retval.append(tmp_plugin)
+         return retval
++    def get_view_plugins(self):
++        """Returns the plugins that derive from the View base class
++
++        :returns: list of plugins that derive from the View base class
++        :rtype: List of 0 or more :class:`~.plugin.Plugin` objects
++        """
++        # Assuming 'view' is the attribute that indicates a plugin is a View
++        return [plugin for plugin in self.plugins if plugin.view]
++    def get_job_plugins(self):
++        # Assuming 'job' is the attribute that indicates a plugin is a Job.
++        return [plugin for plugin in self.plugins if plugin.job]
+ 
+     def find_plugin_by_shortname(self, short_name):
+         """Finds an installed plugin based on it's abbreviated name

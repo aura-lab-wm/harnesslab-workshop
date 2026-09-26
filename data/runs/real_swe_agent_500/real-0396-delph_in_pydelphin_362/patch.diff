@@ -1,0 +1,14 @@
+
+diff --git a/delphin/tdl.py b/delphin/tdl.py
+index ec330f4..3209f21 100644
+--- a/delphin/tdl.py
++++ b/delphin/tdl.py
+@@ -1005,7 +1005,7 @@ def iterparse(path: util.PathLike,
+     is a string (`"TypeDefinition"`, `"TypeAddendum"`,
+     `"LexicalRuleDefinition"`, `"LetterSet"`, `"WildCard"`,
+     `"BeginEnvironment"`, `"EndEnvironment"`, `"FileInclude"`,
+-    `"LineComment"`, or `"BlockComment"`), `object` is the interpreted
++    `"BlockComment"`,
+     TDL object, and `lineno` is the line number where the entity began
+     in *path*.
+ 

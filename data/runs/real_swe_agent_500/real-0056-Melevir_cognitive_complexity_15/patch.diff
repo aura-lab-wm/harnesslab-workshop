@@ -1,0 +1,27 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..dfb16ce
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,20 @@
++import re
++
++def is_camel_case_word(word):
++    return word != word.lower()
++
++def process_raw_constant(constant, min_word_length, nesting_level=0):
++    processed_words = []
++    raw_camelcase_words = []
++    seq_of_bin_ops = 0  # track binary logical operator sequences
++    for raw_word in re.findall(r'[a-z]+', constant):  # +1
++        word = raw_word.strip()
++        if (
++            len(word) >= min_word_length
++            and not (word.startswith('-') or word.endswith('-'))  # +2 (2 bool operator sequences)
++            , nesting_level  # add nesting increment
++        ):
++            if is_camel_case_word(word):  # +2
++                raw_camelcase_words.append(word)
++            else:  # +1
++                processed_words.append(word.lower())

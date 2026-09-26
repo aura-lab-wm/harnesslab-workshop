@@ -1,0 +1,57 @@
+
+diff --git a/asv/commands/profiling.py b/asv/commands/profiling.py
+index afabf6c..e6cce56 100644
+--- a/asv/commands/profiling.py
++++ b/asv/commands/profiling.py
+@@ -156,9 +156,10 @@ class Profile(Command):
+             if revision is not None:
+                 for env in environments:
+                     if not env.can_install_project():
++                        # Raise an error only if the environment cannot install the project
+                         raise util.UserError(
+                             "An explicit revision may not be specified when "
+-                            "using an existing environment.")
++                            "using an existing environment that cannot install the project.")
+ 
+             env = environments[0]
+ 
+diff --git a/asv/environment.py b/asv/environment.py
+index 139766c..f00ec54 100644
+--- a/asv/environment.py
++++ b/asv/environment.py
+@@ -663,12 +663,12 @@ class ExistingEnvironment(Environment):
+     def _setup(self):
+         pass
+ 
++    def can_install_project(self):
++        return True
++
+     def install_project(self, conf, repo, commit_hash=None):
+         pass
+ 
+-    def can_install_project(self):
+-        return False
+-
+     def run(self, args, **kwargs):
+         log.debug("Running '{0}' in {1}".format(' '.join(args), self.name))
+         return util.check_output([
+diff --git a/asv/plugins/comm.py b/asv/plugins/comm.py
+new file mode 100644
+index 0000000..776f6f2
+--- /dev/null
++++ b/asv/plugins/comm.py
+@@ -0,0 +1,3 @@
++class Transfer:
++    def time_tcp_large_transfers_uncompressible(self):
++        pass
+diff --git a/benchmarks/new_benchmark.py b/benchmarks/new_benchmark.py
+new file mode 100644
+index 0000000..8c5a402
+--- /dev/null
++++ b/benchmarks/new_benchmark.py
+@@ -0,0 +1,5 @@
++from asv.plugins.comm import Transfer
++
++@Transfer.time_tcp_large_transfers_uncompressible
++def benchmark_name(params):
++    pass

@@ -1,0 +1,43 @@
+
+diff --git a/biomedsheets/io_tsv/germline.py b/biomedsheets/io_tsv/germline.py
+index 2214d46..f660ce5 100644
+--- a/biomedsheets/io_tsv/germline.py
++++ b/biomedsheets/io_tsv/germline.py
+@@ -65,10 +65,10 @@ SEX_VALUES = {
+     '0': 'unknown',
+     '1': 'male',
+     '2': 'female',
+-    None: 'unknown'
++    None: 'unknown',
++    'male': 'male',
++    'female': 'female',
+ }
+-
+-#: Constants for interpreting "sex" field
+ AFFECTED_VALUES = {
+     'Y': 'affected',
+     'y': 'affected',
+@@ -79,7 +79,9 @@ AFFECTED_VALUES = {
+     '0': 'unknown',
+     '1': 'unaffected',
+     '2': 'affected',
+-    None: 'unknown'
++    None: 'unknown',
++    'unaffected': 'unaffected',
++    'affected': 'affected',
+ }
+ 
+ 
+@@ -106,9 +108,9 @@ class GermlineTSVReader(BaseTSVReader):
+     def check_tsv_line(self, mapping, lineno):
+         """Cancer sample sheet--specific valiation"""
+         # Check for hyphen in patient or sample name
+-        if '-' in mapping['patientName']:
+-            raise GermlineTSVSheetException(
+-                'Hyphen not allowed in patientName column')  # pragma: no cover
++        # if '-' in mapping['patientName']:
++        #     raise GermlineTSVSheetException(
++        #         'Hyphen not allowed in patientName column')  # pragma: no cover
+         if mapping['fatherName'] and '-' in mapping['fatherName']:
+             raise GermlineTSVSheetException(
+                 'Hyphen not allowed in fatherName column')  # pragma: no cover

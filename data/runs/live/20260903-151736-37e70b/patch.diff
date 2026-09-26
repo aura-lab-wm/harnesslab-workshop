@@ -1,0 +1,15 @@
+--- a/limiter/bucket.py
++++ b/limiter/bucket.py
+@@ -13,8 +13,10 @@
+ 
+     def _refill(self):
+         t = self._now()
+-        if self._last:
+-            self._tokens += (t - self._last) * self.rate
++        # Only refill if we've recorded a previous time. Use explicit None check
++        # because a time of 0.0 is falsy but still valid.
++        if self._last is not None:
++            self._tokens = min(self.capacity, self._tokens + (t - self._last) * self.rate)
+         self._last = t
+ 
+     def allow(self) -> bool:

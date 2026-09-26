@@ -1,0 +1,38 @@
+--- a/store/cache.py
++++ b/store/cache.py
+@@ -20,6 +20,32 @@
+         p = self._path(key)
+         if not os.path.exists(p):
+             return default
+-        with open(p) as f:
+-            rec = json.load(f)
+-        return rec["v"]
++        try:
++            with open(p) as f:
++                rec = json.load(f)
++        except Exception:
++            # If the file is unreadable, remove it and return default
++            try:
++                os.remove(p)
++            except Exception:
++                pass
++            return default
++
++        # If timestamp missing or entry expired, remove file and return default
++        t = rec.get("t") if isinstance(rec, dict) else None
++        if t is None:
++            try:
++                os.remove(p)
++            except Exception:
++                pass
++            return default
++
++        if self._now() - t > self.ttl:
++            try:
++                os.remove(p)
++            except Exception:
++                pass
++            return default
++
++        # Return value (fall back to default if key missing)
++        return rec.get("v", default)

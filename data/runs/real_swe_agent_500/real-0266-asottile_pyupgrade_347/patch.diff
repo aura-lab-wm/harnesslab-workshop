@@ -1,0 +1,28 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 8fe8d11..35f60cc 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -263,6 +263,11 @@ def _is_on_a_line_by_self(tokens: List[Token], i: int) -> bool:
+ 
+ def _remove_brace(tokens: List[Token], i: int) -> None:
+     if _is_on_a_line_by_self(tokens, i):
++        # Check if the token inside the parentheses is a string literal
++        if tokens[i - 1].name == 'STRING':
++            # Check if the string literal has the 'u' prefix or contains non-ASCII characters
++            if 'u' in tokens[i - 1].src.lower() or any(ord(c) > 128 for c in tokens[i - 1].src):
++                return
+         del tokens[i - 1:i + 2]
+     else:
+         del tokens[i]
+diff --git a/reproduce_bug.py b/reproduce_bug.py
+new file mode 100644
+index 0000000..372ae4d
+--- /dev/null
++++ b/reproduce_bug.py
+@@ -0,0 +1,5 @@
++expectedResult = (
++    ":example.com \u0442\u0435\u0441\u0442 " "\u043d\u0438\u043a\r\n"
++).encode("utf-8")
++
++print(expectedResult)

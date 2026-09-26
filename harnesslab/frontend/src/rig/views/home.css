@@ -1,0 +1,15 @@
+/* views/home.jsx — dataset library. Classes: rg-home-*. Colours: var(--rig-*) only. */
+.rg-home-bar{margin-bottom:var(--rig-s4);gap:var(--rig-s3)}
+.rg-home-list{margin-bottom:var(--rig-s5)}
+.rg-home-tbl td{padding-top:var(--rig-s3);padding-bottom:var(--rig-s3)}
+.rg-home-tbl tbody tr:last-child td{border-bottom:0}
+.rg-home-name{min-width:220px;max-width:460px}
+.rg-home-nl{gap:4px var(--rig-s2);flex-wrap:wrap}
+.rg-home-nl b{font-weight:600}
+.rg-home-models{margin-top:4px;max-width:420px;font:12px/1.4 var(--rig-sans);color:var(--rig-mute)}
+.rg-home-date{white-space:nowrap}
+@container rgdoc (max-width:640px){.rg-home-name{min-width:0;max-width:220px}.rg-home-models{max-width:200px}}
+.rg-home-pr{display:inline-flex;align-items:center;justify-content:flex-end;gap:10px}
+.rg-home-prt{width:56px;height:4px;border-radius:2px;background:var(--rig-panel3);overflow:hidden;display:inline-block}
+.rg-home-prt i{display:block;height:100%;background:var(--rig-sky-fill)}
+.rg-home-go{width:44px}

@@ -1,0 +1,14 @@
+
+diff --git a/pyflakes/checker.py b/pyflakes/checker.py
+index e927715..ad80966 100644
+--- a/pyflakes/checker.py
++++ b/pyflakes/checker.py
+@@ -256,6 +256,8 @@ class Binding:
+         )
+ 
+     def redefines(self, other):
++        if isinstance(other, ast.Attribute):
++            print("Warning: attribute is being hidden")
+         return isinstance(other, Definition) and self.name == other.name
+ 
+ 

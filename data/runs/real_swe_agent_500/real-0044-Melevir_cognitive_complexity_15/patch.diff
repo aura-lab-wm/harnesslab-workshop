@@ -1,0 +1,69 @@
+
+diff --git a/cognitive_complexity/common_types.py b/cognitive_complexity/common_types.py
+index 114043d..370730c 100644
+--- a/cognitive_complexity/common_types.py
++++ b/cognitive_complexity/common_types.py
+@@ -1,4 +1,30 @@
++import re
++from cognitive_complexity.api import get_cognitive_complexity
+ import ast
++
++def is_camel_case_word(word):
++    # Dummy implementation
++    return True
++
++def process_raw_constant(constant, min_word_length):
++    processed_words = []
++    raw_camelcase_words = []
++    for raw_word in re.findall(r'[a-z]+', constant):  # +1
++        word = raw_word.strip()
++        if (  # +2
++            len(word) >= min_word_length
++            and not (word.startswith('-') or word.endswith('-'))  # +2 (2 bool operator sequences)
++        ):
++            if is_camel_case_word(word):  # +2
++                raw_camelcase_words.append(word)
++            else:  # +1
++                processed_words.append(word.lower())
++    return processed_words, raw_camelcase_words
++
++# Convert the function to an AST node
++funcdef = ast.parse(ast.dump(process_raw_constant)).body[0]
++
++assert get_cognitive_complexity(funcdef) == 9  # not 11
+ from typing import Union
+ 
+ 
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..2bb28bf
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,27 @@
++import re
++from cognitive_complexity.api import get_cognitive_complexity
++import ast
++
++def is_camel_case_word(word):
++    # Dummy implementation
++    return True
++
++def process_raw_constant(constant, min_word_length):
++    processed_words = []
++    raw_camelcase_words = []
++    for raw_word in re.findall(r'[a-z]+', constant):  # +1
++        word = raw_word.strip()
++        if (  # +2
++            len(word) >= min_word_length
++            and not (word.startswith('-') or word.endswith('-'))  # +2 (2 bool operator sequences)
++        ):
++            if is_camel_case_word(word):  # +2
++                raw_camelcase_words.append(word)
++            else:  # +1
++                processed_words.append(word.lower())
++    return processed_words, raw_camelcase_words
++
++# Convert the function to an AST node
++funcdef = ast.parse(ast.dump(process_raw_constant)).body[0]
++
++assert get_cognitive_complexity(funcdef) == 9  # not 11

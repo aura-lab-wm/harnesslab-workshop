@@ -1,0 +1,58 @@
+
+diff --git a/mobly/config_parser.py b/mobly/config_parser.py
+index aa43c03..0923325 100644
+--- a/mobly/config_parser.py
++++ b/mobly/config_parser.py
+@@ -13,7 +13,7 @@
+ # limitations under the License.
+ 
+ from builtins import str
+-
++import logging
+ import copy
+ import io
+ import os
+@@ -151,10 +151,9 @@ def _load_config_file(path):
+         A dict that represents info in the config file.
+     """
+     with io.open(utils.abs_path(path), 'r', encoding='utf-8') as f:
+-        conf = yaml.load(f)
++        conf = yaml.load(f, Loader=yaml.SafeLoader)
++        logging.debug("Config file contents: %s", conf)
+         return conf
+-
+-
+ class TestRunConfig(object):
+     """The data class that holds all the information needed for a test run.
+ 
+diff --git a/test_config.yaml b/test_config.yaml
+new file mode 100644
+index 0000000..dd37ef0
+--- /dev/null
++++ b/test_config.yaml
+@@ -0,0 +1,8 @@
++testbed:
++  - testbed_name: My Testbed
++    testbed_controllers:
++        android_device:
++            serial: ABC123
++    testbed_test_params:
++        test_param_1: value_1
++        test_param_2: value_2
+diff --git a/test_config_parser.py b/test_config_parser.py
+new file mode 100644
+index 0000000..65b16e7
+--- /dev/null
++++ b/test_config_parser.py
+@@ -0,0 +1,11 @@
++import mobly.config_parser as cp
++import logging
++
++# Configure logging
++logging.basicConfig(level=logging.DEBUG)
++
++# Call the load_test_config_file function
++test_configs = cp.load_test_config_file('test_config.yaml')
++
++# Print the test configs to verify
++print(test_configs)

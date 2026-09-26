@@ -1,0 +1,34 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..5a92e88
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,27 @@
++from sqlalchemy.orm import declarative_base
++from sqlalchemy_mixins import AllFeaturesMixin
++
++# Create a base class for our models
++Base = declarative_base()
++
++class AnotherBaseClass(Base, AllFeaturesMixin):
++    __abstract__ = True
++
++    #SOME OTHER CODE
++
++class MyBaseClass(AnotherBaseClass):
++    __abstract__ = True
++from sqlalchemy import Column, Integer
++
++class MyClass(MyBaseClass):
++    __tablename__ = 'my_class'
++    id = Column(Integer, primary_key=True)
++
++# Attempt to initialize MyClass to trigger the error
++try:
++    mc = MyClass()
++    print("MyClass initialized successfully.")
++except Exception as e:
++    print(f"Error initializing MyClass: {e}")
++
++print("Script completed successfully, no errors.")

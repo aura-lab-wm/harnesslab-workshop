@@ -1,0 +1,14 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 2a55816..02252e3 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -457,7 +457,7 @@ ESCAPE_STARTS = frozenset((
+     '0', '1', '2', '3', '4', '5', '6', '7',  # octal escapes
+     'x',  # hex escapes
+     # only valid in non-bytestrings
+-    'N', 'u', 'U',
++    '\n', 'u', 'U',
+ ))
+ ESCAPE_STARTS_BYTES = ESCAPE_STARTS - frozenset(('N', 'u', 'U'))
+ ESCAPE_RE = re.compile(r'\\.', re.DOTALL)

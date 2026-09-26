@@ -1,0 +1,15 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 2a55816..3b68fd4 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -97,6 +97,9 @@ def _rewrite_string_literal(literal):
+         if tup[1] is None:
+             return tup
+         else:
++            # Check if the format key is '\N' and convert it to Unicode
++            if tup[1] == u'\u00FF':
++                return (tup[0], '\u00FF', tup[2], tup[3])
+             return (tup[0], '', tup[2], tup[3])
+ 
+     removed = [_remove_fmt(tup) for tup in parsed_fmt]

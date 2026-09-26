@@ -1,0 +1,17 @@
+
+diff --git a/lexicon/providers/memset.py b/lexicon/providers/memset.py
+index 6394170a..1fff9ab9 100644
+--- a/lexicon/providers/memset.py
++++ b/lexicon/providers/memset.py
+@@ -23,9 +23,9 @@ class Provider(BaseProvider):
+         self.api_endpoint = 'https://api.memset.com/v1/json'
+ 
+     def authenticate(self):
+-        payload = self._get('/dns.zone_domain_info', {
++        payload = json.loads(self._get('/dns.zone_domain_info', {
+             'domain': self.domain
+-        })
++        }))
+         if not payload['zone_id']:
+             raise Exception('No domain found')
+         self.domain_id = payload['zone_id']

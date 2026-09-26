@@ -1,0 +1,28 @@
+
+diff --git a/igseq/vdj.py b/igseq/vdj.py
+index e6ac153..659f45d 100644
+--- a/igseq/vdj.py
++++ b/igseq/vdj.py
+@@ -28,11 +28,13 @@ def parse_vdj_paths(ref_paths):
+     input, "some/dir" split into separate V/D/J FASTA found inside, and
+     "rhesus" split into the built-in reference FASTAs provided by the package.
+     """
+-
+     if isinstance(ref_paths, (str, PathLike)):
+         ref_paths = [ref_paths]
+     attrs_list = []
++    processed_paths = set()
+     for entry in ref_paths:
++        if entry in processed_paths:
++            continue
+         internal_matches = get_internal_vdj(entry)
+         path = Path(entry)
+         # first priority: actual file name
+@@ -67,6 +69,7 @@ def parse_vdj_paths(ref_paths):
+                 attrs_list.append(attrs)
+         else:
+             raise util.IgSeqError("ref path not recognized: %s" % entry)
++        processed_paths.add(entry)
+     return attrs_list
+ 
+ def get_internal_vdj(name):

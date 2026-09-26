@@ -1,0 +1,15 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 31a603e..829edbc 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -1242,6 +1242,9 @@ def _fix_py3_plus(contents_text):
+                     tokens[j + 2].src == ')'
+             ):
+                 func_args, end = _parse_call_args(tokens, j)
++                arg_strs = [tokens_to_src(tokens[slice(*arg)]).strip() for arg in func_args]
++                if len(func_args) == 0 or len(arg_strs) == 0:
++                    continue
+                 _replace_call(tokens, i, end, func_args, SIX_B_TMPL)
+         elif token.offset in visitor.six_calls:
+             j = _find_open_paren(tokens, i)

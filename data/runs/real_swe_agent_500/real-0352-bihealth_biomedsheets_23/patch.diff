@@ -1,0 +1,63 @@
+
+diff --git a/biomedsheets/io_tsv/germline.py b/biomedsheets/io_tsv/germline.py
+index 2214d46..db57b0b 100644
+--- a/biomedsheets/io_tsv/germline.py
++++ b/biomedsheets/io_tsv/germline.py
+@@ -106,15 +106,16 @@ class GermlineTSVReader(BaseTSVReader):
+     def check_tsv_line(self, mapping, lineno):
+         """Cancer sample sheet--specific valiation"""
+         # Check for hyphen in patient or sample name
+-        if '-' in mapping['patientName']:
+-            raise GermlineTSVSheetException(
+-                'Hyphen not allowed in patientName column')  # pragma: no cover
+-        if mapping['fatherName'] and '-' in mapping['fatherName']:
+-            raise GermlineTSVSheetException(
+-                'Hyphen not allowed in fatherName column')  # pragma: no cover
+-        if mapping['motherName'] and '-' in mapping['motherName']:
+-            raise GermlineTSVSheetException(
+-                'Hyphen not allowed in motherName column')  # pragma: no cover
++        # Check for hyphen in patient or sample name
++        # if '-' in mapping['patientName']:
++        #     raise GermlineTSVSheetException(
++        #         'Hyphen not allowed in patientName column')  # pragma: no cover
++        # if mapping['fatherName'] and '-' in mapping['fatherName']:
++        #     raise GermlineTSVSheetException(
++        #         'Hyphen not allowed in fatherName column')  # pragma: no cover
++        # if mapping['motherName'] and '-' in mapping['motherName']:
++        #     raise GermlineTSVSheetException(
++        #         'Hyphen not allowed in motherName column')  # pragma: no cover
+         # Check "libraryType" field
+         if mapping['libraryType'] and (
+                 mapping['libraryType'] not in LIBRARY_TYPES):
+diff --git a/test_patient_name.py b/test_patient_name.py
+new file mode 100644
+index 0000000..42703ca
+--- /dev/null
++++ b/test_patient_name.py
+@@ -0,0 +1,26 @@
++from biomedsheets.io_tsv.germline import GermlineTSVReader
++from biomedsheets.models import Sheet
++
++# Create a sample TSV data with a patient name that includes a hyphen
++tsv_data = """patientName\tfatherName\tmotherName\tsex\tisAffected\tfolderName\thpoTerms\tlibraryType
++John-Doe\tJohn-Doe\tMary-Doe\tmale\taffected\tsome_folder\thpo_term\tlibrary_type
++"""
++
++# Simulate reading the TSV data from a file-like object
++def mock_read_tsv_data():
++    for line in tsv_data.splitlines():
++        yield line
++
++# Test if the TSV data is correctly validated and parsed
++try:
++    reader = GermlineTSVReader(mock_read_tsv_data())
++    sheet = reader.read_sheet()
++    print("Test passed: Patient name with hyphen is correctly validated and parsed.")
++except Exception as e:
++    print("Test failed:", e)
++        # if mapping['fatherName'] and '-' in mapping['fatherName']:
++        #     raise GermlineTSVSheetException(
++        #         'Hyphen not allowed in fatherName column')  # pragma: no cover
++        # if mapping['motherName'] and '-' in mapping['motherName']:
++        #     raise GermlineTSVSheetException(
++        #         'Hyphen not allowed in motherName column')  # pragma: no cover

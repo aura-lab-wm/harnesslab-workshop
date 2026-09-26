@@ -1,0 +1,70 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 8fe8d11..ab19310 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -619,18 +619,19 @@ def _fix_format_literal(tokens: List[Token], end: int) -> None:
+ def _fix_encode_to_binary(tokens: List[Token], i: int) -> None:
+     # .encode()
+     if (
+-            i + 2 < len(tokens) and
+-            tokens[i + 1].src == '(' and
+-            tokens[i + 2].src == ')'
++        i + 2 < len(tokens) and
++        tokens[i + 1].src == '(' and
++        tokens[i + 2].src == ')'
+     ):
++        print(tokens)
+         victims = slice(i - 1, i + 3)
+         latin1_ok = False
+     # .encode('encoding')
+     elif (
+-            i + 3 < len(tokens) and
+-            tokens[i + 1].src == '(' and
+-            tokens[i + 2].name == 'STRING' and
+-            tokens[i + 3].src == ')'
++        i + 3 < len(tokens) and
++        tokens[i + 1].src == '(' and
++        tokens[i + 2].name == 'STRING' and
++        tokens[i + 3].src == ')'
+     ):
+         victims = slice(i - 1, i + 4)
+         prefix, rest = parse_string_literal(tokens[i + 2].src)
+@@ -647,19 +648,21 @@ def _fix_encode_to_binary(tokens: List[Token], i: int) -> None:
+         return
+ 
+     parts = rfind_string_parts(tokens, i - 2)
++    print(parts)
+     if not parts:
+         return
++        return
+ 
+     for part in parts:
+         prefix, rest = parse_string_literal(tokens[part].src)
+         escapes = set(ESCAPE_RE.findall(rest))
+         if (
+-                not _is_ascii(rest) or
+-                '\\u' in escapes or
+-                '\\U' in escapes or
+-                '\\N' in escapes or
+-                ('\\x' in escapes and not latin1_ok) or
+-                'f' in prefix.lower()
++            not _is_ascii(rest) or
++            '\\u' in escapes or
++            '\\U' in escapes or
++            '\\N' in escapes or
++            ('\\x' in escapes and not latin1_ok) or
++            'f' in prefix.lower()
+         ):
+             return
+ 
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..f44a72e
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,4 @@
++expectedResult = (
++    ":example.com \u0442\u0435\u0441\u0442 " "\u043d\u0438\u043a\r\n"
++).encode("utf-8")
++print(expectedResult)

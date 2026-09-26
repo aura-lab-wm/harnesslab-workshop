@@ -1,0 +1,14 @@
+
+diff --git a/examples/conjunctive_graphs.py b/examples/conjunctive_graphs.py
+index f714d9ff..a66a3aa8 100644
+--- a/examples/conjunctive_graphs.py
++++ b/examples/conjunctive_graphs.py
+@@ -33,7 +33,7 @@ if __name__ == "__main__":
+     gmary.add((mary, ns["hasName"], Literal("Mary")))
+     gmary.add((mary, ns["loves"], john))
+ 
+-    # add a graph for Mary's facts to the Conjunctive Graph
++    # add a graph for John's facts to the Conjunctive Graph
+     gjohn = Graph(store=store, identifier=cjohn)
+     # John's graph contains his cute name
+     gjohn.add((john, ns["hasCuteName"], Literal("Johnny Boy")))

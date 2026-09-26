@@ -1,0 +1,17 @@
+--- a/ranges/merge.py
++++ b/ranges/merge.py
+@@ -4,10 +4,11 @@
+     Input may be unsorted. Returns a sorted list of tuples."""
+     if not intervals:
+         return []
+-    merged = [tuple(intervals[0])]
+-    for start, end in intervals[1:]:
++    sorted_intervals = sorted(tuple(interval) for interval in intervals)
++    merged = [sorted_intervals[0]]
++    for start, end in sorted_intervals[1:]:
+         last_start, last_end = merged[-1]
+-        if start < last_end:
++        if start <= last_end:
+             merged[-1] = (last_start, max(last_end, end))
+         else:
+             merged.append((start, end))

@@ -1,0 +1,282 @@
+// @vitest-environment jsdom
+import { afterEach, describe, expect, it } from 'vitest'
+import { act, fireEvent, screen, within } from '@testing-library/react'
+import { renderRig, resetRig, rigFixture } from '../../test/rig-testing'
+
+afterEach(resetRig)
+const key = (k, o = {}) => act(() => { fireEvent.keyDown(window, { key: k, ...o }) })
+
+describe('Rig shell', () => {
+  it('renders titlebar, rail, pane, status bar and the dock launchers on live data', () => {
+    const { container } = renderRig('#/rig/')
+    expect(container.querySelector('.rig[data-rig-theme="dark"]')).toBeTruthy()
+    for (const el of ['brand', 'nav-datasets', 'nav-sources', 'nav-settings', 'buddy-launcher', 'runtime-status', 'harness-oracle-picker', 'breadcrumb', 'skip-link'])
+      expect(container.querySelector(`[data-el="${el}"]`), el).toBeTruthy()
+    // a closed dock takes no row: its launchers sit in the status bar, each a toggle
+    expect(container.querySelector('.rg-dock')).toBeNull()
+    const dock = within(screen.getByRole('group', { name: 'Dock panels' }))
+    expect(dock.getAllByRole('button').map((t) => t.textContent.trim())).toEqual(['Buddy', 'Event log', 'Capture watcher', 'Case file'])
+    expect(dock.getAllByRole('button').every((b) => b.getAttribute('aria-pressed') === 'false')).toBe(true)
+    for (const el of ['dock-log', 'dock-capture', 'dock-case']) expect(container.querySelector(`.rg-sb [data-el="${el}"]`), el).toBeTruthy()
+    expect(container.querySelector('[data-el="runtime-status"]').textContent).toContain('local workspace · connected')
+    // no uninformative "0 running": the jobs item appears only while something runs
+    expect(container.querySelector('.rg-sb').textContent).not.toMatch(/0 running|—/)
+    // status bar condition falls back to the biggest recorded dataset
+    expect(container.querySelector('.rg-sb').textContent).toContain('ds mini')
+  })
+  it('never touches the classic app theme attributes', () => {
+    document.documentElement.dataset.theme = 'dark'
+    renderRig('#/rig/?theme=light')
+    expect(document.querySelector('.rig').dataset.rigTheme).toBe('light')
+    expect(document.documentElement.dataset.theme).toBe('dark')
+    fireEvent.click(screen.getByRole('button', { name: /^Theme: light/ }))   // light -> system
+    expect(localStorage.getItem('rig.theme')).toBe('system')
+    expect(document.documentElement.dataset.theme).toBe('dark')
+  })
+  it('an unknown kind or dataset is a not-found document, never a crash', () => {
+    const { container } = renderRig('#/rig/nope:1')
+    expect(container.querySelector('[data-el="not-found"]')).toBeTruthy()
+    resetRig()
+    const r2 = renderRig('#/rig/ds:nodataset')
+    expect(r2.container.querySelector('[data-el="not-found"]').textContent).toContain('nodataset')
+  })
+  it('not found is never a dead end: near-miss dataset, search, library, close the tab', () => {
+    renderRig('#/rig/home+!q:minii:grader')
+    const nf = document.querySelector('[data-el="not-found"]')
+    expect(nf.textContent).toContain('Did you mean')
+    act(() => { fireEvent.click(within(nf).getByRole('button', { name: 'q:mini:grader' })) })
+    expect(location.hash).toContain('q:mini:grader')
+    resetRig()
+    renderRig('#/rig/home+!nope:1')
+    act(() => { fireEvent.click(within(document.querySelector('[data-el="not-found"]')).getByRole('button', { name: 'Close this tab' })) })
+    expect(location.hash).toBe('#/rig/home')
+  })
+  it('an error names what failed, offers Retry and a way back', async () => {
+    const data = rigFixture(); delete data['/overview']
+    renderRig('#/rig/home', { data })
+    const err = (await screen.findByText('The dataset library did not load.')).closest('[data-el="error-state"]')
+    expect(err.textContent).toContain('The dataset library did not load.')
+    expect(err.textContent).toContain('not primed in the test')        // the real message stays visible
+    expect(within(err).getByRole('button', { name: 'Retry' })).toBeTruthy()
+    expect(within(err).getByRole('button', { name: 'Back to datasets' })).toBeTruthy()
+  })
+  it('pinning ends in a next step: the toast offers to open the case file', () => {
+    renderRig('#/rig/q:mini:leak')
+    fireEvent.click(screen.getByRole('button', { name: /^Pin Is anything leaking/ }))
+    act(() => { fireEvent.click(within(document.querySelector('.rg-toast')).getByRole('button', { name: 'Open case file' })) })
+    expect(document.querySelector('[data-el="case-file"]')).toBeTruthy()
+  })
+  it('command palette: Ctrl-K opens, fuzzy filters, arrows + Enter open, Esc closes', () => {
+    renderRig('#/rig/')
+    key('k', { ctrlKey: true })
+    const input = screen.getByRole('combobox', { name: /Search datasets/ })
+    expect(location.hash).toContain('pal=1')
+    fireEvent.change(input, { target: { value: 'how fail' } })
+    const opts = screen.getAllByRole('option')
+    expect(opts[0].textContent).toContain('How do runs fail?')
+    fireEvent.keyDown(input, { key: 'Enter' })
+    expect(location.hash).toMatch(/q:mini:outcomes/)
+    expect(screen.queryByRole('dialog', { name: 'Command palette' })).toBeNull()
+    key('k', { ctrlKey: true })
+    fireEvent.keyDown(screen.getByRole('combobox', { name: /Search datasets/ }), { key: 'Escape' })
+    expect(screen.queryByRole('dialog', { name: 'Command palette' })).toBeNull()
+  })
+  it('palette finds a run by its 6-char suffix and Ctrl-Enter opens it to the side', () => {
+    renderRig('#/rig/')
+    key('k', { ctrlKey: true })
+    const input = screen.getByRole('combobox', { name: /Search datasets/ })
+    fireEvent.change(input, { target: { value: 'a00003' } })
+    expect(screen.getAllByRole('option')[0].textContent).toContain('run a00003')
+    fireEvent.keyDown(input, { key: 'Enter', ctrlKey: true })
+    expect(location.hash).toBe('#/rig/home|run:a00003?f=1')
+  })
+  it('split with Ctrl-\\ and back; Alt-W closes the active tab', () => {
+    renderRig('#/rig/home+!ds:mini')
+    key('\\', { ctrlKey: true })
+    expect(document.querySelectorAll('.rg-pane')).toHaveLength(2)
+    key('\\', { ctrlKey: true })
+    expect(document.querySelectorAll('.rg-pane')).toHaveLength(1)
+    key('w', { altKey: true })
+    expect(location.hash).toBe('#/rig/home')
+  })
+  it('maximize: the titlebar button, Ctrl-Shift-Enter and a tab double-click fold the chrome; Esc restores', () => {
+    const { container } = renderRig('#/rig/home|ds:mini?f=1')
+    const rig = container.querySelector('.rig')
+    expect(rig.hasAttribute('data-rig-max')).toBe(false)
+    const btn = screen.getByRole('button', { name: 'Maximize document' })
+    expect(btn.getAttribute('aria-pressed')).toBe('false')
+    fireEvent.click(btn)
+    expect(rig.getAttribute('data-rig-max')).toBe('1')
+    expect(location.hash).toContain('max=1')
+    // the focused pane is the one that stays; the split is kept, only folded
+    expect(container.querySelectorAll('.rg-pane')).toHaveLength(2)
+    expect(container.querySelector('.rg-pane.focus').dataset.pane).toBe('1')
+    expect(screen.getByRole('button', { name: 'Restore layout' }).getAttribute('aria-pressed')).toBe('true')
+    key('Escape')
+    expect(rig.hasAttribute('data-rig-max')).toBe(false)
+    expect(location.hash).not.toContain('max=')
+    key('Enter', { ctrlKey: true, shiftKey: true })
+    expect(rig.getAttribute('data-rig-max')).toBe('1')
+    // Esc closes an open dock first, and only then restores the layout
+    act(() => { fireEvent.click(screen.getByRole('button', { name: 'Ask Buddy' })) })
+    key('Escape')
+    expect(container.querySelector('.rg-dock')).toBeNull()
+    expect(rig.getAttribute('data-rig-max')).toBe('1')
+    key('Escape')
+    expect(rig.hasAttribute('data-rig-max')).toBe(false)
+    // double-clicking a pane's header focuses that pane and maximizes
+    const left = container.querySelector('.rg-pane[data-pane="0"] .rg-panehead')
+    fireEvent.doubleClick(left)
+    expect(container.querySelector('.rg-pane.focus').dataset.pane).toBe('0')
+    expect(rig.getAttribute('data-rig-max')).toBe('1')
+  })
+  it('? opens the keyboard shortcut sheet; Esc or ? closes it; it is in the palette too', () => {
+    renderRig('#/rig/home')
+    key('?')
+    const sheet = screen.getByRole('dialog', { name: 'Keyboard shortcuts' })
+    expect(sheet.textContent).toContain('Maximize the document')
+    key('Escape')
+    expect(screen.queryByRole('dialog', { name: 'Keyboard shortcuts' })).toBeNull()
+    key('?'); key('?')
+    expect(screen.queryByRole('dialog', { name: 'Keyboard shortcuts' })).toBeNull()
+    key('k', { ctrlKey: true })
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'keyboard shortcuts' } })
+    act(() => { fireEvent.keyDown(screen.getByRole('combobox'), { key: 'Enter' }) })
+    expect(screen.getByRole('dialog', { name: 'Keyboard shortcuts' })).toBeTruthy()
+  })
+  it('a maximized link stays maximized on reload', () => {
+    const { container } = renderRig('#/rig/ds:mini?max=1')
+    expect(container.querySelector('.rig').getAttribute('data-rig-max')).toBe('1')
+  })
+  it('every panel opens on the right, beside the document; tabs in its header switch panels', () => {
+    const { container } = renderRig('#/rig/?dock=log')
+    expect(container.querySelector('.rig').classList.contains('has-side')).toBe(true)
+    expect(container.querySelector('#rig-dock').classList.contains('side')).toBe(true)
+    const tabs = within(screen.getByRole('tablist', { name: 'Panels' }))
+    expect(tabs.getAllByRole('tab').map((t) => t.textContent)).toEqual(['Buddy', 'Event log', 'Capture watcher', 'Case file'])
+    for (const name of ['Buddy', 'Capture watcher', 'Case file']) {
+      fireEvent.click(tabs.getByRole('tab', { name }))
+      expect(tabs.getByRole('tab', { name }).getAttribute('aria-selected')).toBe('true')
+      expect(container.querySelector('#rig-dock.side'), name).toBeTruthy()
+      expect(container.querySelector('.rig').classList.contains('has-side'), name).toBe(true)
+    }
+    fireEvent.click(screen.getByRole('button', { name: 'Close panel' }))
+    expect(container.querySelector('#rig-dock')).toBeNull()
+  })
+  it('one header row per pane: the breadcrumb with one tab, the tabs from the second, actions at its end', () => {
+    const { container } = renderRig('#/rig/an:mini:outcomes')
+    const pane = container.querySelector('.rg-pane')
+    expect(pane.querySelector('.rg-panehead [data-el="breadcrumb"]')).toBeTruthy()
+    expect(pane.querySelector('[role="tablist"]')).toBeNull()
+    expect(pane.querySelectorAll('.rg-doctb')).toHaveLength(1)                  // no second chrome row
+    expect(pane.querySelector('.rg-panehead .acts')).toBeTruthy()               // the oracle switch lives in the header
+    resetRig()
+    const r2 = renderRig('#/rig/home+!an:mini:outcomes')
+    const p2 = r2.container.querySelector('.rg-pane')
+    expect(within(p2.querySelector('[role="tablist"]')).getAllByRole('tab')).toHaveLength(2)
+    expect(p2.querySelector('[data-el="breadcrumb"]')).toBeNull()
+    expect(p2.querySelector('.rg-tabbar .acts')).toBeTruthy()
+  })
+  it('the panel is resizable from the keyboard and remembers its width', () => {
+    const { container } = renderRig('#/rig/?dock=case')
+    const sep = screen.getByRole('separator', { name: 'Resize panel' })
+    const w0 = Number(sep.getAttribute('aria-valuenow'))
+    fireEvent.keyDown(sep, { key: 'ArrowLeft' })
+    expect(Number(sep.getAttribute('aria-valuenow'))).toBe(w0 + 24)
+    expect(Number(localStorage.getItem('rig.dockW'))).toBe(w0 + 24)
+    expect(container.querySelector('.rig').style.getPropertyValue('--rig-dock-w')).toBe(`${w0 + 24}px`)
+  })
+  it('the sidebar collapses to icons and back (button or Ctrl-B), and remembers it', () => {
+    const { container } = renderRig('#/rig/home', { storage: { 'rig.nav': 'open' } })
+    const rig = container.querySelector('.rig')
+    expect(rig.dataset.rigNav).toBe('open')
+    expect(screen.getByRole('group', { name: 'Workspace' })).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: 'Collapse sidebar' }))
+    expect(rig.dataset.rigNav).toBe('closed')
+    expect(localStorage.getItem('rig.nav')).toBe('closed')
+    key('b', { ctrlKey: true })
+    expect(rig.dataset.rigNav).toBe('open')
+    // navigation keeps its names in both states
+    for (const el of ['nav-datasets', 'nav-sources', 'nav-settings']) expect(container.querySelector(`[data-el="${el}"]`), el).toBeTruthy()
+  })
+  it('in Analysis the sidebar carries the study steps; a step replaces the tab in place', () => {
+    const { container } = renderRig('#/rig/an:mini:outcomes', { storage: { 'rig.nav': 'open' } })
+    const steps = within(screen.getByRole('group', { name: 'Analysis steps' }))
+    expect(steps.getAllByRole('button').map((b) => b.textContent)).toEqual(['1Family matrix', '2Outcomes', '3Comparison', '4Trajectories', '5Judge & integrity', '6Experiment', '7Report', '8Run setup'])
+    expect(steps.getByRole('button', { name: /Outcomes/ }).getAttribute('aria-current')).toBe('page')
+    act(() => { fireEvent.click(steps.getByRole('button', { name: /Report/ })) })
+    expect(container.querySelector('.rg-doc').dataset.spec).toMatch(/^an:mini:report/)
+    expect(location.hash).not.toContain('+')                  // still one tab, replaced in place
+    // outside Analysis the steps are not shown; collapsed, the page keeps its own step column
+    resetRig()
+    renderRig('#/rig/ds:mini', { storage: { 'rig.nav': 'open' } })
+    expect(screen.queryByRole('group', { name: 'Analysis steps' })).toBeNull()
+  })
+  it('the sidebar marks the section the breadcrumb names', () => {
+    const cur = () => [...document.querySelectorAll('.rg-rail .rg-nav-it[aria-current="page"]')].map((b) => b.getAttribute('aria-label'))
+    for (const [hash, want] of [['#/rig/ds:mini', 'Datasets'], ['#/rig/tasks:mini', 'Trajectories'], ['#/rig/field:mini', 'Trajectories'], ['#/rig/an:mini:outcomes', 'Analysis']]) {
+      resetRig()
+      renderRig(hash, { storage: { 'rig.nav': 'open' } })
+      expect(cur(), hash).toEqual([want])
+    }
+  })
+  it('the dataset switcher at the top of the sidebar changes the dataset in focus', () => {
+    const { container } = renderRig('#/rig/home', { storage: { 'rig.nav': 'open' } })
+    const sw = container.querySelector('[data-el="dataset-switch"]')
+    fireEvent.click(within(sw).getByRole('button', { name: /Switch dataset/ }))
+    const list = within(sw).getByRole('listbox', { name: 'Datasets' })
+    fireEvent.click(within(list).getByRole('option', { name: /mock_ctl/ }))
+    expect(within(sw).queryByRole('listbox')).toBeNull()
+    expect(location.hash).toContain('mock_ctl')
+    expect(within(sw).getByRole('button', { name: /Switch dataset/ }).textContent).toContain('mock_ctl')
+  })
+  it('dock launchers toggle, Ctrl-J toggles Buddy, Esc collapses, the pin count shows on the launcher', () => {
+    renderRig('#/rig/', { storage: { 'rig.case': JSON.stringify([{ id: 'answer:mini:grader', kind: 'answer', label: 'Can I trust the grader?', spec: 'q:mini:grader', dir: 'mini' }]) } })
+    key('j', { ctrlKey: true })
+    expect(document.querySelector('[data-el="buddy-panel"]')).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Buddy' }).getAttribute('aria-pressed')).toBe('true')
+    key('Escape')
+    expect(document.querySelector('[data-el="buddy-panel"]')).toBeNull()
+    const launcher = screen.getByRole('button', { name: 'Case file (1 pinned)' })
+    fireEvent.click(launcher)
+    expect(document.querySelector('[data-el="case-file"]')).toBeTruthy()
+    expect(location.hash).toContain('dock=case')
+    fireEvent.click(screen.getByRole('button', { name: 'Close panel' }))
+    expect(document.querySelector('[data-el="case-file"]')).toBeNull()
+    fireEvent.click(launcher)
+    fireEvent.click(launcher)                                // the launcher is a toggle
+    expect(document.querySelector('[data-el="case-file"]')).toBeNull()
+  })
+  it('the jobs item appears only while runs are in progress', () => {
+    renderRig('#/rig/', { data: { ...rigFixture(), '/jobs': [{ id: 'j1', status: 'running', running: ['a', 'b'] }] } })
+    expect(document.querySelector('.rg-sb').textContent).toMatch(/2 runs in progress/)
+  })
+  it('status bar oracle popover drives the shared oracle', () => {
+    renderRig('#/rig/ds:mini')
+    fireEvent.click(screen.getByRole('button', { name: 'Change test suite and harness' }))
+    fireEvent.click(within(screen.getByRole('dialog', { name: 'Test suite and harness' })).getByRole('button', { name: 'strengthened' }))
+    expect(location.hash).toContain('o=strengthened')
+    expect(document.querySelector('[data-el="success-rate"]').textContent).toContain('strengthened-suite success')
+  })
+  it('Student Lab shares the classic app’s hs.studentLab preference', () => {
+    renderRig('#/rig/sentinel', { storage: { 'hs.studentLab': 'on' } })
+    expect(document.querySelector('[data-el="guided-indicator"]')).toBeTruthy()
+    expect(document.querySelector('[data-el="outside-guided-state"]')).toBeTruthy()
+    resetRig()
+    renderRig('#/rig/?lab=1')
+    expect(localStorage.getItem('hs.studentLab')).toBe('on')
+    expect(location.hash).not.toContain('lab=')
+    fireEvent.click(screen.getByText('Guided analysis on'))
+    expect(location.hash).toContain('guide')
+  })
+  it('every kind opens a real view that renders without crashing, so the shell is navigable end to end', () => {
+    // Phase 2 replaced every placeholder; a kind falling back to _pending.jsx, or a view whose render
+    // throws (the per-tab boundary's "this view failed"), is the regression this guards.
+    for (const spec of ['an:mini:family', 'task:mini:alpha-1:baseline:t1', 'cmp:a:b', 'fork:a', 'field:mini', 'sources', 'capture', 'sentinel', 'canvas', 'settings', 'guide', 'package']) {
+      resetRig()
+      const { container } = renderRig('#/rig/' + spec)
+      expect(container.querySelector('[data-el="pending-view"]'), spec).toBeFalsy()
+      expect(container.textContent, spec).not.toMatch(/this view failed/)
+    }
+  })
+})

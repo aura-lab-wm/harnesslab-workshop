@@ -1,0 +1,47 @@
+--- a/cfg/loader.py
++++ b/cfg/loader.py
+@@ -2,4 +2,44 @@
+     """Return a copy of `defaults` where any env var APP_<KEY> overrides the
+     value for key <key> (lowercased), coerced to the type of the default."""
+     cfg = dict(defaults)
++
++    for k, v in env.items():
++        if not k.startswith("APP_"):
++            continue
++        key = k[4:].lower()
++        if key not in cfg:
++            # ignore unknown keys
++            continue
++        default_val = defaults.get(key)
++        # If default is None, fall back to string
++        if isinstance(default_val, bool):
++            # Interpret common boolean strings
++            val_lower = str(v).strip().lower()
++            if val_lower in ("1", "true", "yes", "on"):  # truthy
++                cfg[key] = True
++            elif val_lower in ("0", "false", "no", "off"):  # falsy
++                cfg[key] = False
++            else:
++                # Fallback: Python truthiness of the string
++                cfg[key] = bool(val_lower)
++        elif isinstance(default_val, int):
++            try:
++                cfg[key] = int(v)
++            except Exception:
++                cfg[key] = default_val
++        elif isinstance(default_val, float):
++            try:
++                cfg[key] = float(v)
++            except Exception:
++                cfg[key] = default_val
++        elif default_val is None:
++            cfg[key] = v
++        else:
++            # Treat as string or other types: coerce to same type if already string
++            if isinstance(default_val, str):
++                cfg[key] = str(v)
++            else:
++                # For unsupported types, leave default
++                cfg[key] = default_val
++
+     return cfg

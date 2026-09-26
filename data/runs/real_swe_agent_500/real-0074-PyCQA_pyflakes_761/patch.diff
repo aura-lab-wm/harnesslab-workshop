@@ -1,0 +1,109 @@
+
+diff --git a/fail.py b/fail.py
+new file mode 100644
+index 0000000..9e9e4c1
+--- /dev/null
++++ b/fail.py
+@@ -0,0 +1,5 @@
++class Foo:
++    bar = 0
++
++    def bar(self):
++        return 1
+diff --git a/ok.py b/ok.py
+new file mode 100644
+index 0000000..a6f3e2f
+--- /dev/null
++++ b/ok.py
+@@ -0,0 +1,6 @@
++class Foo:
++    def bar(self):
++        return 0
++
++    def bar(self):
++        return 1
+diff --git a/pyflakes/checker.py b/pyflakes/checker.py
+index e927715..de0eb20 100644
+--- a/pyflakes/checker.py
++++ b/pyflakes/checker.py
+@@ -999,7 +999,18 @@ class Checker:
+ 
+             elif isinstance(existing, Importation) and value.redefines(existing):
+                 existing.redefined.append(node)
+-
++                # Check for redefinition of attributes within a class body
++                if isinstance(self.scope, ClassScope):
++                    if value.name in self.scope.class_attributes:
++                        self.report(messages.ClassAttributeRedefinition,
++                                    node, value.name, existing.source)
++                    self.scope.class_attributes.add(value.name)
++                    print(f"Checking {value.name} in {self.scope}")
++        if value.name in self.scope.class_attributes:
++            self.report(messages.ClassAttributeRedefinition,
++                        node, value.name, existing.source)
++        self.scope.class_attributes.add(value.name)
++        print(f"Checking {value.name} in {self.scope}")
+         if value.name in self.scope:
+             # then assume the rebound name is used as a global or within a loop
+             value.used = self.scope[value.name].used
+@@ -1209,6 +1220,20 @@ class Checker:
+     def handleChildren(self, tree, omit=None):
+         for node in iter_child_nodes(tree, omit=omit):
+             self.handleNode(node, tree)
++            if isinstance(tree, ast.ClassDef):
++                class_attributes = set()
++                for child in ast.walk(tree):
++                    if isinstance(child, (ast.Assign, ast.AnnAssign)):
++                        if isinstance(child, ast.AnnAssign) and child.simple:
++                            targets = [child.target]
++                        else:
++                            targets = child.targets
++                        for target in targets:
++                            if isinstance(target, ast.Name):
++                                if target.id in class_attributes:
++                                    self.report(messages.ClassAttributeRedefinition,
++                                                tree, target.id, child)
++                                class_attributes.add(target.id)
+ 
+     def isLiteralTupleUnpacking(self, node):
+         if isinstance(node, ast.Assign):
+diff --git a/test_checker.py b/test_checker.py
+new file mode 100644
+index 0000000..c5ed0de
+--- /dev/null
++++ b/test_checker.py
+@@ -0,0 +1,16 @@
++from pyflakes.checker import Checker
++from pyflakes.messages import ClassAttributeRedefinition
++
++code = """
++class Test:
++    attr = 0
++    def method(self):
++        self.attr = 1
++"""
++
++checker = Checker(code)
++checker.check()
++
++for msg in checker.messages:
++    if isinstance(msg, ClassAttributeRedefinition):
++        print(f"Attribute redefinition: {msg}")
+diff --git a/test_redefine.py b/test_redefine.py
+new file mode 100644
+index 0000000..225d3f0
+--- /dev/null
++++ b/test_redefine.py
+@@ -0,0 +1,12 @@
++class TestRedefine:
++    attr = 0
++
++    def method(self):
++        self.attr = 1
++
++    def method2(self):
++        self.attr = 2
++
++    def method3(self):
++        attr = 3
++

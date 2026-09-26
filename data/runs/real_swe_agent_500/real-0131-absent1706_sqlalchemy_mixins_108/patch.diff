@@ -1,0 +1,21 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..d81071d
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,14 @@
++class AnotherBaseClass:
++    __abstract__ = True
++
++    # SOME OTHER CODE
++    pass
++
++class MyBaseClass(AnotherBaseClass):
++    __abstract__ = True
++
++    # SOME CODE
++    pass
++
++class MyClass(MyBaseClass):
++    print("Script completed successfully, no errors.")

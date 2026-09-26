@@ -1,0 +1,34 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 31a603e..04a9c36 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -1168,11 +1168,11 @@ def _get_tmpl(mapping, node):
+ 
+ def _replace_call(tokens, start, end, args, tmpl):
+     arg_strs = [tokens_to_src(tokens[slice(*arg)]).strip() for arg in args]
+-
+     start_rest = args[0][1] + 1
+     while (
+-            start_rest < end and
+-            tokens[start_rest].name in {'COMMENT', UNIMPORTANT_WS}
++        start_rest < end and
++        tokens[start_rest].name in {'COMMENT', UNIMPORTANT_WS} and
++        start_rest < len(tokens)
+     ):
+         start_rest += 1
+ 
+diff --git a/reproduce_bug.py b/reproduce_bug.py
+new file mode 100644
+index 0000000..ada583f
+--- /dev/null
++++ b/reproduce_bug.py
+@@ -0,0 +1,8 @@
++from pyupgrade import main
++import sys
++
++# Simulate command arguments
++args = ["--py3-only", "--keep-percent-format", "src/_pytest/fixtures.py"]
++
++# Call the main function
++sys.exit(main(args))

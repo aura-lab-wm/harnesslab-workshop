@@ -1,0 +1,20 @@
+
+diff --git a/asv/environment.py b/asv/environment.py
+index 139766c..4b37d4f 100644
+--- a/asv/environment.py
++++ b/asv/environment.py
+@@ -534,11 +534,13 @@ class Environment(object):
+ 
+         self.install(build_root)
+ 
+-    def can_install_project(self):
++    def can_install_project(self, revision=None):
+         """
+         Return `True` if specific revisions of the benchmarked project
+         can be installed into this environment.
+         """
++        if self.tool_name == "existing" and revision is not None:
++            return False
+         return True
+ 
+     def find_executable(self, executable):

@@ -1,0 +1,15 @@
+
+diff --git a/agavepy/agave.py b/agavepy/agave.py
+index ca599ce..c944658 100644
+--- a/agavepy/agave.py
++++ b/agavepy/agave.py
+@@ -234,6 +234,9 @@ class Agave(object):
+ 
+             setattr(self, attr, value)
+ 
++        # Add the sessions attribute if it's not already set.
++        if'sessions' not in kwargs:
++            self.sessions = {}
+         # The following sectionsets tenant ID (tenant_id) and tenant url 
+         # (api_server).
+         # Neither tenant ID nor tenant url are set.

@@ -1,0 +1,36 @@
+--- a/store/cache.py
++++ b/store/cache.py
+@@ -20,6 +20,31 @@
+         p = self._path(key)
+         if not os.path.exists(p):
+             return default
+-        with open(p) as f:
+-            rec = json.load(f)
++        try:
++            with open(p) as f:
++                rec = json.load(f)
++        except Exception:
++            # If the file is unreadable or malformed, remove it and treat as missing
++            try:
++                os.remove(p)
++            except Exception:
++                pass
++            return default
++
++        # If the record doesn't have the expected fields, remove it
++        if not isinstance(rec, dict) or "t" not in rec or "v" not in rec:
++            try:
++                os.remove(p)
++            except Exception:
++                pass
++            return default
++
++        # Check TTL and remove expired entries
++        if (self._now() - rec["t"]) > self.ttl:
++            try:
++                os.remove(p)
++            except Exception:
++                pass
++            return default
++
+         return rec["v"]

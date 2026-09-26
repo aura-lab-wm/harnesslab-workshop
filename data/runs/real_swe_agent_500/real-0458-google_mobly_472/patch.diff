@@ -1,0 +1,14 @@
+
+diff --git a/mobly/config_parser.py b/mobly/config_parser.py
+index aa43c03..136986f 100644
+--- a/mobly/config_parser.py
++++ b/mobly/config_parser.py
+@@ -103,6 +103,8 @@ def load_test_config_file(test_config_path, tb_filters=None):
+     """
+     configs = _load_config_file(test_config_path)
+     if tb_filters:
++        import logger
++        logger.debug("Configuration loaded: %s", configs)
+         tbs = []
+         for tb in configs[keys.Config.key_testbed.value]:
+             if tb[keys.Config.key_testbed_name.value] in tb_filters:

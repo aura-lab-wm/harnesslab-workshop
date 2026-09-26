@@ -1,0 +1,14 @@
+
+diff --git a/tests/test_cognitive_complexity.py b/tests/test_cognitive_complexity.py
+index 0aac348..5fa27fa 100644
+--- a/tests/test_cognitive_complexity.py
++++ b/tests/test_cognitive_complexity.py
+@@ -114,7 +114,7 @@ def test_real_function():
+         for raw_word in re.findall(r'[a-z]+', constant):  # +1
+             word = raw_word.strip()
+             if (  # +2
+-                len(word) >= min_word_length  # +4 (2 bool operator sequences * 2 for nesting)
++                len(word) >= min_word_length  # +2 (1 bool operator sequence * 2 for nesting)
+                 and not (word.startswith('-') or word.endswith('-'))
+             ):
+                 if is_camel_case_word(word):  # +2

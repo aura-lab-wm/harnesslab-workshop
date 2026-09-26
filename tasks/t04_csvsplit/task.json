@@ -1,0 +1,9 @@
+{
+  "id": "t04_csvsplit",
+  "title": "split_row mishandles quoted commas",
+  "probe": "none",
+  "src_files": [
+    "tinycsv/rows.py"
+  ],
+  "test_cmd": "python -m unittest discover -s tests -q"
+}

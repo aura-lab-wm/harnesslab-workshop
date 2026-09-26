@@ -1,0 +1,14 @@
+
+diff --git a/delphin/tdl.py b/delphin/tdl.py
+index ec330f4..3eb35e1 100644
+--- a/delphin/tdl.py
++++ b/delphin/tdl.py
+@@ -1339,6 +1339,8 @@ def _parse_tdl_include(tokens, basedir):
+ # Serialization helpers
+ 
+ def format(obj, indent=0):
++    if isinstance(obj, str) and obj in ["LineComment", "BlockComment"]:
++        return obj
+     """
+     Serialize TDL objects to strings.
+ 

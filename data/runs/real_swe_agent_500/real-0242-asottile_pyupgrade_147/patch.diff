@@ -1,0 +1,23 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 31a603e..0996c8c 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -1167,12 +1167,14 @@ def _get_tmpl(mapping, node):
+ 
+ 
+ def _replace_call(tokens, start, end, args, tmpl):
+-    arg_strs = [tokens_to_src(tokens[slice(*arg)]).strip() for arg in args]
++    if not args:
++        raise IndexError("Empty argument list")
+ 
++    arg_strs = [tokens_to_src(tokens[slice(*arg)]).strip() for arg in args]
+     start_rest = args[0][1] + 1
+     while (
+-            start_rest < end and
+-            tokens[start_rest].name in {'COMMENT', UNIMPORTANT_WS}
++        start_rest < end and
++        tokens[start_rest].name in {'COMMENT', UNIMPORTANT_WS}
+     ):
+         start_rest += 1
+ 

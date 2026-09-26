@@ -1,0 +1,32 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..e418857
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,4 @@
++import ulid
++
++u = ulid.from_str('01BX73KC0TNH409RTFD1JXKmO0')
++print(u.str)
+diff --git a/ulid/base32.py b/ulid/base32.py
+index 83f8a8a..cba16ce 100644
+--- a/ulid/base32.py
++++ b/ulid/base32.py
+@@ -259,6 +259,16 @@ def decode_ulid(value: str) -> bytes:
+ 
+     decoding = DECODING
+ 
++    # Convert to lowercase and handle special characters
++    encoded = bytearray(encoded)
++    for i, byte in enumerate(encoded):
++        if byte == b'I' or byte == b'L':
++            encoded[i] = b'1'
++        if byte == b'O':
++            encoded[i] = b'0'
++        if byte == b' ':
++            encoded[i] = b'5'
++
+     return bytes((
+         ((decoding[encoded[0]] << 5) | decoding[encoded[1]]) & 0xFF,
+         ((decoding[encoded[2]] << 3) | (decoding[encoded[3]] >> 2)) & 0xFF,

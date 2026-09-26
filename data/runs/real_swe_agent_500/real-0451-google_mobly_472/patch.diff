@@ -1,0 +1,23 @@
+
+diff --git a/mobly/config_parser.py b/mobly/config_parser.py
+index aa43c03..62102c1 100644
+--- a/mobly/config_parser.py
++++ b/mobly/config_parser.py
+@@ -21,7 +21,9 @@ import yaml
+ 
+ from mobly import keys
+ from mobly import utils
++import logging
+ 
++logger = logging.getLogger('config_parser')
+ # An environment variable defining the base location for Mobly logs.
+ ENV_MOBLY_LOGPATH = 'MOBLY_LOGPATH'
+ _DEFAULT_LOG_PATH = '/tmp/logs/mobly/'
+@@ -102,6 +104,7 @@ def load_test_config_file(test_config_path, tb_filters=None):
+         test_runner.TestRunner.
+     """
+     configs = _load_config_file(test_config_path)
++    logger.debug(f"Config file contents: {configs}")
+     if tb_filters:
+         tbs = []
+         for tb in configs[keys.Config.key_testbed.value]:

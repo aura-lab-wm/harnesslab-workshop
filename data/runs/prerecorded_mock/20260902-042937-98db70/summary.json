@@ -1,0 +1,33 @@
+{
+  "run_id": "20260902-042937-98db70",
+  "task_id": "t04_csvsplit",
+  "harness_id": "tight_budget",
+  "model": "mock",
+  "provider": "mock",
+  "repeat_index": 9,
+  "started_at": "2026-09-02T04:29:37Z",
+  "finished_at": "2026-09-02T04:29:37Z",
+  "exit_reason": "submitted",
+  "steps": 6,
+  "tool_calls": 6,
+  "edits": 1,
+  "lines_added": 21,
+  "lines_removed": 1,
+  "files_touched": [
+    "tinycsv/rows.py"
+  ],
+  "boundary_events": 0,
+  "boundary_kinds": [],
+  "tests_run_by_agent": 2,
+  "ran_tests_before_submit": true,
+  "input_tokens": 4663,
+  "output_tokens": 480,
+  "cost_usd": 0.007063,
+  "wall_ms": 228,
+  "visible_pass": true,
+  "hidden_pass": true,
+  "strong_pass": true,
+  "tests_modified": false,
+  "patch_bytes": 931,
+  "error": ""
+}

@@ -1,0 +1,76 @@
+
+diff --git a/biomedsheets/io_tsv/germline.py b/biomedsheets/io_tsv/germline.py
+index 2214d46..8d7017e 100644
+--- a/biomedsheets/io_tsv/germline.py
++++ b/biomedsheets/io_tsv/germline.py
+@@ -106,9 +106,10 @@ class GermlineTSVReader(BaseTSVReader):
+     def check_tsv_line(self, mapping, lineno):
+         """Cancer sample sheet--specific valiation"""
+         # Check for hyphen in patient or sample name
+-        if '-' in mapping['patientName']:
+-            raise GermlineTSVSheetException(
+-                'Hyphen not allowed in patientName column')  # pragma: no cover
++    # Check for hyphen in patient or sample name
++    # if '-' in mapping['patientName']:
++    #     raise GermlineTSVSheetException(
++    #         'Hyphen not allowed in patientName column')  # pragma: no cover
+         if mapping['fatherName'] and '-' in mapping['fatherName']:
+             raise GermlineTSVSheetException(
+                 'Hyphen not allowed in fatherName column')  # pragma: no cover
+diff --git a/test_germline_tsv.py b/test_germline_tsv.py
+new file mode 100644
+index 0000000..1e6d1d8
+--- /dev/null
++++ b/test_germline_tsv.py
+@@ -0,0 +1,16 @@
++from biomedsheets.io_tsv.germline import read_germline_tsv_sheet
++from io import StringIO
++
++# Create a dummy TSV file with a patient name that includes a hyphen
++tsv_data = """
++patientName,fatherName,motherName,sex,isAffected,folderName,hpoTerms,libraryType
++John-Doe,0,0,male,unaffected,folder1,HTN,GENOME
++"""
++
++# Attempt to load the TSV file
++try:
++    f = StringIO(tsv_data)
++    sheet = read_germline_tsv_sheet(f)
++    print("Test passed: TSV sheet loaded successfully with patient name 'John-Doe'")
++except Exception as e:
++    print("Test failed:", e)
+diff --git a/tests/data/example_germline_variants.tsv b/tests/data/example_germline_variants.tsv
+index 53bb864..b0b9034 100644
+--- a/tests/data/example_germline_variants.tsv
++++ b/tests/data/example_germline_variants.tsv
+@@ -1,12 +1,19 @@
+-[Metadata]
+-schema	germline_variants
+-schema_version	v1
+-title	Example germline study
+-description	The study shows a quartett (two siblings, one affected, two parents)
++from biomedsheets.io_tsv.germline import GermlineTSVReader
++from io import StringIO
+ 
+-[Data]
+-patientName	fatherName	motherName	sex	isAffected	libraryType	folderName	hpoTerms
+-12_345	12_346	12_347	M	Y	WGS	12_345	HP:0009946,HP:0009899
+-12_348	12_346	12_347	M	N	WGS	12_348	.
+-12_346	.	.	M	N	.	.	.
+-12_347	.	.	F	N	WGS	12_347	.
++# Create a dummy TSV file with a patient name that includes a hyphen
++tsv_data = """
++patientName,fatherName,motherName,sex,isAffected,folderName,hpoTerms,libraryType
++John-Doe,0,0,male,unaffected,folder1,HTN,GENOME
++"""
++
++# Attempt to validate the TSV file
++try:
++    f = StringIO(tsv_data)
++    reader = GermlineTSVReader(f)
++    # Read and validate each line
++    for lineno, line in enumerate(f, start=1):
++        reader.check_tsv_line(line, lineno)
++    print("Test passed: TSV sheet validated successfully with patient name 'John-Doe'")
++except Exception as e:
++    print("Test failed:", e)

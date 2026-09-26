@@ -1,0 +1,34 @@
+
+diff --git a/asv/commands/profiling.py b/asv/commands/profiling.py
+index afabf6c..80d5f6d 100644
+--- a/asv/commands/profiling.py
++++ b/asv/commands/profiling.py
+@@ -122,10 +122,11 @@ class Profile(Command):
+         repo.pull()
+ 
+         machine_name = Machine.get_unique_machine_name()
+-        if revision is None:
++        if revision is not None and is_existing_only(environments):
++            revision = None
++        else:
+             revision = conf.branches[0]
+         commit_hash = repo.get_hash_from_name(revision)
+-
+         profile_data = None
+         checked_out = set()
+ 
+@@ -152,13 +153,7 @@ class Profile(Command):
+             if len(environments) == 0:
+                 log.error("No environments selected")
+                 return
+-
+-            if revision is not None:
+-                for env in environments:
+-                    if not env.can_install_project():
+-                        raise util.UserError(
+-                            "An explicit revision may not be specified when "
+-                            "using an existing environment.")
++            pass
+ 
+             env = environments[0]
+ 

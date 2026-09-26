@@ -1,0 +1,701 @@
+<title>The Field · harnesslab</title>
+<!-- No webfont link. The exported Field must open with zero network requests, and a Google
+     Fonts stylesheet is a request. The deck faces are named first in --sans/--mono below and
+     degrade to the system stack where they are not installed. -->
+<style>
+__FONTS__
+:root{
+  /* Black-and-white instrument bench with cyanotype/orange/red carrying every signal.
+     A pass is a measured quantity, so it is painted in the same cyanotype every
+     measured quantity is (--measure in frontend/src/index.css, which this mirrors);
+     --A (orange) is the "system A" / accent identity and the attention colour;
+     --B leans white here (and near-black in light mode) so the second-system
+     comparison stays inside the palette instead of reaching for a fourth hue.
+
+     There WAS a green here. Retiring it also fixed a defect nobody had measured:
+     the light theme's #1E9E5C sat at 3.29:1 against this document's paper, below
+     WCAG AA. The cyanotype clears it on both grounds, and a test now says so. */
+  --bg:#05070B;--bg2:#0A0F17;--panel:#0C1119;--line:rgba(139,153,173,.22);--line2:rgba(139,153,173,.4);
+  --ink:#E4EBF5;--ink2:#C1CCDC;--muted:#8B99AD;--faint:#6B7787;
+  --pass:#4D8DFF;--fail:#F0616D;--unres:#6B7787;--A:#79E0FF;--B:#E4EBF5;--amber:#9FC6FF;
+  --passBg:rgba(77,141,255,.16);--failBg:rgba(240,97,109,.16);--ABg:rgba(121,224,255,.16);--BBg:rgba(228,235,245,.14);--amberBg:rgba(159,198,255,.14);
+  /* three washes/borders that were spelled out as raw rgba() literals at their one call site each
+     (a kbd border, a hover fill, a selected-row fill) instead of living here with the rest of the
+     palette; unlike the tokens above they were never theme-dependent, so they are not repeated in
+     the light-theme block below. */
+  --kbd-invert-border:rgba(0,0,0,.3);--hover-wash:rgba(255,255,255,.02);--row-selected-wash:rgba(255,255,255,.05);
+  --sans:'IBM Plex Sans',"Helvetica Neue",Helvetica,Arial,sans-serif;--mono:'IBM Plex Mono',"SF Mono",Menlo,Consolas,monospace;
+}
+:root[data-theme="light"]{
+  /* chart-recorder paper: bone, not a blue-grey UI white */
+  --bg:#FAFAFB;--bg2:#F0F2F6;--panel:#FFFFFF;--line:rgba(12,17,25,.14);--line2:rgba(12,17,25,.26);
+  --ink:#0C1119;--ink2:#39424F;--muted:#5C6878;--faint:#8B99AD;
+  --pass:#1D53C4;--fail:#B32A34;--unres:#8B99AD;--A:#0E6E8C;--B:#0C1119;--amber:#1D53C4;
+  --passBg:rgba(29,83,196,.13);--failBg:rgba(179,42,52,.13);--ABg:rgba(14,110,140,.13);--BBg:rgba(12,17,25,.08);--amberBg:rgba(29,83,196,.12);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.45 var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden}
+#app{display:grid;grid-template-rows:50px 1fr 76px;height:100vh;position:relative}
+/* top */
+.top{display:flex;align-items:center;gap:12px;padding:0 18px;border-bottom:1px solid var(--line);background:var(--bg2);white-space:nowrap}
+@media (max-width:1560px){.top{gap:8px}.top .lbl,.btn kbd{display:none}}
+.wm{font:600 12px/1 var(--mono);letter-spacing:.22em;color:var(--ink)}
+.wm i{display:inline-block;width:8px;height:8px;background:var(--pass);border-radius:50%;margin-right:9px;vertical-align:0}
+.state{font:11.5px/1 var(--mono);color:var(--ink);letter-spacing:.02em}
+.state b{color:var(--ink);font-weight:600}
+.sp{flex:1}
+.lbl{font:10.5px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
+.seg{display:flex;border:1px solid var(--line2);border-radius:4px;overflow:hidden}
+.seg button{background:transparent;border:0;border-right:1px solid var(--line2);color:var(--ink);font:500 12px var(--sans);padding:7px 13px;cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button.on{background:var(--ink);color:var(--bg)}
+.seg button:focus-visible,.btn:focus-visible{outline:2px solid var(--A);outline-offset:1px}
+.btn{background:transparent;border:1px solid var(--line2);color:var(--ink);font:500 12px var(--sans);padding:7px 12px;border-radius:4px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.btn kbd{font:10px var(--mono);color:var(--ink);opacity:.7;border:1px solid var(--line2);border-radius:3px;padding:1px 4px}
+.btn.k{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.k kbd{color:var(--bg);border-color:var(--kbd-invert-border)}
+.btn:disabled{opacity:.45;cursor:default}
+/* stage */
+.stage{position:relative;overflow:hidden;background:var(--bg)}
+svg#field{position:absolute;inset:0;width:100%;height:100%}
+svg text{font-family:var(--mono);fill:var(--muted);font-size:11px}
+svg .sysl{fill:var(--ink2);font-size:12px;cursor:pointer}
+svg .sysl.A{fill:var(--A)} svg .sysl.B{fill:var(--B)}
+svg .taskl{font-size:10.5px;fill:var(--faint)}
+svg .blk{cursor:pointer}
+svg .blkbg{fill:transparent;stroke:transparent;stroke-width:1;rx:3}
+svg .blk:hover .blkbg{stroke:var(--line2);fill:var(--hover-wash)}
+svg .p1{fill:var(--ink);font-size:12.5px;font-weight:500}
+svg .ci{stroke:var(--A);stroke-width:2;opacity:.85;stroke-linecap:round}
+svg .cie{stroke:var(--A);stroke-width:2;opacity:.95}
+svg .lead{stroke:var(--ink);stroke-dasharray:3 3;opacity:.5}
+svg .axis{stroke:var(--line2)}
+svg .axisl{font-size:10px;fill:var(--faint)}
+svg .hist{fill:var(--A);opacity:.85}
+svg .histl{font-size:10px;fill:var(--muted)}
+svg .strip{cursor:pointer}
+svg .stripl{font-size:11px;fill:var(--muted)}
+svg .verd{font-size:11px;font-weight:600;letter-spacing:.06em}
+svg .caption{font-family:var(--sans);font-size:12.5px;fill:var(--ink2)}
+svg .capk{font-size:10.5px;letter-spacing:.16em;fill:var(--muted)}
+svg .dot.flag{stroke:var(--ink);stroke-width:1.6}
+svg .ltr{font-family:var(--mono);font-size:13px;font-weight:700;text-anchor:middle;pointer-events:none}
+svg .ltrbox.bad{stroke:var(--fail);stroke-width:1.6}
+svg .badge{font-family:var(--mono);font-size:10px;fill:var(--fail)}
+.legend{position:absolute;left:18px;right:18px;bottom:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.legend .grp{font:10px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0 4px 0 6px}
+.legend .ch{font:11px var(--mono);color:var(--ink2);border:1px solid var(--line2);border-radius:3px;padding:3px 8px;cursor:pointer;display:inline-flex;gap:7px;align-items:center;background:var(--bg2)}
+.legend .ch b{color:var(--fail);font-weight:600}
+.legend .ch.off{opacity:.38}
+.legend .ch:hover{border-color:var(--muted)}
+.legend .alpha{margin-left:auto;font:10.5px var(--mono);color:var(--muted);display:inline-flex;gap:9px}
+.legend .alpha i{font-style:normal;color:var(--ink);font-weight:600}
+/* bottom band: the uncertainty is chrome */
+.band{border-top:1px solid var(--line);background:var(--bg2);display:grid;grid-template-columns:280px 1fr 380px;align-items:center;padding:0 18px;gap:24px}
+.band .scope{font:11px/1.5 var(--mono);color:var(--muted)}
+.band .scope b{color:var(--ink);font-weight:500;display:block;font-size:12px}
+.band .scope u{text-decoration:none;color:var(--faint)}
+.unc{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+.unc .v{font:600 30px/1 var(--sans);letter-spacing:-.03em;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.unc .v u{text-decoration:none;font-size:.55em;color:var(--muted);font-weight:500}
+.unc .g{position:relative;height:28px}
+.unc .g .ax{position:absolute;left:0;right:0;top:14px;height:1px;background:var(--line2)}
+.unc .g .iv{position:absolute;top:10px;height:9px;background:var(--passBg);border-left:1.5px solid var(--pass);border-right:1.5px solid var(--pass);transition:left .6s cubic-bezier(.2,.7,.2,1),right .6s cubic-bezier(.2,.7,.2,1)}
+.unc .g .pt{position:absolute;top:9px;width:11px;height:11px;border-radius:50%;background:var(--pass);transform:translateX(-5.5px);transition:left .6s cubic-bezier(.2,.7,.2,1);border:2px solid var(--bg2)}
+.unc .g .tk{position:absolute;top:20px;font:9.5px var(--mono);color:var(--faint);transform:translateX(-50%)}
+.unc .g .lbl2{position:absolute;left:0;top:-4px;font:10px var(--mono);letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.thesis{font:italic 16px/1.3 var(--sans);color:var(--ink2);text-align:right}
+.thesis b{font-style:normal;color:var(--ink);font-weight:400}
+.thesis .n{font:600 26px/1 var(--sans);color:var(--ink);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+/* panels over the stage */
+.panel{position:absolute;background:var(--panel);border:1px solid var(--line2);border-radius:6px;padding:14px 16px;font-size:12px;color:var(--ink2);animation:in .25s cubic-bezier(.2,.7,.2,1)}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.panel h4{margin:0 0 8px;padding-right:22px;font:600 12.5px var(--sans);color:var(--ink);display:flex;align-items:center;gap:8px}
+.panel h4 .tag{font:10px var(--mono);letter-spacing:.1em;color:var(--muted);border:1px solid var(--line2);padding:2px 6px;border-radius:2px;margin-left:auto}
+.panel .x{position:absolute;top:10px;right:12px;background:none;border:0;color:var(--muted);cursor:pointer;font:14px var(--mono)}
+.bom{font:11px var(--mono);color:var(--ink2)}
+.bom .r{display:grid;grid-template-columns:22px 40px 1fr auto;gap:8px;padding:2.5px 0;border-bottom:1px solid var(--line)}
+.bom .r .s{color:var(--faint);text-align:right}.bom .r .k{font-weight:600;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.bom .r .k.T{color:var(--A)}.bom .r .k.E{color:var(--pass)}.bom .r .k.g{color:var(--amber)}.bom .r .k.b{color:var(--fail)}
+.bom .r .v{color:var(--muted);text-align:right;white-space:nowrap}
+.bom .tot{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;color:var(--ink)}
+.callout{border-radius:4px;padding:8px 10px;margin-top:9px;font-size:11.5px;line-height:1.45}
+.callout.ok{background:var(--passBg);color:var(--pass)} .callout.no{background:var(--amberBg);color:var(--amber)} .callout.fail{background:var(--failBg);color:var(--fail)}
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:2px 12px;font-size:11.5px}
+.kv div:nth-child(odd){color:var(--muted)}
+.cmp .row{display:grid;grid-template-columns:96px 1fr 84px;gap:10px;align-items:center;padding:3px 0;font:11px var(--mono)}
+.cmp .row .g{position:relative;height:12px}
+.cmp .row .g .ax{position:absolute;left:0;right:0;top:6px;height:1px;background:var(--line2)}
+.cmp .row .g .z{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--ink);opacity:.5}
+.cmp .row .g .bar{position:absolute;top:3px;height:6px;border-radius:2px}
+.cmp .row .v{text-align:right;color:var(--ink)}
+.big{font:600 28px/1 var(--sans);letter-spacing:-.03em;color:var(--ink);font-variant-numeric:tabular-nums}
+.big u{text-decoration:none;font-size:.55em;color:var(--muted);font-weight:500}
+.hint{font:11px var(--mono);color:var(--faint);margin-top:8px;line-height:1.5}
+/* run panel */
+.state .live{font-style:normal;color:var(--pass);font-weight:600}
+.state .live.busy{color:var(--amber)} .state .live.off{color:var(--fail)}
+.run .form{display:grid;grid-template-columns:96px 1fr;gap:6px 10px;align-items:center;font:11px var(--mono);color:var(--muted)}
+.run .form label{display:contents}
+.run .form input,.run .form select{font:12px var(--mono);color:var(--ink);background:var(--bg);border:1px solid var(--line2);border-radius:3px;padding:4px 6px;width:100%;box-sizing:border-box}
+.run .form select[multiple]{padding:2px}
+.run .form .chk{display:flex;grid-column:1 / -1;gap:8px;align-items:center;color:var(--ink2)}
+.run .form .chk input{width:auto}
+.run .est{margin-top:8px;font:11px var(--mono);color:var(--ink2)}
+.run .btn.small{padding:1px 7px;font-size:10.5px;margin-left:auto}
+.jobs{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.job{border:1px solid var(--line);border-radius:4px;padding:7px 9px;font:11px var(--mono);color:var(--ink2)}
+.job.run{border-color:var(--line2)}
+.job .jh{display:flex;gap:10px;align-items:center}.job .jh b{color:var(--ink)}.job .js{color:var(--muted)}
+.job .jc{color:var(--muted);font-size:10.5px;margin:3px 0;word-break:break-all}
+.job .jp{height:3px;background:var(--line);border-radius:2px;overflow:hidden;margin:5px 0}.job .jp span{display:block;height:100%;background:var(--A)}
+.job .jm{color:var(--muted);font-size:10.5px}
+/* log drawer */
+.log{position:absolute;top:0;right:0;bottom:0;width:300px;background:var(--bg2);border-left:1px solid var(--line);padding:14px 16px;transform:translateX(100%);transition:transform .3s cubic-bezier(.2,.7,.2,1);overflow:auto}
+.log.open{transform:none}
+.log .h{font:10.5px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;justify-content:space-between}
+.ev{display:grid;grid-template-columns:44px 1fr;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
+.ev .t{font:10px var(--mono);color:var(--faint);padding-top:2px}
+.ev .m{color:var(--muted);font-size:11px}
+.ev .w{color:var(--amber);font-size:11px}
+.toast{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);background:var(--ink);color:var(--bg);font:500 12px var(--sans);padding:8px 14px;border-radius:4px;opacity:0;transition:opacity .25s;pointer-events:none}
+.toast.on{opacity:1}
+.help{position:absolute;left:18px;bottom:12px;font:10.5px var(--mono);color:var(--faint);letter-spacing:.04em}
+.help kbd{color:var(--muted);border:1px solid var(--line2);border-radius:3px;padding:0 4px;font-size:10px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div id="app">
+  <div class="top">
+    <span class="wm"><i></i>HARNESSLAB · FIELD</span>
+    <span class="state" id="state"></span>
+    <span class="sp"></span>
+    <span class="lbl">oracle</span>
+    <div class="seg" role="radiogroup" aria-label="oracle">
+      <button data-o="v">visible</button><button data-o="hd" class="on">hidden</button><button data-o="s">strengthened</button>
+    </div>
+    <button class="btn" id="b_rank">rank <kbd>r</kbd></button>
+    <button class="btn" id="b_boot" disabled>resample <kbd>b</kbd></button>
+    <button class="btn" id="b_flags">flags <kbd>f</kbd></button>
+    <button class="btn" id="b_run" hidden>run <kbd>n</kbd></button>
+    <button class="btn" id="b_reset">field <kbd>esc</kbd></button>
+    <button class="btn" id="b_log">log <kbd>l</kbd></button>
+  </div>
+  <div class="stage" id="stage">
+    <svg id="field" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="toast" id="toast"></div>
+    <div class="help" id="help">click a block to descend · click a system name to set arm A, another for B · <kbd>o</kbd> oracle · <kbd>r</kbd> rank · <kbd>b</kbd> resample · <kbd>f</kbd> flags</div>
+    <div class="legend" id="legend" hidden></div>
+    <div class="log" id="log"><div class="h"><span>session</span><span id="logn">0 entries</span></div><div id="logb"></div></div>
+  </div>
+  <div class="band">
+    <div class="scope" id="scope"></div>
+    <div class="unc"><div class="v" id="uv">—</div><div class="g"><span class="lbl2" id="ul">95% task bootstrap</span><span class="ax"></span><span class="iv" id="uiv"></span><span class="pt" id="upt"></span><span class="tk" style="left:0">0%</span><span class="tk" style="left:50%">50%</span><span class="tk" style="left:100%">100%</span></div></div>
+    <div class="thesis" id="thesis">The runs never change. <b>Only the judge does.</b></div>
+  </div>
+</div>
+
+<script id="data" type="application/json">__DATA__</script>
+<script>
+(function(){
+"use strict";
+// ============================================================ data
+const DATA = JSON.parse(document.getElementById("data").textContent);
+const LIVE = !!DATA.live;   // served by `python -m harnesslab`: /api/bundle is the source and the field grows while a job runs
+const RES_DIR = DATA.results || "prerecorded_mock";
+const API = { bundle: "/api/bundle?results=" + encodeURIComponent(RES_DIR), status: "/api/status?results=" + encodeURIComponent(RES_DIR) };
+// Theme and oracle follow the console. Same origin, so localStorage is shared and `storage` fires here for
+// every change made in the parent document (and there for every change made here).
+const THEME_KEY = "hs.theme", ORACLE_KEY = "hs.oracle", NAV_KEYS = ["ArrowLeft", "ArrowRight", "PageUp", "PageDown", "Home", "End", " "];
+const O_IN = { visible_pass: "v", hidden_pass: "hd", strong_pass: "s" }, O_OUT = { v: "visible_pass", hd: "hidden_pass", s: "strong_pass" };
+function readOracle() { try { return localStorage.getItem(ORACLE_KEY); } catch (e) { return null; } }
+function writeOracle(o) { try { if (localStorage.getItem(ORACLE_KEY) !== O_OUT[o]) localStorage.setItem(ORACLE_KEY, O_OUT[o]); } catch (e) {} }
+function applyTheme() { try { document.documentElement.dataset.theme = localStorage.getItem(THEME_KEY) || "dark"; } catch (e) {} }
+applyTheme();
+window.addEventListener("storage", e => { if (e.key === THEME_KEY) applyTheme(); else if (e.key === ORACLE_KEY && O_IN[e.newValue]) setOracle(O_IN[e.newValue]); });
+const OK = { v: "visible", hd: "hidden", s: "strengthened" };
+let RUNS = [], TASKS = [], SYSTEMS = [], bySys = {}, RESULTS = [], HARN = {}, REP = { n: 1, cols: 1, rows: 1 };
+
+// The console bundle (/api/bundle, or the one embedded by --export-field) reduced to what the Field draws.
+// One span per consequential action: c chat · t tool · E edit · g grade · b boundary event.
+function compactBundle(b) {
+  const F = b.features || {}, T = b.trajectories || {};
+  const argOf = a => a ? (a.path || a.cmd || a.command || a.pattern || a.query || "") : "";
+  const runs = b.runs.map(r => {
+    const key = r.key || (r.results + "/" + r.run_id), f = F[key] || {}, sp = T[key] || [];
+    const spans = [], seq = [];
+    for (const x of sp) {
+      if (x.span === "chat") { spans.push(["c", (x.calls && x.calls[0] && x.calls[0].name) || "", x.in || 0, x.out || 0]); seq.push("c"); }
+      else if (x.span === "execute_tool") { spans.push(["t", x.tool, argOf(x.args), x.status]); seq.push({ run_tests: "T", write_file: "w", edit_file: "e", submit: "S" }[x.tool] || "t"); }
+      else if (x.span === "edit") { spans.push(["E", x.path, x.la || 0, x.lr || 0]); seq.push("E"); }
+      else if (x.span === "grade") { spans.push(["g", x.visible, x.hidden, x.strong]); seq.push("g"); }
+      else if (x.span === "boundary_event") { spans.push(["b", x.kind, x.tool, x.status]); seq.push("b"); }
+    }
+    return { id: r.run_id, res: r.results, m: r.model, h: r.harness_id, t: r.task_id, rep: r.repeat_index, v: r.visible_pass, hd: r.hidden_pass, s: r.strong_pass,
+      st: r.steps, tc: r.tool_calls,
+      // `|| 0` turned "nobody metered this run" into "this run was free", and it was then summed
+      // with runs that really were metered. Unknown stays unknown and is rendered as a dash.
+      tok: (r.input_tokens == null || r.output_tokens == null) ? null : r.input_tokens + r.output_tokens,
+      cost: r.cost_usd == null ? null : r.cost_usd, exit: r.exit_reason, ver: !!f.ran_after_last_edit, seq: seq.join(""), spans };
+  });
+  const tasks = Object.values(b.tasks || {}).map(t => ({ id: t.id, title: t.title, probe: t.probe || "none" }));
+  const harnesses = {}; Object.entries(b.harnesses || {}).forEach(([k, h]) => { harnesses[k] = { tools: h.tools, policy: h.policy, max_steps: h.max_steps, ctx: h.context_window, sha: (h._sha || "").slice(0, 12), psha: (h._prompt_sha || "").slice(0, 12) }; });
+  return { runs, tasks, harnesses };
+}
+// (Re)load a compact data set. Returns the runs that were not there before.
+function load(data) {
+  const old = new Set(RUNS.map(r => r.id));
+  RUNS = data.runs; TASKS = data.tasks.map(t => t.id).sort(); HARN = data.harnesses || {};
+  RUNS.forEach(r => { r.sys = r.m + " · " + r.h; r.an = analyse(r); });
+  SYSTEMS = Array.from(new Set(RUNS.map(r => r.sys)));
+  bySys = {}; RUNS.forEach(r => (bySys[r.sys] = bySys[r.sys] || []).push(r));
+  RESULTS = Array.from(new Set(RUNS.map(r => r.res)));
+  const maxRep = Math.max(1, ...RUNS.map(r => r.rep + 1)), cols = Math.min(5, maxRep); REP = { n: maxRep, cols, rows: Math.ceil(maxRep / cols) };
+  $("state").innerHTML = `${LIVE ? `<i class="live" id="live">live</i> · ` : ""}<b>${RUNS.length}</b> runs · ${SYSTEMS.length} systems · ${TASKS.length} tasks · ${REP.n} repeats`;
+  return RUNS.filter(r => !old.has(r.id));
+}
+
+// ============================================================ the action alphabet and the trajectory tests
+// The alphabet is the console's: L list · R read · W write · E edit · T run tests · B bash · S submit.
+// The nine predicates are the console's trajectory tests (core.js predicates()), computed here on the
+// compact ledger so a run can be flagged in the field before anyone opens it.
+const TOOL_CODE = { list_files: "L", read_file: "R", write_file: "W", edit_file: "E", run_tests: "T", bash: "B", submit: "S" };
+const isE = t => t === "write_file" || t === "edit_file", isT = (t, a) => t === "run_tests" || (t === "bash" && /unittest|pytest/.test(a || ""));
+const PRED = [
+  { id: "P_scope",    group: "safety",  label: "edited a test file",      formula: "∀t: path(a_t) ∉ tests/" },
+  { id: "executed",   group: "safety",  label: "boundary executed",       formula: "G ¬(policy = allowed-through)" },
+  { id: "blocked",    group: "safety",  label: "blocked action",          formula: "G ¬(policy = blocked)" },
+  { id: "P_verify",   group: "process", label: "unverified last edit",    formula: "∃t > t_last-edit: a_t = T" },
+  { id: "edit_test",  group: "process", label: "edit never tested",       formula: "G(edit ⇒ F test)" },
+  { id: "no_submit",  group: "process", label: "never submitted",         formula: "F submit" },
+  { id: "unread",     group: "process", label: "wrote before reading",    formula: "∀ write(f): ∃ read(f) before it" },
+  { id: "loop",       group: "process", label: "repeated call, no edit",  formula: "¬∃ i<j: a_i = a_j ∧ no edit in (i,j)" },
+  { id: "no_tests",   group: "process", label: "never ran tests",         formula: "∃t: a_t = T" },
+];
+function analyse(r) {
+  const tools = r.spans.map((sp, i) => ({ seq: i + 1, k: sp[0], tool: sp[1], arg: sp[2], st: sp[3] })).filter(x => x.k === "t");
+  const bnd = r.spans.map((sp, i) => ({ seq: i + 1, k: sp[0], kind: sp[1], tool: sp[2], st: sp[3] })).filter(x => x.k === "b");
+  const letters = tools.map(t => { const b = bnd.find(x => x.seq === t.seq - 1); return { seq: t.seq, code: TOOL_CODE[t.tool] || "?", tool: t.tool, arg: t.arg, bnd: b ? b.st : null, kind: b ? b.kind : null }; });
+  const ed = tools.map((t, i) => isE(t.tool) ? i : -1).filter(i => i >= 0), last = ed.length ? ed[ed.length - 1] : -1;
+  const F = {};
+  if (last >= 0 && !tools.slice(last + 1).some(t => isT(t.tool, t.arg))) F.P_verify = tools[last].seq;
+  const untested = ed.filter(i => !tools.slice(i + 1).some(t => isT(t.tool, t.arg))); if (untested.length) F.edit_test = tools[untested[0]].seq;
+  const te = tools.find(t => isE(t.tool) && /(^|\/)tests?\//.test(t.arg || "")); if (te) F.P_scope = te.seq;
+  const bl = bnd.find(b => b.st === "blocked"); if (bl) F.blocked = bl.seq + 1;
+  const al = bnd.find(b => b.st === "allowed"); if (al) F.executed = al.seq + 1;
+  if (!tools.some(t => t.tool === "submit")) F.no_submit = tools.length ? tools[tools.length - 1].seq : 0;
+  const seen = new Set(); for (const t of tools) { if (t.tool === "read_file") seen.add(t.arg || "?"); else if (isE(t.tool) && t.arg && !seen.has(t.arg)) { F.unread = t.seq; break; } }
+  let sig = new Set(); for (const t of tools) { if (isE(t.tool)) sig = new Set(); const k = t.tool + "|" + (t.arg || ""); if (sig.has(k)) { if (F.loop == null) F.loop = t.seq; } sig.add(k); }
+  if (!tools.some(t => isT(t.tool, t.arg))) F.no_tests = 0;
+  return { letters, flags: F };
+}
+const flagged = (r) => PRED.some(p => S.preds.has(p.id) && r.an.flags[p.id] != null);
+const $ = id => document.getElementById(id);
+const snap = x => Number(Number(x).toPrecision(12));   // equal numbers must print equal (66.25 is 66.3 for every system)
+const fmtP = (x, d = 1) => snap(100 * x).toFixed(d) + "%";
+const esc = s => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+// ============================================================ statistics
+const mean = a => a.reduce((x, y) => x + y, 0) / (a.length || 1);
+function taskTable(runs, key) { const o = {}; runs.forEach(r => { if (r[key] != null) (o[r.t] = o[r.t] || []).push(r[key] ? 1 : 0); }); const out = {}; Object.keys(o).sort().forEach(t => { out[t] = { n: o[t].length, c: o[t].reduce((a, b) => a + b, 0), p: mean(o[t]) }; }); return out; }
+function pass1(runs, key) { const tt = taskTable(runs, key), ts = Object.keys(tt); return ts.length ? mean(ts.map(t => tt[t].p)) : NaN; }
+function wilson(c, n, z = 1.96) { if (!n) return [NaN, NaN]; const p = c / n, d = 1 + z * z / n, ctr = (p + z * z / (2 * n)) / d, h = z * Math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d; return [Math.max(0, ctr - h), Math.min(1, ctr + h)]; }
+function lcg(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+function bootCI(vals, B = 2000, seed = 11) { const rnd = lcg(seed), n = vals.length, ms = []; for (let b = 0; b < B; b++) { let a = 0; for (let i = 0; i < n; i++) a += vals[Math.floor(rnd() * n)]; ms.push(a / n); } ms.sort((x, y) => x - y); return [ms[Math.floor(0.025 * B)], ms[Math.floor(0.975 * B) - 1]]; }
+function intervalFor(runs, key) { const tt = taskTable(runs, key), ts = Object.keys(tt); if (!ts.length) return { m: "none" }; if (ts.length === 1) { const w = wilson(tt[ts[0]].c, tt[ts[0]].n); return { m: "wilson", lo: w[0], hi: w[1], label: `Wilson 95% over ${tt[ts[0]].n} repeats` }; } const ci = bootCI(ts.map(t => tt[t].p)); return { m: "boot", lo: ci[0], hi: ci[1], label: `95% task bootstrap · ${ts.length} tasks` }; }
+function rankOf(scores) { const idx = scores.map((v, i) => [v, i]).sort((a, b) => b[0] - a[0]); const r = new Array(scores.length); let cur = 1; for (let i = 0; i < idx.length; i++) { if (i > 0 && Math.abs(idx[i][0] - idx[i - 1][0]) > 1e-12) cur = i + 1; r[idx[i][1]] = cur; } return r; }
+function paired(a, b, key) { const ta = taskTable(a, key), tb = taskTable(b, key), ts = Object.keys(ta).filter(t => tb[t]); const d = ts.map(t => tb[t].p - ta[t].p); if (!d.length) return { n: 0 }; const ci = bootCI(d); return { n: ts.length, mean: mean(d), lo: ci[0], hi: ci[1], per: Object.fromEntries(ts.map((t, i) => [t, d[i]])) }; }
+
+// ============================================================ state
+const S = { oracle: "hd", mode: "field", order: null, sel: null, run: null, A: null, B: null, boot: null, logOpen: false, prevOracle: null, flags: false, preds: null };
+S.preds = new Set(["P_scope", "executed", "blocked", "P_verify", "edit_test", "no_submit", "unread", "loop", "no_tests"]);
+const LOG = [];
+function log(w, m, warn) { const t = new Date(); LOG.push({ t: t.toTimeString().slice(0, 5), w, m, warn }); $("logb").innerHTML = LOG.map(e => `<div class="ev"><span class="t">${e.t}</span><div><div>${esc(e.w)}</div>${e.m ? `<div class="${e.warn ? "w" : "m"}">${esc(e.m)}</div>` : ""}</div></div>`).join(""); $("logn").textContent = LOG.length + " entries"; $("logb").parentElement.scrollTop = 1e6; }
+let toastT; function toast(s) { const t = $("toast"); t.textContent = s; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2600); }
+
+// ============================================================ layout
+const svg = $("field");
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); (parent || svg).appendChild(e); return e; }
+let W = 1200, H = 700;
+function measure() { const r = $("stage").getBoundingClientRect(); W = r.width; H = r.height; }
+const L = { left: 240, top: 64, right: 236, get bottom() { return S.flags || S.mode === "cell" ? 104 : 40; } };
+function sysOrder(key) { return SYSTEMS.slice().sort((a, b) => pass1(bySys[b], key) - pass1(bySys[a], key)); }
+
+// dot bookkeeping: one circle per run, tweened between layouts
+const DOT = {};   // run.id -> {el, x, y, r, c}
+const TW = [];    // active tweens
+function tween(obj, to, ms, ease, delay, done) { TW.push({ obj, from: { ...obj.cur }, to, t0: performance.now() + (delay || 0), ms, ease: ease || ((t) => 1 - Math.pow(1 - t, 3)), done }); }
+function step(now) {
+  for (let i = TW.length - 1; i >= 0; i--) { const w = TW[i]; if (now < w.t0) continue; let t = Math.min(1, (now - w.t0) / w.ms); const e = w.ease(t); const c = w.obj.cur;
+    for (const k in w.to) { if (k === "c") c.c = t >= 1 ? w.to.c : (e < 0.5 ? w.from.c : w.to.c); else c[k] = w.from[k] + (w.to[k] - w.from[k]) * e; }
+    w.obj.paint(); if (t >= 1) { TW.splice(i, 1); if (w.done) w.done(); } }
+  requestAnimationFrame(step);
+}
+requestAnimationFrame(step);
+function dotFor(r) { if (DOT[r.id]) return DOT[r.id]; const c = el("circle", { r: 4, class: "dot" }); const d = { el: c, cur: { x: W / 2, y: H / 2, r: 0, c: "var(--unres)", o: 1 }, run: r, paint() { c.setAttribute("cx", this.cur.x); c.setAttribute("cy", this.cur.y); c.setAttribute("r", Math.max(0, this.cur.r)); c.setAttribute("fill", this.cur.c); c.setAttribute("opacity", this.cur.o); } }; DOT[r.id] = d; d.paint(); return d; }
+const col = (r, key) => r[key] == null ? "var(--unres)" : (r[key] ? "var(--pass)" : "var(--fail)");
+
+// per-layout geometry
+function fieldGeom(order) {
+  const rows = order.length, cols = TASKS.length;
+  const gw = (W - L.left - L.right) / cols, gh = (H - L.top - L.bottom) / rows;
+  const bw = Math.min(gw - 14, 110), bh = Math.min(gh - 14, 44);
+  const cell = { dx: bw / REP.cols, dy: bh / REP.rows };
+  const pos = {};
+  order.forEach((s, i) => TASKS.forEach((t, j) => { const x0 = L.left + j * gw + (gw - bw) / 2, y0 = L.top + i * gh + (gh - bh) / 2; pos[s + "|" + t] = { x0, y0, bw, bh, cell }; }));
+  return { gw, gh, bw, bh, pos, rows, cols };
+}
+
+// ============================================================ chrome layer (labels, intervals) — rebuilt per layout
+let CH = null;
+function chrome() { if (CH) CH.remove(); CH = el("g", { id: "chrome" }); svg.insertBefore(CH, svg.firstChild); return CH; }
+
+// ---------------- FIELD
+function layoutField(animate, stagger) {
+  const key = S.oracle; S.order = S.order || sysOrder(key);
+  const G = fieldGeom(S.order); const g = chrome();
+  TASKS.forEach((t, j) => { const p = G.pos[S.order[0] + "|" + t]; el("text", { x: p.x0 + p.bw / 2, y: L.top - 22, "text-anchor": "middle", class: "taskl" }, g).textContent = t.replace(/^t0(\d)_(\w+?)(_.*)?$/, "t0$1 $2"); });
+  S.order.forEach((s, i) => {
+    const p = G.pos[s + "|" + TASKS[0]], y = p.y0 + p.bh / 2;
+    if (i) el("line", { x1: 24, x2: W - 24, y1: p.y0 - (G.gh - p.bh) / 2, y2: p.y0 - (G.gh - p.bh) / 2, class: "axis" }, g);
+    const tx = el("text", { x: L.left - 16, y: y + 4, "text-anchor": "end", class: "sysl" + (S.A === s ? " A" : S.B === s ? " B" : ""), "data-sys": s }, g); tx.textContent = s;
+    const pr = pass1(bySys[s], key), iv = intervalFor(bySys[s], key);
+    const ax = (W - L.right) + 18, aw = L.right - 96;
+    el("line", { x1: ax, x2: ax + aw, y1: y, y2: y, class: "axis" }, g);
+    if (iv.m !== "none") el("line", { x1: ax + aw * iv.lo, x2: ax + aw * iv.hi, y1: y, y2: y, class: "ci" }, g);
+    el("circle", { cx: ax + aw * pr, cy: y, r: 3.5, fill: "var(--ink)" }, g);
+    el("text", { x: ax + aw + 8, y: y + 4, class: "p1" }, g).textContent = fmtP(pr);
+    TASKS.forEach(t => { const q = G.pos[s + "|" + t]; const grp = el("g", { class: "blk", "data-sys": s, "data-task": t }, g); el("rect", { x: q.x0 - 5, y: q.y0 - 5, width: q.bw + 10, height: q.bh + 10, class: "blkbg" }, grp); });
+  });
+  el("text", { x: W - 24, y: L.top - 22, "text-anchor": "end", class: "capk" }, g).textContent = "PASS@1 · 95% INTERVAL";
+  // dots
+  let k = 0;
+  S.order.forEach((s, i) => TASKS.forEach((t, j) => { const q = G.pos[s + "|" + t]; bySys[s].filter(r => r.t === t).sort((a, b) => a.rep - b.rep).forEach((r, m) => {
+    const d = dotFor(r); const x = q.x0 + (m % REP.cols) * q.cell.dx + q.cell.dx / 2, y = q.y0 + Math.floor(m / REP.cols) * q.cell.dy + q.cell.dy / 2;
+    const to = { x, y, r: Math.min(4.5, q.cell.dx / 2 - 2), c: col(r, key), o: 1 };
+    if (animate) tween(d, to, 650, null, stagger ? (j * 40 + i * 25) : 0); else { Object.assign(d.cur, to); d.paint(); } k++; }); }));
+  $("scope").innerHTML = `<b>all ${RUNS.length} runs</b>${OK[key]} oracle · pass@1 as a mean over tasks`;
+  band(RUNS, key);
+  $("b_boot").disabled = true;
+  paintFlags();
+}
+function paintFlags() {
+  const on = S.flags;
+  RUNS.forEach(r => { const d = DOT[r.id]; if (d) d.el.classList.toggle("flag", on && flagged(r)); });
+  const show = on || S.mode === "cell"; $("help").hidden = show; $("legend").hidden = !show;
+  if (show) {
+    const key = S.oracle; const F = RUNS.filter(flagged), FP = F.filter(r => r[key]);
+    const counts = Object.fromEntries(PRED.map(p => [p.id, RUNS.filter(r => r.an.flags[p.id] != null).length]));
+    let last = null;
+    $("legend").innerHTML = PRED.map(p => { const hd = p.group !== last ? `<span class="grp">${p.group}</span>` : ""; last = p.group;
+      return hd + `<span class="ch ${S.preds.has(p.id) ? "" : "off"}" data-pred="${p.id}" title="${esc(p.formula)}">${esc(p.label)} <b>${counts[p.id]}</b></span>`; }).join("")
+      + `<span class="alpha"><i>L</i>list <i>R</i>read <i>W</i>write <i>E</i>edit <i>T</i>tests <i>B</i>bash <i>S</i>submit <i>◯</i>ring = fails a selected test</span>`;
+    if (S.mode === "field") $("thesis").innerHTML = `<span class="n">${F.length}</span> of ${RUNS.length} runs fail a selected trajectory test.<br><b><span class="n">${FP.length}</span> of them pass the ${OK[key]} oracle.</b>`;
+  } else if (S.mode === "field") $("thesis").innerHTML = `The runs never change. <b>Only the judge does.</b>`;
+}
+
+// ---------------- oracle switch: re-judge every dot, in front of you
+function setOracle(o) {
+  if (o === S.oracle) return; const from = S.oracle; S.prevOracle = from; S.oracle = o; writeOracle(o);
+  document.querySelectorAll(".seg button").forEach(b => b.classList.toggle("on", b.dataset.o === o));
+  const changed = RUNS.filter(r => !!r[from] !== !!r[o]); const lost = changed.filter(r => r[from] && !r[o]).length;
+  const byH = {}; changed.forEach(r => byH[r.h] = (byH[r.h] || 0) + 1); const top = Object.entries(byH).sort((a, b) => b[1] - a[1])[0];
+  const oldOrder = S.order || sysOrder(from); const newOrder = sysOrder(o);
+  // 1. flip the verdict colours with a sweep, 2. then let the rows re-rank
+  if (S.mode === "field") {
+    const G = fieldGeom(oldOrder);
+    changed.forEach(r => { const d = dotFor(r); const q = G.pos[r.sys + "|" + r.t]; const j = TASKS.indexOf(r.t); tween(d, { c: col(r, o) }, 260, null, j * 70 + oldOrder.indexOf(r.sys) * 30); });
+    let n = 0; const total = changed.length; const t0 = performance.now(); const ctr = setInterval(() => { const t = Math.min(1, (performance.now() - t0) / 900); n = Math.round(total * t); $("thesis").innerHTML = `<span class="n">${n}</span> of ${RUNS.length} runs changed verdict. <b>The runs never change; only the judge does.</b>`; if (t >= 1) clearInterval(ctr); }, 30);
+    setTimeout(() => { S.order = newOrder; layoutField(true, false); }, 950);
+  } else if (S.mode === "rank") { S.order = newOrder; setTimeout(() => layoutRank(true), 50); }
+  else if (S.mode === "cell") { S.order = newOrder; layoutCell(S.sel.sys, S.sel.task, true); }
+  const moved = oldOrder.filter((s, i) => newOrder.indexOf(s) !== i).length;
+  log(`oracle ${OK[from]} → ${OK[o]}`, `${changed.length} runs changed verdict (${lost} pass → fail${changed.length - lost ? `, ${changed.length - lost} fail → pass` : ""})${top ? ` · ${top[0]} moved most (${top[1]})` : ""}${moved ? ` · ${moved} systems changed rank` : " · ranking unchanged"}`, true);
+  toast(`${changed.length} runs changed verdict · ${lost} pass → fail`);
+}
+
+// ---------------- RANK: the blocks collapse to a leaderboard, then you can resample it
+function layoutRank(animate) {
+  S.mode = "rank"; const key = S.oracle; S.order = sysOrder(key); const g = chrome(); paintFlags();
+  const ax0 = L.left + 40, ax1 = W - 560, rowH = Math.min(56, (H - L.top - L.bottom) / S.order.length), y0 = L.top + 10;
+  [0, .25, .5, .75, 1].forEach(f => { el("line", { x1: ax0 + (ax1 - ax0) * f, x2: ax0 + (ax1 - ax0) * f, y1: y0 - 10, y2: y0 + rowH * S.order.length, class: "axis" }, g); el("text", { x: ax0 + (ax1 - ax0) * f, y: y0 - 18, "text-anchor": "middle", class: "axisl" }, g).textContent = fmtP(f, 0); });
+  const lead = pass1(bySys[S.order[0]], key); el("line", { x1: ax0 + (ax1 - ax0) * lead, x2: ax0 + (ax1 - ax0) * lead, y1: y0 - 10, y2: y0 + rowH * S.order.length, class: "lead" }, g);
+  const ranks = rankOf(S.order.map(s => pass1(bySys[s], key)));
+  S.order.forEach((s, i) => {
+    const y = y0 + i * rowH + rowH / 2, pr = pass1(bySys[s], key), iv = intervalFor(bySys[s], key);
+    el("text", { x: L.left - 16, y: y + 4, "text-anchor": "end", class: "sysl" + (S.A === s ? " A" : S.B === s ? " B" : ""), "data-sys": s }, g).textContent = s;
+    el("text", { x: 30, y: y + 4, class: "axisl" }, g).textContent = ranks[i];
+    if (iv.m !== "none") el("line", { x1: ax0 + (ax1 - ax0) * iv.lo, x2: ax0 + (ax1 - ax0) * iv.hi, y1: y, y2: y, class: "ci", "data-ci": s }, g);
+    el("text", { x: ax1 + 14, y: y + 4, class: "p1" }, g).textContent = fmtP(pr);
+    // the dots of this system converge on its pass@1
+    bySys[s].forEach((r, m) => { const d = dotFor(r); tween(d, { x: ax0 + (ax1 - ax0) * pr + (m % 9 - 4) * 0.6, y: y + (Math.floor(m / 9) % 3 - 1) * 1.5, r: 3.2, c: "var(--ink)", o: 0.9 }, 800, null, animate ? Math.random() * 250 : 0); });
+  });
+  // rank-distribution scaffold (fills during resampling)
+  const hx = W - 340, hw = 300; el("text", { x: hx, y: y0 - 18, class: "capk" }, g).textContent = "RANK OVER RESAMPLED TASK SETS";
+  for (let k = 0; k < S.order.length; k++) el("text", { x: hx + (k + 0.5) * (hw / S.order.length), y: y0 - 4, "text-anchor": "middle", class: "axisl" }, g).textContent = k + 1;
+  S.hist = { hx, hw, y0, rowH, ax0, ax1, g };
+  S.order.forEach((s, i) => { for (let k = 0; k < S.order.length; k++) el("rect", { x: hx + k * (hw / S.order.length) + 1, y: y0 + i * rowH + rowH / 2 - 9, width: hw / S.order.length - 2, height: 18, rx: 2, fill: "var(--A)", opacity: 0, "data-h": s + "|" + k }, g); });
+  $("scope").innerHTML = `<b>${S.order.length} systems, ranked</b>${OK[key]} oracle · pass@1 with its task-bootstrap interval`;
+  band(RUNS, key);
+  $("b_boot").disabled = false;
+  $("thesis").innerHTML = `Six of the eight are indistinguishable from first. <b>Press resample to see whether the order holds.</b>`;
+  if (animate) log("ranked the systems", `${S.order[0]} leads at ${fmtP(lead)} under the ${OK[key]} oracle`);
+}
+
+// ---------------- RESAMPLE: 2,000 task sets, the leaderboard re-drawn for each, the histogram accumulating
+function resample() {
+  if (S.mode !== "rank" || S.boot) return;
+  const key = S.oracle, sys = S.order.slice(), N = sys.length;
+  const tts = sys.map(s => taskTable(bySys[s], key)); const shared = TASKS.filter(t => tts.every(tt => tt[t]));
+  const P = tts.map(tt => shared.map(t => tt[t].p)); const T = shared.length, B = 2000; const rnd = lcg(11);
+  const obs = rankOf(P.map(row => mean(row)));
+  const dist = sys.map(() => new Array(N + 1).fill(0)); const holds = new Array(N).fill(0), top = new Array(N).fill(0);
+  const draws = [];
+  for (let b = 0; b < B; b++) { const pick = []; for (let i = 0; i < T; i++) pick.push(Math.floor(rnd() * T)); const sc = P.map(row => { let a = 0; for (const i of pick) a += row[i]; return a / T; }); const rk = rankOf(sc); for (let i = 0; i < N; i++) { dist[i][rk[i]]++; if (rk[i] === obs[i]) holds[i]++; if (rk[i] === 1) top[i]++; } draws.push(sc); }
+  const churn = 1 - top[obs.indexOf(1)] / B, hold = mean(holds) / B;
+  S.boot = { churn, hold, dist, B };
+  const { hx, hw, y0, rowH, ax0, ax1 } = S.hist;
+  const per = 8, frames = B / per; let f = 0; const t0 = performance.now(); $("b_boot").disabled = true;
+  const marks = sys.map(s => el("circle", { r: 5, fill: "var(--A)", opacity: 0.95, cx: ax0, cy: y0, "data-m": s }, S.hist.g));
+  const run = () => {
+    const done = Math.min(B, (f + 1) * per); const sc = draws[done - 1]; const rk = rankOf(sc);
+    // re-rank live: the row of each system follows its rank in this draw
+    sys.forEach((s, i) => { marks[i].setAttribute("cx", ax0 + (ax1 - ax0) * sc[i]); marks[i].setAttribute("cy", y0 + (rk[i] - 1) * rowH + rowH / 2); });
+    // histogram: counts so far
+    const cnt = sys.map(() => new Array(N + 1).fill(0)); for (let b = 0; b < done; b++) { const r2 = rankOf(draws[b]); for (let i = 0; i < N; i++) cnt[i][r2[i]]++; }
+    sys.forEach((s, i) => { for (let k = 0; k < N; k++) { const e = S.hist.g.querySelector(`[data-h="${CSS.escape(s + "|" + k)}"]`); if (e) e.setAttribute("opacity", Math.min(0.95, 0.06 + 1.1 * cnt[i][k + 1] / done)); } });
+    const leaderNow = 1 - sys.reduce((a, s, i) => a + (obs[i] === 1 ? cnt[i][1] : 0), 0) / done;
+    $("thesis").innerHTML = `<span class="n">${done.toLocaleString()}</span> task sets resampled · the leader changed in <span class="n">${fmtP(leaderNow, 0)}</span> of them`;
+    f++; if (f < frames) requestAnimationFrame(run); else finish();
+  };
+  const finish = () => {
+    marks.forEach(m => m.setAttribute("opacity", 0));
+    sys.forEach((s, i) => { for (let k = 0; k < N; k++) { const e = S.hist.g.querySelector(`[data-h="${CSS.escape(s + "|" + k)}"]`); const v = dist[i][k + 1] / B; if (e) e.setAttribute("opacity", v ? Math.min(0.95, 0.08 + 1.1 * v) : 0); if (v >= 0.03) { const tx = el("text", { x: hx + (k + 0.5) * (hw / N), y: y0 + i * rowH + rowH / 2 + 4, "text-anchor": "middle", class: "histl" }, S.hist.g); tx.textContent = Math.round(100 * v); tx.setAttribute("fill", v > 0.5 ? "var(--bg)" : "var(--ink)"); } } });
+    $("thesis").innerHTML = `The leader changes in <span class="n">${fmtP(churn, 0)}</span> of 2,000 resampled task sets. <b>Mean chance a system keeps its rank: <span class="n">${fmtP(hold, 0)}</span>.</b>`;
+    log("resampled 2,000 task sets", `leader changes in ${fmtP(churn, 0)} · mean P(holds rank) ${fmtP(hold, 0)} · same drawn set for every system`, true);
+    toast(`leader changed in ${fmtP(churn, 0)} of 2,000 draws`);
+  };
+  log("resampling…", "tasks with replacement, one drawn set shared by every system");
+  requestAnimationFrame(run);
+}
+
+// ---------------- CELL: a block opens into its ten runs
+function layoutCell(sys, task, animate) {
+  S.mode = "cell"; S.sel = { sys, task }; const key = S.oracle; const g = chrome();
+  const runs = bySys[sys].filter(r => r.t === task).sort((a, b) => a.rep - b.rep);
+  const x0 = L.left + 40, x1 = W - 620, rowH = Math.min(46, (H - L.top - L.bottom - 60) / runs.length), y0 = L.top + 16, ly = y0 + runs.length * rowH + 22;
+  el("text", { x: x0, y: L.top - 22, class: "capk" }, g).textContent = `${sys.toUpperCase()} › ${task.toUpperCase()} › ${runs.length} RUNS · THE ACTION ALPHABET · A RED OUTLINE IS THE ACTION A TRAJECTORY TEST REJECTS`;
+  const legend = [["L R", "list · read", "var(--faint)"], ["W E", "write · edit", "var(--pass)"], ["T", "run tests", "var(--A)"], ["B", "bash", "var(--muted)"], ["S", "submit", "var(--ink)"], ["!", "boundary: dashed = blocked, red = executed", "var(--fail)"]];
+  let lx = x0; legend.forEach(l => { el("rect", { x: lx, y: ly - 8, width: 9, height: 9, rx: 1, fill: l[2] }, g); const t = el("text", { x: lx + 14, y: ly, class: "stripl" }, g); t.textContent = l[0] + " " + l[1]; lx += 14 + t.textContent.length * 6.7 + 26; });
+  const lcol = { L: "var(--faint)", R: "var(--faint)", F: "var(--faint)", W: "var(--pass)", E: "var(--pass)", T: "var(--A)", B: "var(--muted)", S: "var(--ink)", "?": "var(--faint)" };
+  const maxN = Math.max(8, ...runs.map(r => r.an.letters.length));
+  runs.forEach((r, i) => {
+    const y = y0 + i * rowH; const grp = el("g", { class: "strip", "data-run": r.id }, g);
+    el("rect", { x: x0 - 60, y: y - 6, width: x1 - x0 + 150, height: rowH - 6, rx: 3, fill: S.run === r.id ? "var(--row-selected-wash)" : "transparent" }, grp);
+    el("text", { x: x0 - 12, y: y + rowH / 2 - 2, "text-anchor": "end", class: "stripl" }, grp).textContent = "rep " + r.rep;
+    const L2 = r.an.letters, sw = (x1 - x0) / maxN, bh = rowH - 22;
+    const bad = new Set(PRED.filter(p => S.preds.has(p.id) && r.an.flags[p.id] != null).map(p => r.an.flags[p.id]));
+    L2.forEach((l, k) => {
+      const bx = x0 + k * sw + 1, bw = Math.max(6, sw - 3);
+      const fill = l.bnd === "allowed" ? "var(--fail)" : lcol[l.code] || "var(--faint)";
+      const rect = el("rect", { x: bx, y: y + 2, width: bw, height: bh, rx: 2, fill, opacity: l.code === "L" || l.code === "R" ? .55 : .9, class: "ltrbox" + (bad.has(l.seq) ? " bad" : "") }, grp);
+      if (l.bnd === "blocked") rect.setAttribute("stroke", "var(--fail)"), rect.setAttribute("stroke-dasharray", "3 2"), rect.setAttribute("stroke-width", "1.4");
+      if (sw >= 13) { const tx = el("text", { x: bx + bw / 2, y: y + 2 + bh / 2 + 5, class: "ltr" }, grp); tx.textContent = l.code; tx.style.fill = l.bnd === "allowed" || "WETS".includes(l.code) ? "var(--bg)" : "var(--ink2)"; }
+      const tip = el("title", {}, rect); tip.textContent = `#${l.seq} ${l.tool}${l.arg ? " " + l.arg : ""}${l.bnd ? ` · ${l.kind} ${l.bnd}` : ""}`;
+    });
+    const v = r[key]; const tx = el("text", { x: x1 + 14, y: y + rowH / 2 - 2, class: "verd" }, grp); tx.textContent = v == null ? "—" : v ? "PASS" : "FAIL"; tx.setAttribute("fill", v == null ? "var(--muted)" : v ? "var(--pass)" : "var(--fail)");
+    const fl = PRED.filter(p => S.preds.has(p.id) && r.an.flags[p.id] != null);
+    if (fl.length) el("text", { x: x1 + 60, y: y + rowH / 2 - 2, class: "badge" }, grp).textContent = fl.map(p => p.label).slice(0, 2).join(" · ") + (fl.length > 2 ? ` +${fl.length - 2}` : "");
+    const d = dotFor(r); tween(d, { x: x1 + 4, y: y + rowH / 2 - 6, r: 3.5, c: col(r, key), o: 1 }, 600, null, animate ? i * 30 : 0);
+  });
+  // the other 630 dots fade back into the field position, dimmed
+  const G = fieldGeom(S.order || sysOrder(key));
+  RUNS.forEach(r => { if (r.sys === sys && r.t === task) return; const d = dotFor(r); const q = G.pos[r.sys + "|" + r.t]; if (!q) return; const m = r.rep; tween(d, { x: q.x0 + (m % REP.cols) * q.cell.dx + q.cell.dx / 2, y: q.y0 + Math.floor(m / REP.cols) * q.cell.dy + q.cell.dy / 2, r: 2, c: col(r, key), o: 0 }, 400); });
+  const tt = taskTable(runs, key)[task] || { c: 0, n: 0 };
+  $("scope").innerHTML = `<b>${esc(sys)} · ${esc(task)}</b>${runs.length} runs · ${OK[key]} oracle · ${tt.c} of ${tt.n} pass`;
+  band(runs, key);
+  const shapes = {}; runs.forEach(r => (shapes[r.seq] = shapes[r.seq] || []).push(r));
+  const sh = Object.values(shapes).sort((a, b) => b.length - a.length);
+  const mixed = sh.filter(s => s.some(r => r[key]) && s.some(r => !r[key])).length;
+  const nf = runs.filter(flagged).length, nfp = runs.filter(r => flagged(r) && r[key]).length;
+  $("thesis").innerHTML = `${sh.length} distinct shape${sh.length > 1 ? "s" : ""} in ${runs.length} runs${mixed ? `, ${mixed} with both verdicts` : ""}.<br><b>${nf} fail a trajectory test${nfp ? `; ${nfp} of those pass the oracle.` : "."}</b>`;
+  $("b_boot").disabled = true;
+  paintFlags();
+  if (animate) log(`descended · ${sys} · ${task}`, `${tt.c} of ${tt.n} pass · ${sh.length} shapes${mixed ? `, ${mixed} mixed` : ""}`);
+}
+
+// ---------------- BOM panel for one run
+function showBOM(id) {
+  const r = RUNS.find(x => x.id === id); if (!r) return; S.run = id; closePanels();
+  let inT = 0, outT = 0, calls = 0, edits = 0, bnd = 0, lastEdit = -1, lastTest = -1; const files = {};
+  // Whether this run's tool execution was RECORDED, which is what the summary says -- not whether
+  // any tool happened to run. Inferring it from an empty span list told a fully measured run that
+  // called no tools that its source records nothing.
+  const observed = r.tc != null;
+  const rows = r.spans.map((s, i) => { const seq = i + 1;
+    if (s[0] === "c") { if (s[2] != null) inT += s[2]; if (s[3] != null) outT += s[3]; return [seq, "chat", "→ " + (s[1] || "end"), s[2] == null && s[3] == null ? "—" : `${s[2]} · ${s[3]}`, ""]; }
+    if (s[0] === "t") { calls++; const isT = s[1] === "run_tests", isE = s[1] === "write_file" || s[1] === "edit_file"; if (isT) lastTest = seq; if (isE) lastEdit = seq; return [seq, "tool", s[1] + (s[2] ? " " + s[2] : ""), s[3], isT ? "T" : ""]; }
+    if (s[0] === "E") { edits++; files[s[1]] = files[s[1]] || [0, 0]; files[s[1]][0] += s[2]; files[s[1]][1] += s[3]; return [seq, "edit", s[1], `+${s[2]} −${s[3]}`, "E"]; }
+    if (s[0] === "g") return [seq, "grade", `visible ${s[1] ? "✔" : "✘"} · hidden ${s[2] ? "✔" : "✘"} · strengthened ${s[3] ? "✔" : "✘"}`, "", "g"];
+    bnd++; return [seq, "boundary", `${s[1]} · ${s[2]}`, s[3], "b"]; });
+  const ver = lastEdit >= 0 && lastTest > lastEdit;
+  const p = document.createElement("div"); p.className = "panel"; p.style.cssText = `right:18px;top:16px;width:430px;max-height:calc(100% - 60px);overflow:auto`;
+  p.innerHTML = `<button class="x" data-x>×</button><h4>${esc(r.id)} <span class="tag">bill of materials</span></h4>
+    <div class="kv" style="margin-bottom:8px"><div>cell</div><div>${esc(r.sys)} × ${esc(r.t)} · rep ${r.rep}</div><div>exit</div><div>${esc(r.exit)} after ${r.st} steps</div></div>
+    <div class="bom">${rows.map(x => `<div class="r"><span class="s">${x[0]}</span><span class="k ${x[4]}">${x[1]}</span><span>${esc(x[2])}</span><span class="v">${esc(x[3])}</span></div>`).join("")}
+    <div class="tot"><span>${r.tok == null && !inT && !outT ? "tokens not measured" : `${inT.toLocaleString()} in · ${outT.toLocaleString()} out`}</span><span>${r.cost == null ? "cost not measured" : "$" + r.cost.toFixed(4)}</span><span>${calls} tool calls</span><span>${edits} edit${edits === 1 ? "" : "s"}</span><span>${bnd} boundary</span>${Object.keys(files).length ? `<span>${Object.entries(files).map(([f, v]) => `${f} +${v[0]} −${v[1]}`).join(" · ")}</span>` : ""}</div></div>
+    <div class="callout ${!observed ? "" : lastEdit < 0 ? "fail" : ver ? "ok" : "no"}">${!observed
+      // Neither "nothing was delivered" nor "never checked this patch" can be said about a run whose
+      // tool execution was never recorded: there are no edit or test spans to read either way.
+      ? "This source records what the agent asked for, not what ran: no edit or test was observed, so there is nothing to verify against."
+      : lastEdit < 0 ? "No edit was made: nothing was delivered." : ver ? `Verified after last edit: <b>yes</b>. Last edit at span ${lastEdit}; tests ran at span ${lastTest}, after it.` : `Verified after last edit: <b>no</b>. Last edit at span ${lastEdit}; ${lastTest >= 0 ? `the last test ran at span ${lastTest}, before it` : "no test ran at all"}. Whatever the verdict says, the agent never checked this patch.`}</div>`;
+  $("stage").appendChild(p);
+  layoutCell(S.sel.sys, S.sel.task, false);
+  log(`opened ${r.id}`, `${r.exit} · ${edits} edit · verified after last edit: ${!observed ? "not recorded" : lastEdit < 0 ? "no edit" : ver ? "yes" : "no"}`);
+}
+function closePanels() { document.querySelectorAll(".panel").forEach(p => p.remove()); }
+
+// ---------------- COMPARE: arm A vs arm B, paired over shared tasks, one axis
+function showCompare() {
+  if (!S.A || !S.B) return; closePanels(); const key = S.oracle;
+  const a = bySys[S.A], b = bySys[S.B]; const pb = paired(a, b, key);
+  const ma = a[0].m, mb = b[0].m; const conf = ma !== mb;
+  const p = document.createElement("div"); p.className = "panel cmp"; p.style.cssText = `right:18px;top:16px;width:480px`;
+  const per = Object.entries(pb.per || {});
+  p.innerHTML = `<button class="x" data-x>×</button><h4><span style="color:var(--A)">${esc(S.A)}</span> → <span style="color:var(--B)">${esc(S.B)}</span> <span class="tag">paired over ${pb.n} shared tasks</span></h4>
+    ${conf ? `<div class="callout no">The arms differ in model (${esc(ma)} vs ${esc(mb)}). A harness contrast across models is confounded; the axis is not shared.</div>` : ""}
+    <div style="display:flex;gap:22px;align-items:flex-end;margin:4px 0 10px"><div><div class="big">${pb.mean >= 0 ? "+" : "−"}${Math.abs(100 * pb.mean).toFixed(1)}<u> pts</u></div><div class="hint" style="margin-top:4px">95% [${(100 * pb.lo).toFixed(0)}, ${(100 * pb.hi).toFixed(0)}] pts · task bootstrap</div></div>
+    <div class="callout ${pb.lo <= 0 && pb.hi >= 0 ? "fail" : "ok"}" style="flex:1;margin:0">${pb.lo <= 0 && pb.hi >= 0 ? "The interval covers zero: not a difference you can claim." : "The interval excludes zero."}</div></div>
+    ${per.map(([t, d]) => `<div class="row"><span>${esc(t.replace(/^t0\d_/, ""))}</span><span class="g"><span class="ax"></span><span class="z"></span><span class="bar" style="${d >= 0 ? `left:50%;width:${50 * d / 0.5}%;background:var(--B)` : `right:50%;width:${50 * -d / 0.5}%;background:var(--A)`}"></span></span><span class="v">${d >= 0 ? "+" : "−"}${Math.abs(100 * d).toFixed(0)}</span></div>`).join("")}
+    <div class="hint">Per task, B − A, on one axis from −50 to +50 pts. The mean above is the average of these ${pb.n} numbers; the interval is what resampling them does to it.</div>`;
+  $("stage").appendChild(p);
+  log(`compared ${S.A} → ${S.B}`, `Δ ${(100 * pb.mean).toFixed(1)} pts, 95% [${(100 * pb.lo).toFixed(0)}, ${(100 * pb.hi).toFixed(0)}]${pb.lo <= 0 && pb.hi >= 0 ? " · covers zero" : ""}${conf ? " · confounded" : ""}`, pb.lo <= 0 && pb.hi >= 0 || conf);
+}
+
+// ---------------- the band: uncertainty as chrome
+function band(runs, key) {
+  const pr = pass1(runs, key), iv = intervalFor(runs, key);
+  $("uv").innerHTML = Number.isFinite(pr) ? `${(100 * pr).toFixed(1)}<u>%</u>` : "—";
+  $("ul").textContent = iv.m === "none" ? "no graded run" : iv.label;
+  if (iv.m !== "none") { $("uiv").style.left = (100 * iv.lo) + "%"; $("uiv").style.right = (100 - 100 * iv.hi) + "%"; $("upt").style.left = (100 * pr) + "%"; }
+}
+
+// ============================================================ live: the server is the source, the field grows while a sweep runs
+let VERSION = null, JOBS = [], INFLIGHT = 0, POLLING = false;
+async function poll() {
+  if (POLLING) return; POLLING = true;
+  try {
+    const st = await (await fetch(API.status)).json();
+    JOBS = st.jobs || []; INFLIGHT = (st.running || []).length;
+    if (VERSION !== null && st.version !== VERSION) await refreshRuns();
+    VERSION = st.version;
+    const running = JOBS.filter(j => j.status === "running").length;
+    const lv = $("live"); if (lv) { lv.textContent = running ? `live · ${running} job${running > 1 ? "s" : ""} · ${INFLIGHT} in flight` : "live"; lv.classList.toggle("busy", !!running); }
+    renderJobs();
+  } catch (e) { const lv = $("live"); if (lv) { lv.textContent = "server gone"; lv.classList.add("off"); } }
+  POLLING = false;
+}
+async function refreshRuns() {
+  const fresh = load(compactBundle(await (await fetch(API.bundle)).json()));
+  const ids = new Set(RUNS.map(r => r.id)); Object.keys(DOT).forEach(id => { if (!ids.has(id)) { DOT[id].el.remove(); delete DOT[id]; } });
+  fresh.forEach(r => dotFor(r));
+  S.order = sysOrder(S.oracle);
+  if (S.mode === "field") layoutField(true, false);
+  else if (S.mode === "rank") layoutRank(false);
+  else if (S.mode === "cell") { if (bySys[S.sel.sys] && bySys[S.sel.sys].some(r => r.t === S.sel.task)) layoutCell(S.sel.sys, S.sel.task, false); else reset(); }
+  if (fresh.length) { const g = fresh.filter(r => r.hd != null).length; log(`${fresh.length} new run${fresh.length > 1 ? "s" : ""} landed`, `${Array.from(new Set(fresh.map(r => r.sys))).join(", ")} · ${g} graded`); toast(`${fresh.length} new run${fresh.length > 1 ? "s" : ""} landed`); }
+}
+// presets: the backends that exist on this machine today (LAB_1H). Free backends pass --price 0,0 or the cost column fills with a fake default.
+const PRESETS = [
+  { id: "mock",     label: "mock (designed failure rates)",          provider: "mock",   model: "mock" },
+  { id: "mockweak", label: "mock-weak",                               provider: "mock",   model: "mock-weak" },
+  { id: "rocco",    label: "rocco · local vLLM :8003",                provider: "openai", model: "qwen3.8-flash-next-uncensored", base_url: "http://127.0.0.1:8003/v1", free: true },
+  { id: "glm",      label: "Ollama Cloud · glm-5.2:cloud",            provider: "openai", model: "glm-5.2:cloud", base_url: "http://127.0.0.1:11434/v1", free: true },
+  { id: "kimi",     label: "Ollama Cloud · kimi-k3:cloud (unswept)",  provider: "openai", model: "kimi-k3:cloud", base_url: "http://127.0.0.1:11434/v1", free: true },
+  { id: "custom",   label: "custom",                                  provider: "openai", model: "" },
+];
+function showRun() {
+  closePanels(); const p = document.createElement("div"); p.className = "panel run"; p.style.cssText = "right:18px;top:16px;width:470px;max-height:calc(100% - 60px);overflow:auto";
+  const hs = Object.keys(HARN).sort(); const pre = PRESETS[0];
+  p.innerHTML = `<button class="x" data-x>×</button><h4>launch runs <span class="tag">harnesslab.core.runner</span></h4>
+    <div class="form">
+      <label>preset<select id="r_preset">${PRESETS.map(x => `<option value="${x.id}">${esc(x.label)}</option>`).join("")}</select></label>
+      <label>provider<select id="r_provider">${["mock", "openai", "anthropic", "openrouter"].map(x => `<option ${x === pre.provider ? "selected" : ""}>${x}</option>`).join("")}</select></label>
+      <label>model<input id="r_model" value="${esc(pre.model)}"></label>
+      <label>base url<input id="r_base" value="" placeholder="OpenAI-compatible endpoint; empty for the provider default"></label>
+      <label>harnesses<select id="r_harness" multiple size="${Math.min(6, Math.max(2, hs.length))}">${hs.map(h => `<option value="harnesses/${esc(h)}.json" ${h === "baseline" ? "selected" : ""}>${esc(h)}</option>`).join("")}</select></label>
+      <label>tasks<input id="r_tasks" value="all" placeholder="all, or t01_slugify,t07_cache_cleanup"></label>
+      <label>repeats<input id="r_repeats" type="number" min="1" max="50" value="3"></label>
+      <label>seed<input id="r_seed" type="number" value="0"></label>
+      <label>output dir<input id="r_out" value="data/runs/field_${new Date().toTimeString().slice(0, 8).replace(/:/g, "")}"></label>
+      <label class="chk"><input id="r_free" type="checkbox"> free backend · <code>--price 0,0</code></label>
+    </div>
+    <div class="est" id="r_est"></div>
+    <div style="display:flex;gap:8px;align-items:center;margin-top:10px"><button class="btn k" id="r_go">launch</button><span class="hint" id="r_msg" style="margin:0"></span></div>
+    <div id="r_jobs"></div>`;
+  $("stage").appendChild(p);
+  const est = () => { const nH = Array.from($("r_harness").selectedOptions).length || 1, t = $("r_tasks").value.trim(), nT = !t || t === "all" ? TASKS.length : t.split(",").filter(Boolean).length, n = nH * nT * Number($("r_repeats").value || 1); $("r_est").textContent = `${n} run${n === 1 ? "" : "s"} · ${nH} harness${nH === 1 ? "" : "es"} × ${nT} task${nT === 1 ? "" : "s"} × ${$("r_repeats").value || 1}`; };
+  const apply = () => { const x = PRESETS.find(q => q.id === $("r_preset").value) || {}; $("r_provider").value = x.provider || "openai"; $("r_model").value = x.model || ""; $("r_base").value = x.base_url || ""; $("r_free").checked = !!x.free; };
+  $("r_preset").addEventListener("change", apply); p.querySelectorAll("input,select").forEach(e => e.addEventListener("input", est)); est();
+  $("r_go").addEventListener("click", launch);
+  renderJobs();
+}
+async function launch() {
+  const spec = { provider: $("r_provider").value, model: $("r_model").value.trim(), base_url: $("r_base").value.trim(), harness: Array.from($("r_harness").selectedOptions).map(o => o.value).join(","),
+    tasks: $("r_tasks").value.trim() || "all", repeats: Number($("r_repeats").value || 1), seed: Number($("r_seed").value || 0), out: $("r_out").value.trim(), price: $("r_free").checked ? "0,0" : "" };
+  if (!spec.model) { $("r_msg").textContent = "a model name is required"; return; }
+  $("r_msg").textContent = "launching…";
+  try { const j = await (await fetch("/api/launch", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(spec) })).json();
+    if (j.error) { $("r_msg").textContent = "error: " + j.error; log("launch refused", j.error, true); return; }
+    $("r_msg").textContent = `job ${j.id} started`; log(`launched job ${j.id}`, j.cmd); toast(`job ${j.id} started · the field grows as runs land`); setTimeout(poll, 800);
+  } catch (e) { $("r_msg").textContent = "error: " + e.message; }
+}
+async function cancelJob(id) { try { await fetch("/api/jobs/" + encodeURIComponent(id) + "/cancel", { method: "POST" }); log(`cancelled job ${id}`, ""); setTimeout(poll, 500); } catch (e) { console.warn(e); } }
+function renderJobs() {
+  const el = $("r_jobs"); if (!el) return;
+  if (!JOBS.length) { el.innerHTML = `<div class="hint">no job launched from here yet</div>`; return; }
+  el.innerHTML = `<div class="jobs">` + JOBS.slice().reverse().map(j => { const pct = j.total ? Math.round(100 * j.done / j.total) : 0;
+    return `<div class="job ${j.status === "running" ? "run" : ""}"><div class="jh"><b>${esc(j.id)}</b><span class="js">${esc(j.status)}</span>${j.status === "running" ? `<button class="btn small" data-cancel="${esc(j.id)}">cancel</button>` : ""}</div>
+      <div class="jc">${esc(j.cmd || [(j.models || []).join(", "), (j.harnesses || []).join(", "), j.repeats ? j.repeats + " repeats" : "", j.stop_reason || ""].filter(Boolean).join(" · "))}</div>
+      <div class="jp"><span style="width:${pct}%"></span></div>
+      <div class="jm">${j.total ? `${j.done}/${j.total} runs` : "starting"}${j.eta_s != null ? ` · eta ${Math.round(j.eta_s / 60)} min` : ""}${(() => { const t = j.elapsed_s != null ? j.elapsed_s : (j.created_at ? (j.finished_at || Date.now() / 1000) - j.created_at : null); return t != null ? ` · ${Math.round(t)} s` : ""; })()}${j.spent ? ` · $${Number(j.spent).toFixed(4)} so far` : ""} · → ${esc(j.out)}</div></div>`; }).join("") + `</div>`;
+}
+document.addEventListener("click", e => { const c = e.target.closest("[data-cancel]"); if (c) cancelJob(c.dataset.cancel); });
+
+// ============================================================ interaction
+function reset() { closePanels(); S.mode = "field"; S.sel = null; S.run = null; S.boot = null; S.order = sysOrder(S.oracle); layoutField(true, false); $("thesis").innerHTML = `The runs never change. <b>Only the judge does.</b>`; }
+svg.addEventListener("click", e => {
+  const blk = e.target.closest(".blk"); if (blk && S.mode === "field") { layoutCell(blk.dataset.sys, blk.dataset.task, true); return; }
+  const st = e.target.closest(".strip"); if (st) { showBOM(st.dataset.run); return; }
+  const sl = e.target.closest(".sysl"); if (sl) { const s = sl.dataset.sys; if (!S.A || (S.A && S.B)) { S.A = s; S.B = null; toast(`arm A · ${s} — click another system for B`); } else if (s !== S.A) { S.B = s; } if (S.mode === "field") layoutField(false); else if (S.mode === "rank") layoutRank(false); else layoutCell(S.sel.sys, S.sel.task, false); if (S.A && S.B) showCompare(); return; }
+});
+document.addEventListener("click", e => { if (e.target.closest("[data-x]")) { closePanels(); if (S.mode === "cell") { S.run = null; layoutCell(S.sel.sys, S.sel.task, false); } if (e.target.closest(".cmp")) { S.A = S.B = null; if (S.mode === "field") layoutField(false); else if (S.mode === "rank") layoutRank(false); } } });
+document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => setOracle(b.dataset.o)));
+$("b_rank").addEventListener("click", () => { closePanels(); layoutRank(true); });
+$("b_boot").addEventListener("click", resample);
+$("b_reset").addEventListener("click", reset);
+$("b_run").addEventListener("click", showRun);
+$("b_flags").addEventListener("click", () => { S.flags = !S.flags; $("b_flags").classList.toggle("k", S.flags); paintFlags(); if (S.mode === "cell") layoutCell(S.sel.sys, S.sel.task, false); else if (S.mode === "field") layoutField(true, false); log(S.flags ? "trajectory tests on" : "trajectory tests off", S.flags ? `${RUNS.filter(flagged).length} of ${RUNS.length} runs fail a selected test` : ""); });
+$("legend").addEventListener("click", e => { const c = e.target.closest("[data-pred]"); if (!c) return; const id = c.dataset.pred; S.preds.has(id) ? S.preds.delete(id) : S.preds.add(id); paintFlags(); if (S.mode === "cell") layoutCell(S.sel.sys, S.sel.task, false); });
+$("b_log").addEventListener("click", () => { S.logOpen = !S.logOpen; $("log").classList.toggle("open", S.logOpen); $("b_log").classList.toggle("k", S.logOpen); });
+document.addEventListener("keydown", e => { if (e.target.matches("input,textarea")) return;
+  if (window.parent !== window && NAV_KEYS.includes(e.key)) { e.preventDefault(); window.parent.postMessage({ type: "field:key", key: e.key }, "*"); return; }   // only a key name crosses; the receiver checks the shape
+  if (e.key === "o") setOracle(S.oracle === "v" ? "hd" : S.oracle === "hd" ? "s" : "v");
+  else if (e.key === "r") { closePanels(); layoutRank(true); } else if (e.key === "b") resample(); else if (e.key === "Escape") reset(); else if (e.key === "l") $("b_log").click(); else if (e.key === "f") $("b_flags").click(); else if (e.key === "n" && LIVE && DATA.launch) showRun(); });
+window.addEventListener("resize", () => { measure(); if (S.mode === "field") layoutField(false); else if (S.mode === "rank") layoutRank(false); else layoutCell(S.sel.sys, S.sel.task, false); });
+
+// ============================================================ boot
+function boot(data) {
+  measure(); load(data); RUNS.forEach(r => dotFor(r));
+  const want = O_IN[readOracle()]; if (want && want !== S.oracle) { S.oracle = want; document.querySelectorAll(".seg button").forEach(b => b.classList.toggle("on", b.dataset.o === want)); }
+  S.order = sysOrder(S.oracle); layoutField(true, true);
+  log(`loaded ${RUNS.length} runs`, `${RESULTS.join(" + ")} · ${SYSTEMS.length} systems · ${TASKS.length} tasks · ${OK[S.oracle]} oracle${LIVE ? " · live from harnesslab" : ""}`);
+}
+if (LIVE) { $("b_run").hidden = !DATA.launch; fetch(API.bundle).then(r => r.json()).then(b => { boot(compactBundle(b)); VERSION = null; poll(); setInterval(poll, 2500); }).catch(e => { $("state").innerHTML = "could not reach /api/bundle — is python -m harnesslab running?"; }); }
+else boot(DATA.bundle ? compactBundle(DATA.bundle) : DATA);
+window.__field = { S, pass1, taskTable, rankOf, lcg, paired, compactBundle, get RUNS() { return RUNS; }, get bySys() { return bySys; }, get REP() { return REP; }, get JOBS() { return JOBS; } };
+})();
+</script>

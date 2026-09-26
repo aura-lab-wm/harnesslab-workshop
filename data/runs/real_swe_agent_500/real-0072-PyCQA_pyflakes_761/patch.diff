@@ -1,0 +1,65 @@
+
+diff --git a/fail.py b/fail.py
+new file mode 100644
+index 0000000..9e9e4c1
+--- /dev/null
++++ b/fail.py
+@@ -0,0 +1,5 @@
++class Foo:
++    bar = 0
++
++    def bar(self):
++        return 1
+diff --git a/ok.py b/ok.py
+new file mode 100644
+index 0000000..a6f3e2f
+--- /dev/null
++++ b/ok.py
+@@ -0,0 +1,6 @@
++class Foo:
++    def bar(self):
++        return 0
++
++    def bar(self):
++        return 1
+diff --git a/pyflakes/checker.py b/pyflakes/checker.py
+index e927715..bc6f0ef 100644
+--- a/pyflakes/checker.py
++++ b/pyflakes/checker.py
+@@ -1210,6 +1210,14 @@ class Checker:
+         for node in iter_child_nodes(tree, omit=omit):
+             self.handleNode(node, tree)
+ 
++            # Check for attribute redefinition inside the class body
++            if isinstance(tree, ast.ClassDef):
++                for child in tree.body:
++                    if isinstance(child, (ast.Assign, ast.FunctionDef)):
++                        for target in child.targets if isinstance(child, ast.Assign) else [child.arg]:
++                            if isinstance(target, ast.Name):
++                                if target.arg in [node.arg for node in tree.body if isinstance(node, (ast.FunctionDef, ast.Assign))]:
++                                    self.report(messages.Redefinition, child, target.arg)
+     def isLiteralTupleUnpacking(self, node):
+         if isinstance(node, ast.Assign):
+             for child in node.targets + [node.value]:
+diff --git a/setup.cfg b/setup.cfg
+index ed8a958..5fec213 100644
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -3,3 +3,6 @@ universal = 1
+ 
+ [metadata]
+ license_file = LICENSE
++
++[flake8]
++plugin = pyflakes
+diff --git a/test_redefinition.py b/test_redefinition.py
+new file mode 100644
+index 0000000..9e9e4c1
+--- /dev/null
++++ b/test_redefinition.py
+@@ -0,0 +1,5 @@
++class Foo:
++    bar = 0
++
++    def bar(self):
++        return 1

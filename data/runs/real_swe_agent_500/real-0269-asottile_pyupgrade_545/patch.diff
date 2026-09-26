@@ -1,0 +1,58 @@
+
+diff --git a/pyupgrade/_token_helpers.py b/pyupgrade/_token_helpers.py
+index 44d9b57..96ac25f 100644
+--- a/pyupgrade/_token_helpers.py
++++ b/pyupgrade/_token_helpers.py
+@@ -389,6 +389,18 @@ def parse_call_args(
+ 
+         i += 1
+ 
++    # Always include the first argument
++    if not args and tokens_to_src(tokens[arg_start:i]).strip():
++        args.append((arg_start, i))
++
++    return args, i
++    if not args and tokens_to_src(tokens[arg_start:i]).strip():
++        args.append((arg_start, i))
++
++    return args, i
++    if not args and tokens_to_src(tokens[arg_start:i]).strip():
++        args.append((arg_start, i))
++
+     return args, i
+ 
+ 
+@@ -448,11 +460,11 @@ def replace_call(
+ 
+ 
+ def find_and_replace_call(
+-        i: int,
+-        tokens: List[Token],
+-        *,
+-        template: str,
+-        parens: Tuple[int, ...] = (),
++    i: int,
++    tokens: List[Token],
++    *,
++    template: str,
++    parens: Tuple[int,...] = (),
+ ) -> None:
+     j = find_open_paren(tokens, i)
+     func_args, end = parse_call_args(tokens, j)
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..db59425
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,11 @@
++class Parent:
++    @staticmethod
++    def func(arg):
++        return 0
++
++class Child(Parent):
++    @staticmethod
++    def func(arg):
++        return Parent.func(arg)
++
++print(Child.func(1))

@@ -1,0 +1,31 @@
+
+diff --git a/pypistats/cli.py b/pypistats/cli.py
+index 092f9b7..f0b2540 100644
+--- a/pypistats/cli.py
++++ b/pypistats/cli.py
+@@ -1,4 +1,6 @@
+-#!/usr/bin/env python3
++import sys
++from datetime import date, datetime
++from dateutil.relativedelta import relativedelta
+ # encoding: utf-8
+ """
+ CLI with subcommands for pypistats
+@@ -242,8 +244,16 @@ def system(args):  # pragma: no cover
+ def _month(yyyy_mm):
+     """Helper to return start_date and end_date of a month as yyyy-mm-dd"""
+     year, month = map(int, yyyy_mm.split("-"))
++    if month < 1 or month > 12:
++        print("Error: month must be in 1..12")
++        sys.exit(1)
++    if month == 12:
++        month = 1
++        year += 1
++    else:
++        month += 1
+     first = date(year, month, 1)
+-    last = date(year, month + 1, 1) - relativedelta(days=1)
++    last = date(year, month, 1) - relativedelta(days=1)
+     return str(first), str(last)
+ 
+ 

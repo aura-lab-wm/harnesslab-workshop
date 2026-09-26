@@ -1,0 +1,37 @@
+--- a/store/cache.py
++++ b/store/cache.py
+@@ -8,6 +8,7 @@
+         self.ttl = ttl
+         self._now = now
+         os.makedirs(root, exist_ok=True)
++        self.cleanup()
+ 
+     def _path(self, key):
+         return os.path.join(self.root, f"{key}.json")
+@@ -16,10 +17,26 @@
+         with open(self._path(key), "w") as f:
+             json.dump({"t": self._now(), "v": value}, f)
+ 
++    def cleanup(self):
++        for filename in os.listdir(self.root):
++            if not filename.endswith(".json"):
++                continue
++            p = os.path.join(self.root, filename)
++            try:
++                with open(p) as f:
++                    rec = json.load(f)
++                if self._now() - rec["t"] > self.ttl:
++                    os.remove(p)
++            except (IOError, json.JSONDecodeError):
++                os.remove(p) # Remove corrupted or unreadable files
++
+     def get(self, key, default=None):
+         p = self._path(key)
+         if not os.path.exists(p):
+             return default
+         with open(p) as f:
+             rec = json.load(f)
++        if self._now() - rec["t"] > self.ttl:
++            os.remove(p)
++            return default
+         return rec["v"]

@@ -1,0 +1,77 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "harnesslab"
+version = "0.3.0"
+description = "Measure coding agents, not just score them: a harness you can vary, a ledger of every consequential action, and a platform that intervenes on trajectories while they run."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Antonio Mastropaolo", email = "amastropaolo@wm.edu" }]
+maintainers = [{ name = "Antonio Mastropaolo", email = "amastropaolo@wm.edu" }]
+keywords = ["llm", "coding-agents", "evaluation", "benchmarking", "swe-agent", "observability", "trajectories"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Software Development :: Testing",
+]
+dependencies = [
+  "fastapi>=0.110",
+  "uvicorn>=0.27",
+  # starlette.testclient, used by `--export` to render the static bundle, needs an HTTP client.
+  # Without it a clean install fails on `--export` with a RuntimeError.
+  "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+# Streaming real SWE-agent trajectories (exercise 7 / the Real Data page).
+real = ["datasets>=2.18"]
+# Exporting runs as Inspect AI eval logs (/api/export/{dir}/runs/{id}.inspect.json).
+inspect = ["inspect_ai>=0.3.60"]
+# Figures for the CLI exercises.
+figures = ["matplotlib>=3.7"]
+dev = [
+  "build>=1.2",
+  "datasets>=2.18",
+  "inspect_ai>=0.3.60",
+  "matplotlib>=3.7",
+  "httpx>=0.27",
+]
+
+[project.scripts]
+harnesslab = "harnesslab.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/antonio-mastropaolo/harnesslab"
+Repository = "https://github.com/antonio-mastropaolo/harnesslab"
+Issues = "https://github.com/antonio-mastropaolo/harnesslab/issues"
+
+# --------------------------------------------------------------------------- packaging
+# `packages` and `package-dir` are computed in setup.py: the backend grows subpackages and a
+# hand-written list here would silently ship a broken wheel. See setup.py for why.
+[tool.setuptools]
+include-package-data = false
+zip-safe = false
+
+[tool.setuptools.package-data]
+"harnesslab" = ["py.typed", "school-package.json"]
+# The Field template. It is a fragment rendered by backend/field.py, not a static asset,
+# so it lives in the package and must ship with the wheel.
+"harnesslab.backend" = ["field.html"]
+"harnesslab.data" = ["*.txt"]
+"harnesslab.data.models" = ["*.json"]
+# The built UI. Absent until `npm run build` has been run in harnesslab/frontend.
+"harnesslab.frontend" = ["dist/*", "dist/**/*"]
+"harnesslab.plugins" = ["*.json", "*.py"]
+"harnesslab.docs" = ["*.md"]
+"harnesslab.bundle.harnesses" = ["*.json"]
+"harnesslab.bundle.tasks" = ["**/*.py", "**/*.json", "**/*.md", "**/*.txt"]

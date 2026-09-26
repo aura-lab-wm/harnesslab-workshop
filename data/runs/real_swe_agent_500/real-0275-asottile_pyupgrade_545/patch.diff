@@ -1,0 +1,16 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..b03e67a
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,9 @@
++class Parent:
++    @staticmethod
++    def func(arg):
++        return 0
++
++class Child(Parent):
++    @staticmethod
++    def func(arg):
++        return Parent.func(arg)

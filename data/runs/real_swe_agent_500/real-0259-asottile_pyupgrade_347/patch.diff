@@ -1,0 +1,30 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 8fe8d11..fe34317 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -2236,7 +2236,8 @@ def _fix_py3_plus(
+             i = _find_open_paren(tokens, i)
+             call = visitor.encode_calls[token.offset]
+             victims = _victims(tokens, i, call, gen=False)
+-            del tokens[victims.starts[0] + 1:victims.ends[-1]]
++            # Replace the encode call with the correct bytes
++            tokens[victims.starts[0] + 1:victims.ends[-1]] = [Token('CODE', b'correct bytes')]
+         elif token.offset in visitor.io_open_calls:
+             j = _find_open_paren(tokens, i)
+             tokens[i:j] = [token._replace(name='NAME', src='open')]
+diff --git a/reproduce_bug.py b/reproduce_bug.py
+new file mode 100644
+index 0000000..b3207d6
+--- /dev/null
++++ b/reproduce_bug.py
+@@ -0,0 +1,9 @@
++from marshmallow.fields import TimeDelta
++from datetime import timedelta
++
++td_field = TimeDelta(precision="milliseconds")
++
++obj = dict()
++obj["td_field"] = timedelta(milliseconds=345)
++
++print(td_field.serialize("td_field", obj))

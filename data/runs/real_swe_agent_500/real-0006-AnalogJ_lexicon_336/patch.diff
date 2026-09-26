@@ -1,0 +1,25 @@
+
+diff --git a/lexicon/providers/memset.py b/lexicon/providers/memset.py
+index 6394170a..f5eac74b 100644
+--- a/lexicon/providers/memset.py
++++ b/lexicon/providers/memset.py
+@@ -131,15 +131,16 @@ class Provider(BaseProvider):
+ 
+     # Helpers
+     def _request(self, action='GET',  url='/', data=None, query_params=None):
++        print(self._get_provider_option('auth_token'))
+         if data is None:
+             data = {}
+         if query_params is None:
+             query_params = {}
+         r = requests.request(action, self.api_endpoint + url, params=query_params,
+                              data=json.dumps(data),
+-                             auth=(self._get_provider_option(
+-                                 'auth_token'), 'x'),
+-                             headers={'Content-Type': 'application/json'})
++                             auth=(self._get_provider_option('auth_token'), 'x'),
++                             headers={'Content-Type': 'application/json', 'X-Memset-Token': self._get_provider_option('auth_token')}
++        )
+         # if the request fails for any reason, throw an error.
+         r.raise_for_status()
+         return r.json()

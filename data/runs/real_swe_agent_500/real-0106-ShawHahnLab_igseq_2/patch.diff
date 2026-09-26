@@ -1,0 +1,91 @@
+
+diff --git a/igseq/vdj.py b/igseq/vdj.py
+index e6ac153..f99819d 100644
+--- a/igseq/vdj.py
++++ b/igseq/vdj.py
+@@ -28,10 +28,11 @@ def parse_vdj_paths(ref_paths):
+     input, "some/dir" split into separate V/D/J FASTA found inside, and
+     "rhesus" split into the built-in reference FASTAs provided by the package.
+     """
+-
++    
+     if isinstance(ref_paths, (str, PathLike)):
+         ref_paths = [ref_paths]
+     attrs_list = []
++    processed_paths = set()
+     for entry in ref_paths:
+         internal_matches = get_internal_vdj(entry)
+         path = Path(entry)
+@@ -42,7 +43,9 @@ def parse_vdj_paths(ref_paths):
+             attrs["type"] = "file"
+             if "segment" not in attrs:
+                 raise ValueError("couldn't determine segment for file: %s" % path)
+-            attrs_list.append(attrs)
++            if path not in processed_paths:
++                processed_paths.add(path)
++                attrs_list.append(attrs)
+         # second priority: actual directory name
+         elif path.is_dir():
+             for path2 in sorted(path.glob("*")):
+@@ -52,7 +55,9 @@ def parse_vdj_paths(ref_paths):
+                     if "segment" not in attrs:
+                         raise ValueError("couldn't determine segment for file: %s" % path)
+                     attrs["type"] = "dir"
+-                    attrs_list.append(attrs)
++                    if path2 not in processed_paths:
++                        processed_paths.add(path2)
++                        attrs_list.append(attrs)
+         # third priority: internal reference
+         elif internal_matches:
+             for fasta in internal_matches:
+@@ -64,7 +69,9 @@ def parse_vdj_paths(ref_paths):
+                 parents = [parent.name for parent in fasta_rel.parents if parent.name]
+                 attrs["species"] = parents[-1]
+                 attrs["ref"] = parents[-2]
+-                attrs_list.append(attrs)
++                if fasta not in processed_paths:
++                    processed_paths.add(fasta)
++                    attrs_list.append(attrs)
+         else:
+             raise util.IgSeqError("ref path not recognized: %s" % entry)
+     return attrs_list
+@@ -278,4 +285,10 @@ def _parse_vdj_tokens(tokens):
+             attrs["locus"] = token
+         if not attrs.get("segment") and token in SEGMENTS:
+             attrs["segment"] = token
++    # Ensure that the segment is correctly assigned
++    if "segment" in attrs:
++        attrs["segment"] = re.sub("^IG[HKL]", "", attrs["segment"])
++    # Check if the segment is still not assigned correctly
++    if "segment" in attrs and attrs["segment"] not in SEGMENTS:
++        attrs["segment"] = None
+     return attrs
+diff --git a/test_parse_vdj_paths.py b/test_parse_vdj_paths.py
+new file mode 100644
+index 0000000..7ffff4f
+--- /dev/null
++++ b/test_parse_vdj_paths.py
+@@ -0,0 +1,23 @@
++from igseq.vdj import parse_vdj_paths, get_internal_vdj
++from pathlib import Path
++
++# Get a list of valid FASTA paths
++valid_paths = get_internal_vdj("rhesus")
++
++# Create a list of paths with duplicates
++ref_paths = [valid_paths[0], valid_paths[1], valid_paths[0]]
++
++# Call the parse_vdj_paths function
++attrs_list = parse_vdj_paths(ref_paths)
++print(attrs_list)
++
++# Check that the list contains the correct number of elements
++assert len(attrs_list) == 2, "List should contain 2 elements"
++
++# Check that the first element is for the V segment
++assert attrs_list[0]["segment"] == "V", "First element should be for the V segment"
++
++# Check that the second element is for the D segment
++assert attrs_list[1]["segment"] == "D", "Second element should be for the D segment"
++
++print("All tests passed successfully")

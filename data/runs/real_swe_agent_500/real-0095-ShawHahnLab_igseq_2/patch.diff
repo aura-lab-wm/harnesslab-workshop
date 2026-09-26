@@ -1,0 +1,79 @@
+
+diff --git a/igseq/test_vdj.py b/igseq/test_vdj.py
+new file mode 100644
+index 0000000..0a14828
+--- /dev/null
++++ b/igseq/test_vdj.py
+@@ -0,0 +1,4 @@
++from igseq.vdj import parse_vdj_paths
++ref_paths = ["sonarramesh/IGK", "sonarramesh/IGK/IGKV1-5"]
++attrs_list = parse_vdj_paths(ref_paths)
++print(attrs_list)
+diff --git a/igseq/vdj.py b/igseq/vdj.py
+index e6ac153..6edfa83 100644
+--- a/igseq/vdj.py
++++ b/igseq/vdj.py
+@@ -22,16 +22,14 @@ SEGMENTS = ["V", "D", "J"]
+ LOCUS_SEGMENTS = ["IGHV", "IGHD", "IGHJ", "IGKV", "IGKJ", "IGLV", "IGLJ"]
+ 
+ def parse_vdj_paths(ref_paths):
+-    """Take a list of file/directory/builtin names and return dicts with more info.
+-
+-    For example, "some/dir/V.fasta" would be recognized as a single FASTA
+-    input, "some/dir" split into separate V/D/J FASTA found inside, and
+-    "rhesus" split into the built-in reference FASTAs provided by the package.
+-    """
+-
++    def add_attrs(attrs):
++        if attrs["path"] not in parse_vdj_paths.processed_paths:
++            parse_vdj_paths.attrs_list.append(attrs)
++            parse_vdj_paths.processed_paths.add(attrs["path"])
++    parse_vdj_paths.attrs_list = []
++    parse_vdj_paths.processed_paths = set()  # keep track of processed paths
+     if isinstance(ref_paths, (str, PathLike)):
+         ref_paths = [ref_paths]
+-    attrs_list = []
+     for entry in ref_paths:
+         internal_matches = get_internal_vdj(entry)
+         path = Path(entry)
+@@ -42,7 +40,7 @@ def parse_vdj_paths(ref_paths):
+             attrs["type"] = "file"
+             if "segment" not in attrs:
+                 raise ValueError("couldn't determine segment for file: %s" % path)
+-            attrs_list.append(attrs)
++            add_attrs(attrs)
+         # second priority: actual directory name
+         elif path.is_dir():
+             for path2 in sorted(path.glob("*")):
+@@ -52,7 +50,7 @@ def parse_vdj_paths(ref_paths):
+                     if "segment" not in attrs:
+                         raise ValueError("couldn't determine segment for file: %s" % path)
+                     attrs["type"] = "dir"
+-                    attrs_list.append(attrs)
++                    add_attrs(attrs)
+         # third priority: internal reference
+         elif internal_matches:
+             for fasta in internal_matches:
+@@ -64,10 +62,10 @@ def parse_vdj_paths(ref_paths):
+                 parents = [parent.name for parent in fasta_rel.parents if parent.name]
+                 attrs["species"] = parents[-1]
+                 attrs["ref"] = parents[-2]
+-                attrs_list.append(attrs)
++                add_attrs(attrs)
+         else:
+             raise util.IgSeqError("ref path not recognized: %s" % entry)
+-    return attrs_list
++    return parse_vdj_paths.attrs_list
+ 
+ def get_internal_vdj(name):
+     """Get list of builtin germline FASTA files matching a path fragment."""
+@@ -78,6 +76,9 @@ def get_internal_vdj(name):
+     for candidate in candidates:
+         if name in str(candidate.relative_to(germ)):
+             output.append(candidate)
++    if (germ / name).is_dir():
++        for file in (germ / name).glob("*.fasta"):
++            output.append(file)
+     return sorted(output)
+ 
+ def parse_vdj_filename(txt):

@@ -1,0 +1,43 @@
+--- a/cache/old_1.json
++++ b/cache/old_1.json
+@@ -1 +0,0 @@
+-{"t": 0, "v": "stale"}
+--- a/cache/old_2.json
++++ b/cache/old_2.json
+@@ -1 +0,0 @@
+-{"t": 0, "v": "stale"}
+--- a/store/cache.py
++++ b/store/cache.py
+@@ -1,8 +1,6 @@
+ import os, json, time
+ 
+ class DiskCache:
+-    """A tiny JSON-on-disk cache with per-entry TTL."""
+-
+     def __init__(self, root: str, ttl: float, now=time.time):
+         self.root = root
+         self.ttl = ttl
+@@ -10,11 +8,11 @@
+         os.makedirs(root, exist_ok=True)
+ 
+     def _path(self, key):
+-        return os.path.join(self.root, f"{key}.json")
++        return os.path.join(self.root, f'{key}.json')
+ 
+     def set(self, key, value):
+-        with open(self._path(key), "w") as f:
+-            json.dump({"t": self._now(), "v": value}, f)
++        with open(self._path(key), 'w') as f:
++            json.dump({'t': self._now(), 'v': value}, f)
+ 
+     def get(self, key, default=None):
+         p = self._path(key)
+@@ -22,4 +20,7 @@
+             return default
+         with open(p) as f:
+             rec = json.load(f)
+-        return rec["v"]
++        if self._now() - rec['t'] > self.ttl:
++            os.remove(p)
++            return default
++        return rec['v']

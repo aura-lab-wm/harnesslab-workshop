@@ -1,0 +1,18 @@
+
+diff --git a/test_thread_pool.py b/test_thread_pool.py
+new file mode 100644
+index 0000000..d9b4079
+--- /dev/null
++++ b/test_thread_pool.py
+@@ -0,0 +1,11 @@
++import os
++from azure_functions_worker import Dispatcher
++
++# Set the PYTHON_THREADPOOL_THREAD_COUNT environment variable to a value larger than 32
++os.environ["PYTHON_THREADPOOL_THREAD_COUNT"] = "64"
++
++# Create a Dispatcher instance
++dispatcher = Dispatcher(None, None, None, None, None)
++
++# Check if the thread pool size is correctly set to the specified value
++print(f"Thread pool size: {dispatcher.get_sync_tp_workers_set()}")

@@ -1,0 +1,50 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 8fe8d11..08818c9 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -619,18 +619,18 @@ def _fix_format_literal(tokens: List[Token], end: int) -> None:
+ def _fix_encode_to_binary(tokens: List[Token], i: int) -> None:
+     # .encode()
+     if (
+-            i + 2 < len(tokens) and
+-            tokens[i + 1].src == '(' and
+-            tokens[i + 2].src == ')'
++        i + 2 < len(tokens) and
++        tokens[i + 1].src == '(' and
++        tokens[i + 2].src == ')'
+     ):
+         victims = slice(i - 1, i + 3)
+         latin1_ok = False
+     # .encode('encoding')
+     elif (
+-            i + 3 < len(tokens) and
+-            tokens[i + 1].src == '(' and
+-            tokens[i + 2].name == 'STRING' and
+-            tokens[i + 3].src == ')'
++        i + 3 < len(tokens) and
++        tokens[i + 1].src == '(' and
++        tokens[i + 2].name == 'STRING' and
++        tokens[i + 3].src == ')'
+     ):
+         victims = slice(i - 1, i + 4)
+         prefix, rest = parse_string_literal(tokens[i + 2].src)
+@@ -654,12 +654,12 @@ def _fix_encode_to_binary(tokens: List[Token], i: int) -> None:
+         prefix, rest = parse_string_literal(tokens[part].src)
+         escapes = set(ESCAPE_RE.findall(rest))
+         if (
+-                not _is_ascii(rest) or
+-                '\\u' in escapes or
+-                '\\U' in escapes or
+-                '\\N' in escapes or
+-                ('\\x' in escapes and not latin1_ok) or
+-                'f' in prefix.lower()
++            not _is_ascii(rest) or
++            '\\u' in escapes or
++            '\\U' in escapes or
++            '\\N' in escapes or
++            ('\\x' in escapes and not latin1_ok) or
++            'f' in prefix.lower()
+         ):
+             return
+ 

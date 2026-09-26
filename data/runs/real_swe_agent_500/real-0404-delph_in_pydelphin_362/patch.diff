@@ -1,0 +1,84 @@
+
+diff --git a/delphin/tdl.py b/delphin/tdl.py
+index ec330f4..bb72e91 100644
+--- a/delphin/tdl.py
++++ b/delphin/tdl.py
+@@ -1344,16 +1344,18 @@ def format(obj, indent=0):
+ 
+     Args:
+         obj: instance of :class:`Term`, :class:`Conjunction`, or
+-            :class:`TypeDefinition` classes or subclasses
++            :class:`TypeDefinition` classes or subclasses; 
++            or 'LineComment' or 'BlockComment' strings; 
++            or a string containing TDL content
+         indent (int): number of spaces to indent the formatted object
+     Returns:
+         str: serialized form of *obj*
+     Example:
+         >>> conj = tdl.Conjunction([
+-        ...     tdl.TypeIdentifier('lex-item'),
+-        ...     tdl.AVM([('SYNSEM.LOCAL.CAT.HEAD.MOD',
+-        ...               tdl.ConsList(end=tdl.EMPTY_LIST_TYPE))])
+-        ... ])
++      ...     tdl.TypeIdentifier('lex-item'),
++      ...     tdl.AVM([('SYNSEM.LOCAL.CAT.HEAD.MOD',
++      ...               tdl.ConsList(end=tdl.EMPTY_LIST_TYPE))])
++      ... ])
+         >>> t = tdl.TypeDefinition('non-mod-lex-item', conj)
+         >>> print(format(t))
+         non-mod-lex-item := lex-item &
+@@ -1371,8 +1373,28 @@ def format(obj, indent=0):
+         return _format_environment(obj, indent)
+     elif isinstance(obj, FileInclude):
+         return _format_include(obj, indent)
++    elif obj == 'LineComment' or obj == 'BlockComment':
++        return str(obj)
+     else:
+-        raise ValueError(f'cannot format object as TDL: {obj!r}')
++        # Assume obj is a string containing TDL content
++        return _format_content(obj, indent)
++
++def _format_content(content, indent):
++    # Split content into terms and comments
++    terms = []
++    comments = []
++    for line in content.splitlines():
++        if line.startswith('//') or line.startswith('/*'):
++            comments.append(line)
++        else:
++            terms.append(line)
++
++    # Format terms and comments separately
++    formatted_terms = [format(term, indent) for term in terms]
++    formatted_comments = [format(comment, indent) for comment in comments]
++
++    # Combine formatted terms and comments
++    return '\n'.join(formatted_terms + formatted_comments)
+ 
+ 
+ def _format_term(term, indent):
+diff --git a/test_format.py b/test_format.py
+new file mode 100644
+index 0000000..d38dfb9
+--- /dev/null
++++ b/test_format.py
+@@ -0,0 +1,19 @@
++from delphin.tdl import format
++
++tdl_content = """
++TypeDefinition: lex-item &
++  [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
++
++// This is a line comment
++TypeAddendum: lex-item &
++  [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
++
++/*
++This is a block comment.
++It can span multiple lines.
++*/
++TypeAddendum: lex-item &
++  [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
++"""
++
++print(format(tdl_content))

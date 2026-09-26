@@ -1,0 +1,72 @@
+
+diff --git a/tests/pyupgrade_test.py b/tests/pyupgrade_test.py
+index fa8edc4..66400be 100644
+--- a/tests/pyupgrade_test.py
++++ b/tests/pyupgrade_test.py
+@@ -97,7 +97,7 @@ def test_intentionally_not_round_trip(s, expected):
+         # Some multiline cases
+         ('set(\n(1, 2))', '{\n1, 2}'),
+         ('set((\n1,\n2,\n))\n', '{\n1,\n2,\n}\n'),
+-        # Nested sets
++        # Nested sets\n
+         (
+             'set((frozenset(set((1, 2))), frozenset(set((3, 4)))))',
+             '{frozenset({1, 2}), frozenset({3, 4})}',
+@@ -166,14 +166,14 @@ def test_sets_generators_trailing_commas(s, expected):
+         ('dict([(a, b), c] for a, b, c in y)', '{(a, b): c for a, b, c in y}'),
+         # ast doesn't tell us about parenthesized keys
+         ('dict(((a), b) for a, b in y)', '{(a): b for a, b in y}'),
+-        # Nested dictcomps
++        # Nested dictcomps\n
+         (
+             'dict((k, dict((k2, v2) for k2, v2 in y2)) for k, y2 in y)',
+             '{k: {k2: v2 for k2, v2 in y2} for k, y2 in y}',
+         ),
+         # This doesn't get fixed by autopep8 and can cause a syntax error
+         ('dict((a, b)for a, b in y)', '{a: b for a, b in y}'),
+-        # Need to remove trailing commas on the element
++        # Need to remove trailing commas on the element\n
+         (
+             'dict(\n'
+             '    (\n'
+@@ -224,7 +224,7 @@ def test_dictcomps(s, expected):
+     (
+         'x is True',
+         'x is False',
+-        'x is None',
++        'x is None\n'
+         'x is (not 5)',
+         'x is 5 + 5',
+         # pyupgrade is timid about containers since the original can be
+@@ -422,7 +422,7 @@ def test_fix_ur_literals_gets_fixed_before_u_removed():
+     (
+         '""',
+         r'r"\d"', r"r'\d'", r'r"""\d"""', r"r'''\d'''",
+-        # python2 has a bug where `rb'foo'` is tokenized as NAME + STRING
++        # python2 has a bug where `rb'foo'` is tokenized as NAME + STRING\n
+         r'rb"\d"',
+         # make sure we don't replace an already valid string
+         r'"\\d"',
+@@ -577,18 +577,18 @@ def test_is_bytestring_false(s):
+     (
+         (
+             '""', (
+-                ('""', None),
++                ('""\n', None),
+             ),
+         ),
+         (
+             '"%%"', (
+-                ('"', (None, None, None, None, '%')),
+-                ('"', None),
++                ('"\n', (None, None, None, None, '%')),
++                ('"\n', None),
+             ),
+         ),
+         (
+             '"%s"', (
+-                ('"', (None, None, None, None, 's')),
++                ('"\n', (None, None, None, None, 's')),
+                 ('"', None),
+             ),
+         ),

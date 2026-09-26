@@ -1,0 +1,67 @@
+
+diff --git a/.rpdk-config b/.rpdk-config
+new file mode 100644
+index 0000000..e411460
+--- /dev/null
++++ b/.rpdk-config
+@@ -0,0 +1,21 @@
++{
++    "artifact_type": "HOOK",
++    "typeName": "XXX::XXX::XXX",
++    "language": "python37",
++    "runtime": "python3.7",
++    "entrypoint": "xxx.handlers.hook",
++    "testEntrypoint": "xxx.handlers.hook",
++    "settings": {
++        "version": false,
++        "subparser_name": null,
++        "verbose": 0,
++        "force": false,
++        "type_name": null,
++        "artifact_type": null,
++        "endpoint_url": null,
++        "region": null,
++        "target_schemas": [],
++        "use_docker": false,
++        "protocolVersion": "2.0.0"
++    }
++}
+diff --git a/hook-spec.json b/hook-spec.json
+new file mode 100644
+index 0000000..f91e158
+--- /dev/null
++++ b/hook-spec.json
+@@ -0,0 +1,7 @@
++{
++    "typeName": "XXX::XXX::XXX",
++    "version": {
++        "version": "1.0.0"
++    },
++    "handler": "xxx.handlers.hook"
++}
+diff --git a/reproduce.sh b/reproduce.sh
+new file mode 100755
+index 0000000..37de625
+--- /dev/null
++++ b/reproduce.sh
+@@ -0,0 +1,20 @@
++#!/bin/bash
++
++# Define the expected dependencies
++expected_dependencies="dependency1 dependency2"
++
++# Create a temporary build directory
++build_dir=$(mktemp -d)
++
++# Submit the configuration to the build directory
++cfn package
++
++# Check if the build directory contains the expected dependencies
++if [ -z "$(ls -F $build_dir | grep -E '{}')".format(expected_dependencies) ]; then
++  echo "Dependencies not found in the build directory"
++else
++  echo "Dependencies found in the build directory"
++fi
++
++# Remove the temporary build directory
++rm -r $build_dir

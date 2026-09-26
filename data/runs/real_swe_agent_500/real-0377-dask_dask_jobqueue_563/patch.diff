@@ -1,0 +1,23 @@
+
+diff --git a/dask_jobqueue/htcondor.py b/dask_jobqueue/htcondor.py
+index fb7b0be..22c0246 100644
+--- a/dask_jobqueue/htcondor.py
++++ b/dask_jobqueue/htcondor.py
+@@ -245,9 +245,10 @@ class HTCondorCluster(JobQueueCluster):
+         Extra arguments to pass to condor_submit
+     cancel_command_extra : list of str
+         Extra arguments to pass to condor_rm
++    env_extra : list of str
++        Other commands to add to script before launching worker. Note that arbitrary shell commands cannot be included.
+     {job}
+     {cluster}
+-
+     Examples
+     --------
+     >>> from dask_jobqueue.htcondor import HTCondorCluster
+@@ -263,4 +264,4 @@ class HTCondorCluster(JobQueueCluster):
+     """.format(
+         job=job_parameters, cluster=cluster_parameters
+     )
+-    job_cls = HTCondorJob
++job_cls = HTCondorJob

@@ -1,0 +1,9 @@
+{
+  "id": "t03_ratelimit",
+  "title": "TokenBucket over-refills after long idle",
+  "probe": "none",
+  "src_files": [
+    "limiter/bucket.py"
+  ],
+  "test_cmd": "python -m unittest discover -s tests -q"
+}

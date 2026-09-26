@@ -1,0 +1,14 @@
+
+diff --git a/pyupgrade/_plugins/legacy.py b/pyupgrade/_plugins/legacy.py
+index f7ba376..37f8d11 100644
+--- a/pyupgrade/_plugins/legacy.py
++++ b/pyupgrade/_plugins/legacy.py
+@@ -185,7 +185,7 @@ def visit_Module(
+     visitor = Visitor()
+     visitor.visit(node)
+ 
+-    super_func = functools.partial(find_and_replace_call, template='super()')
++    super_func = functools.partial(find_and_replace_call, template='super({{args}})')
+     for offset in visitor.super_offsets:
+         yield offset, super_func
+ 

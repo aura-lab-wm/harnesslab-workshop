@@ -1,0 +1,67 @@
+
+diff --git a/fairlearn/metrics/_metric_frame.py b/fairlearn/metrics/_metric_frame.py
+index 9826c3d..f5584ac 100644
+--- a/fairlearn/metrics/_metric_frame.py
++++ b/fairlearn/metrics/_metric_frame.py
+@@ -391,7 +391,10 @@ class MetricFrame:
+         if not self.control_levels:
+             result = pd.Series(index=self._by_group.columns, dtype='object')
+             for m in result.index:
+-                max_val = self._by_group[m].max()
++                try:
++                    max_val = self._by_group[m].max()
++                except Exception:
++                    max_val = np.NaN
+                 result[m] = max_val
+         else:
+             result = self._by_group.groupby(level=self.control_levels).max()
+@@ -423,7 +426,10 @@ class MetricFrame:
+         if not self.control_levels:
+             result = pd.Series(index=self._by_group.columns, dtype='object')
+             for m in result.index:
+-                min_val = self._by_group[m].min()
++                try:
++                    min_val = self._by_group[m].min()
++                except Exception:
++                    min_val = np.NaN
+                 result[m] = min_val
+         else:
+             result = self._by_group.groupby(level=self.control_levels).min()
+diff --git a/test_metricframe.py b/test_metricframe.py
+new file mode 100644
+index 0000000..784170e
+--- /dev/null
++++ b/test_metricframe.py
+@@ -0,0 +1,32 @@
++from fairlearn.metrics import MetricFrame
++from sklearn.metrics import accuracy_score, confusion_matrix
++import pandas as pd
++
++# Create a scalar metric and a nonscalar metric
++scalar_metric = accuracy_score
++nonscalar_metric = confusion_matrix
++
++# Create a MetricFrame with both scalar and nonscalar metrics
++metrics = [lambda y_true, y_pred, sensitive_features=None, control_features=None, sample_params=None, **kwargs: accuracy_score(y_true, y_pred, **kwargs), lambda y_true, y_pred, sensitive_features=None, control_features=None, sample_params=None, **kwargs: confusion_matrix(y_true, y_pred, labels=[0, 1], **kwargs)]
++y_true = [0, 1, 0, 1]
++y_pred = [0, 0, 1, 1]
++sensitive_feature = [0, 0, 1, 1]
++mf = MetricFrame(metrics, y_true, y_pred, sensitive_features=sensitive_feature)
++
++# Call the group_min and group_max methods
++group_min = mf.group_min()
++group_max = mf.group_max()
++
++# Verify the results
++print("Group min:", group_min)
++print("Group max:", group_max)
++
++# Ensure the scalar metric is handled correctly
++assert pd.notnull(group_min[scalar_metric]), "Group min for scalar metric is null"
++assert pd.notnull(group_max[scalar_metric]), "Group max for scalar metric is null"
++
++# Ensure the nonscalar metric is handled correctly
++assert pd.isnull(group_min[nonscalar_metric]), "Group min for nonscalar metric is not null"
++assert pd.isnull(group_max[nonscalar_metric]), "Group max for nonscalar metric is not null"
++
++print("All tests passed successfully.")

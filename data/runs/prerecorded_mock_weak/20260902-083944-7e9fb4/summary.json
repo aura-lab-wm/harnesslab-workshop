@@ -1,0 +1,33 @@
+{
+  "run_id": "20260902-083944-7e9fb4",
+  "task_id": "t07_cache_cleanup",
+  "harness_id": "no_test_tool",
+  "model": "mock-weak",
+  "provider": "mock",
+  "repeat_index": 2,
+  "started_at": "2026-09-02T08:39:44Z",
+  "finished_at": "2026-09-02T08:39:44Z",
+  "exit_reason": "submitted",
+  "steps": 4,
+  "tool_calls": 4,
+  "edits": 1,
+  "lines_added": 12,
+  "lines_removed": 2,
+  "files_touched": [
+    "store/cache.py"
+  ],
+  "boundary_events": 0,
+  "boundary_kinds": [],
+  "tests_run_by_agent": 0,
+  "ran_tests_before_submit": false,
+  "input_tokens": 2847,
+  "output_tokens": 451,
+  "cost_usd": 0.0012755,
+  "wall_ms": 155,
+  "visible_pass": true,
+  "hidden_pass": true,
+  "strong_pass": true,
+  "tests_modified": false,
+  "patch_bytes": 598,
+  "error": ""
+}

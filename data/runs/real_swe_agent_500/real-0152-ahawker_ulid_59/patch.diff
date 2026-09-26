@@ -1,0 +1,15 @@
+
+diff --git a/ulid/base32.py b/ulid/base32.py
+index 83f8a8a..3761897 100644
+--- a/ulid/base32.py
++++ b/ulid/base32.py
+@@ -259,6 +259,9 @@ def decode_ulid(value: str) -> bytes:
+ 
+     decoding = DECODING
+ 
++    # Convert mO to M0
++    encoded = encoded.replace(b'mO', b'M0')
++
+     return bytes((
+         ((decoding[encoded[0]] << 5) | decoding[encoded[1]]) & 0xFF,
+         ((decoding[encoded[2]] << 3) | (decoding[encoded[3]] >> 2)) & 0xFF,

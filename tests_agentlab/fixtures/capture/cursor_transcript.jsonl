@@ -1,0 +1,11 @@
+{"role": "user", "message": {"content": [{"type": "text", "text": "<user prompt 1>"}]}}
+{"role": "assistant", "message": {"content": [{"type": "text", "text": "<assistant prose 1>"}, {"type": "tool_use", "name": "Read", "input": {"path": "<path a>"}}]}}
+{"role": "assistant", "message": {"content": [{"type": "tool_use", "name": "Shell", "input": {"command": "<command 1>", "description": "<description 1>"}}, {"type": "tool_use", "name": "Grep", "input": {"path": "<path b>", "pattern": "<pattern 1>"}}]}}
+{"role": "assistant", "message": {"content": [{"type": "tool_use", "name": "StrReplace", "input": {"path": "<path a>", "old_string": "<old 1>", "new_string": "<new 1>"}}]}}
+{"role": "assistant", "message": {"content": [{"type": "tool_use", "name": "TodoWrite", "input": {"merge": false, "todos": [{"id": "<todo id>", "content": "<todo>", "status": "<status>"}]}}]}}
+{"role": "assistant", "message": {"content": [{"type": "text", "text": "<assistant prose 2>"}]}}
+{"type": "turn_ended", "status": "success"}
+{"role": "user", "message": {"content": [{"type": "text", "text": "<user prompt 2>"}]}}
+{"role": "assistant", "message": {"content": [{"type": "tool_use", "name": "Write", "input": {"path": "<path c>", "contents": "<contents 1>"}}]}}
+{"role": "assistant", "message": {"content": [{"type": "text", "text": "<assistant prose 3>"}]}}
+{"type": "turn_ended", "status": "error", "error": "<error text>"}

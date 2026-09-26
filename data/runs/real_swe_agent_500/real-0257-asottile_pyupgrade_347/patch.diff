@@ -1,0 +1,14 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 8fe8d11..4915530 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -665,7 +665,7 @@ def _fix_encode_to_binary(tokens: List[Token], i: int) -> None:
+ 
+     for part in parts:
+         prefix, rest = parse_string_literal(tokens[part].src)
+-        prefix = 'b' + prefix.replace('u', '').replace('U', '')
++        prefix = 'b' + prefix.replace('u', '').replace('U', '')  # retain escape sequences
+         tokens[part] = tokens[part]._replace(src=prefix + rest)
+     del tokens[victims]
+ 

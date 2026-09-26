@@ -1,0 +1,15 @@
+
+diff --git a/reproman/interface/jobs.py b/reproman/interface/jobs.py
+index 2246d4c..7c6e391 100644
+--- a/reproman/interface/jobs.py
++++ b/reproman/interface/jobs.py
+@@ -137,7 +137,8 @@ def fetch(job):
+     """
+     orc = _resurrect_orc(job)
+     if orc.has_completed:
+-        orc.fetch()
++        if orc.fetch() != 0:  # Check for non-zero exit code from fetch
++            raise RuntimeError("Fetch failed with non-zero exit code")
+         LREG.unregister(orc.jobid)
+     else:
+         lgr.warning("Not fetching incomplete job %s [status: %s]",

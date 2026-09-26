@@ -1,0 +1,22 @@
+
+diff --git a/mobly/config_parser.py b/mobly/config_parser.py
+index aa43c03..f319dd2 100644
+--- a/mobly/config_parser.py
++++ b/mobly/config_parser.py
+@@ -12,7 +12,7 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ 
+-from builtins import str
++import logging
+ 
+ import copy
+ import io
+@@ -152,6 +152,7 @@ def _load_config_file(path):
+     """
+     with io.open(utils.abs_path(path), 'r', encoding='utf-8') as f:
+         conf = yaml.load(f)
++        logging.debug('Loaded config file:\n%s', yaml.dump(conf))
+         return conf
+ 
+ 

@@ -1,0 +1,58 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..e93db77
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,8 @@
++import math
++import latexify
++
++@latexify.with_latex
++def solve(a):
++    return a[0]
++
++print(solve)
+diff --git a/src/latexify/latexify_visitor.py b/src/latexify/latexify_visitor.py
+index 476d1ef..70fac48 100644
+--- a/src/latexify/latexify_visitor.py
++++ b/src/latexify/latexify_visitor.py
+@@ -51,16 +51,16 @@ class LatexifyVisitor(node_visitor_base.NodeVisitorBase):
+     def visit_Module(self, node, action):  # pylint: disable=invalid-name
+         return self.visit(node.body[0], "multi_lines")
+ 
+-    def visit_FunctionDef(self, node, action):  # pylint: disable=invalid-name
+-        name_str = str(node.name)
++    def visit_FunctionDef(self, node, action):
++        """Visit a function definition node."""
++        print("Visiting function definition node")
++        name_str, arg_strs, assign_vars, body_str = self.visit(node, None)
+         if self._use_raw_function_name:
+             name_str = name_str.replace(r"_", r"\_")
+         name_str = r"\mathrm{" + name_str + "}"
+-
+         arg_strs = [
+             self._math_symbol_converter.convert(str(arg.arg)) for arg in node.args.args
+         ]
+-
+         body_str = ""
+         assign_vars = []
+         for el in node.body:
+@@ -79,7 +79,6 @@ class LatexifyVisitor(node_visitor_base.NodeVisitorBase):
+                     break
+         if body_str == "":
+             raise ValueError("`return` missing")
+-
+         return name_str, arg_strs, assign_vars, body_str
+ 
+     def visit_FunctionDef_multi_lines(self, node):
+@@ -317,3 +316,9 @@ class LatexifyVisitor(node_visitor_base.NodeVisitorBase):
+         raise TypeError(
+             "Comprehension for sum only supports range func " "with 1 or 2 args"
+         )
++        def visit_Subscript(self, node, action):
++            """Visit a subscript node."""
++            print("Visiting subscript node")
++            value = self.visit(node.value)
++            index = self.visit(node.slice)
++            return f"{value}_{index}"

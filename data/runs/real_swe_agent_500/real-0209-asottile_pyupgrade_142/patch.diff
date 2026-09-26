@@ -1,0 +1,8 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..98c9d4b
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1 @@
++'\n'

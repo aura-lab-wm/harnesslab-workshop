@@ -1,0 +1,17 @@
+
+diff --git a/test_fix_escape_sequences.py b/test_fix_escape_sequences.py
+new file mode 100644
+index 0000000..fffde04
+--- /dev/null
++++ b/test_fix_escape_sequences.py
+@@ -0,0 +1,10 @@
++from pyupgrade import _fix_escape_sequences
++from tokenize_rt import Token
++
++def test_fix_escape_sequences():
++    token = Token('STRING', r"'\N'")
++    fixed_token = _fix_escape_sequences(token)
++    assert fixed_token.src == r"'\\N'"
++    print("Test passed!")
++
++test_fix_escape_sequences()

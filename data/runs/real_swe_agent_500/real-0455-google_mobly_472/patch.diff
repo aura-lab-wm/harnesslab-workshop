@@ -1,0 +1,14 @@
+
+diff --git a/mobly/config_parser.py b/mobly/config_parser.py
+index aa43c03..454cd3f 100644
+--- a/mobly/config_parser.py
++++ b/mobly/config_parser.py
+@@ -152,7 +152,7 @@ def _load_config_file(path):
+     """
+     with io.open(utils.abs_path(path), 'r', encoding='utf-8') as f:
+         conf = yaml.load(f)
+-        return conf
++        utils.debug_log("Config file contents: %s" % conf)
+ 
+ 
+ class TestRunConfig(object):

@@ -1,0 +1,42 @@
+
+diff --git a/biomedsheets/io_tsv/germline.py b/biomedsheets/io_tsv/germline.py
+index 2214d46..3875a27 100644
+--- a/biomedsheets/io_tsv/germline.py
++++ b/biomedsheets/io_tsv/germline.py
+@@ -106,9 +106,10 @@ class GermlineTSVReader(BaseTSVReader):
+     def check_tsv_line(self, mapping, lineno):
+         """Cancer sample sheet--specific valiation"""
+         # Check for hyphen in patient or sample name
+-        if '-' in mapping['patientName']:
+-            raise GermlineTSVSheetException(
+-                'Hyphen not allowed in patientName column')  # pragma: no cover
++        # Check for hyphen in patient or sample name
++        # if '-' in mapping['patientName']:
++        #    raise GermlineTSVSheetException(
++        #        'Hyphen not allowed in patientName column')  # pragma: no cover
+         if mapping['fatherName'] and '-' in mapping['fatherName']:
+             raise GermlineTSVSheetException(
+                 'Hyphen not allowed in fatherName column')  # pragma: no cover
+diff --git a/test_removal_of_hyphen_restriction.py b/test_removal_of_hyphen_restriction.py
+new file mode 100644
+index 0000000..3b7bb20
+--- /dev/null
++++ b/test_removal_of_hyphen_restriction.py
+@@ -0,0 +1,17 @@
++from biomedsheets.io_tsv.germline import GermlineTSVReader
++from io import StringIO
++
++# Create a test TSV file with a patient name that includes a hyphen
++tsv_data = StringIO(
++    "patientName\tfatherName\tmotherName\tsex\tisAffected\tfolderName\thpoTerms\tlibraryType\n"
++    "Smith-Jones\tJoseph\tMary\tM\tY\tfolder1\thpoTerm1\tWES\n"
++    "Smith\tJoseph\tMary\tM\tY\tfolder1\thpoTerm1\tWES\n"
++)
++
++# Use the GermlineTSVReader to read the test TSV file
++reader = GermlineTSVReader(tsv_data)
++data = reader.read_sheet()
++
++# Check that the patient name with the hyphen is correctly included in the data
++assert "Smith-Jones" in [entity["patientName"] for entity in data["bioEntities"].values()]
++print("Test completed successfully, no errors.")

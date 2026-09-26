@@ -1,0 +1,160 @@
+[
+ {
+  "role": "system",
+  "content": "You are an autonomous software engineer working inside a small Python repository.\nYou are given a GitHub issue. Resolve it by editing files with the tools provided.\nWork step by step: inspect the relevant code, make a minimal change, verify it, then call `submit`.\nDo not modify the tests. Do not run commands unrelated to the task."
+ },
+ {
+  "role": "user",
+  "content": "Task id: t03_ratelimit\n\n# Issue #112: bucket exceeds capacity after idle period\n\nAfter the bucket sits idle for a while, `allow()` lets through more requests than\n`capacity`. Refill must be capped at `capacity`. There is also a second bug: the\nvery first call after construction should succeed even if `now()` returns 0.\nFix `limiter/bucket.py`.\n\n\nRepository files:\nlimiter/__init__.py\nlimiter/bucket.py\ntests/test_bucket.py"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_MM9QmebaOC9xXdjW1fbn6XxP",
+    "name": "read_file",
+    "arguments": {
+     "path": "limiter/bucket.py"
+    }
+   },
+   {
+    "id": "call_HAtFXAo1um8rIytWsSDELv9H",
+    "name": "read_file",
+    "arguments": {
+     "path": "tests/test_bucket.py"
+    }
+   },
+   {
+    "id": "call_OYFkQ10lTEvrBHVomcDtjNqW",
+    "name": "read_file",
+    "arguments": {
+     "path": "limiter/__init__.py"
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_MM9QmebaOC9xXdjW1fbn6XxP",
+  "content": "   1| import time\n   2| \n   3| class TokenBucket:\n   4|     \"\"\"Classic token bucket. `rate` tokens are added per second up to `capacity`.\n   5|     `allow()` consumes one token and returns True, or returns False if empty.\"\"\"\n   6| \n   7|     def __init__(self, capacity: int, rate: float, now=time.monotonic):\n   8|         self.capacity = capacity\n   9|         self.rate = rate\n  10|         self._now = now\n  11|         self._tokens = float(capacity)\n  12|         self._last = None\n  13| \n  14|     def _refill(self):\n  15|         t = self._now()\n  16|         if self._last:\n  17|             self._tokens += (t - self._last) * self.rate\n  18|         self._last = t\n  19| \n  20|     def allow(self) -> bool:\n  21|         self._refill()\n  22|         if self._tokens >= 1:\n  23|             self._tokens -= 1\n  24|             return True\n  25|         return False"
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_HAtFXAo1um8rIytWsSDELv9H",
+  "content": "   1| import unittest\n   2| from limiter import TokenBucket\n   3| \n   4| class FakeClock:\n   5|     def __init__(self, t=0.0): self.t = t\n   6|     def __call__(self): return self.t\n   7| \n   8| class TestBucket(unittest.TestCase):\n   9|     def test_capacity(self):\n  10|         clock = FakeClock(1.0)\n  11|         b = TokenBucket(capacity=3, rate=1.0, now=clock)\n  12|         self.assertEqual([b.allow() for _ in range(4)], [True, True, True, False])\n  13|     def test_no_overfill(self):\n  14|         clock = FakeClock(1.0)\n  15|         b = TokenBucket(capacity=3, rate=1.0, now=clock)\n  16|         for _ in range(3): b.allow()\n  17|         clock.t += 100\n  18|         self.assertEqual([b.allow() for _ in range(4)], [True, True, True, False])\n  19| \n  20| if __name__ == \"__main__\":\n  21|     unittest.main()"
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_OYFkQ10lTEvrBHVomcDtjNqW",
+  "content": "   1| from .bucket import TokenBucket"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_5Gsj20bWR3B63UKSYMt4FQbq",
+    "name": "read_file",
+    "arguments": {
+     "path": "limiter/bucket.py"
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_5Gsj20bWR3B63UKSYMt4FQbq",
+  "content": "   1| import time\n   2| \n   3| class TokenBucket:\n   4|     \"\"\"Classic token bucket. `rate` tokens are added per second up to `capacity`.\n   5|     `allow()` consumes one token and returns True, or returns False if empty.\"\"\"\n   6| \n   7|     def __init__(self, capacity: int, rate: float, now=time.monotonic):\n   8|         self.capacity = capacity\n   9|         self.rate = rate\n  10|         self._now = now\n  11|         self._tokens = float(capacity)\n  12|         self._last = None\n  13| \n  14|     def _refill(self):\n  15|         t = self._now()\n  16|         if self._last:\n  17|             self._tokens += (t - self._last) * self.rate\n  18|         self._last = t\n  19| \n  20|     def allow(self) -> bool:\n  21|         self._refill()\n  22|         if self._tokens >= 1:\n  23|             self._tokens -= 1\n  24|             return True\n  25|         return False"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_D3SFFlfMSfq44YSr1pnEKyIc",
+    "name": "read_file",
+    "arguments": {
+     "path": "tests/test_bucket.py"
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_D3SFFlfMSfq44YSr1pnEKyIc",
+  "content": "   1| import unittest\n   2| from limiter import TokenBucket\n   3| \n   4| class FakeClock:\n   5|     def __init__(self, t=0.0): self.t = t\n   6|     def __call__(self): return self.t\n   7| \n   8| class TestBucket(unittest.TestCase):\n   9|     def test_capacity(self):\n  10|         clock = FakeClock(1.0)\n  11|         b = TokenBucket(capacity=3, rate=1.0, now=clock)\n  12|         self.assertEqual([b.allow() for _ in range(4)], [True, True, True, False])\n  13|     def test_no_overfill(self):\n  14|         clock = FakeClock(1.0)\n  15|         b = TokenBucket(capacity=3, rate=1.0, now=clock)\n  16|         for _ in range(3): b.allow()\n  17|         clock.t += 100\n  18|         self.assertEqual([b.allow() for _ in range(4)], [True, True, True, False])\n  19| \n  20| if __name__ == \"__main__\":\n  21|     unittest.main()"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_uHjOIDqybjZdi6oHIfz2Csfe",
+    "name": "edit_file",
+    "arguments": {
+     "path": "limiter/bucket.py",
+     "old": "    def _refill(self):\n        t = self._now()\n        if self._last:\n            self._tokens += (t - self._last) * self.rate\n        self._last = t\n",
+     "new": "    def _refill(self):\n        t = self._now()\n        if self._last is not None:\n            self._tokens += (t - self._last) * self.rate\n            self._tokens = min(self._tokens, float(self.capacity))\n        self._last = t\n"
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_uHjOIDqybjZdi6oHIfz2Csfe",
+  "content": "edited limiter/bucket.py"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_9DTTRHp5wQi9P6BXgHmyYwnn",
+    "name": "read_file",
+    "arguments": {
+     "path": "limiter/bucket.py"
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_9DTTRHp5wQi9P6BXgHmyYwnn",
+  "content": "   1| import time\n   2| \n   3| class TokenBucket:\n   4|     \"\"\"Classic token bucket. `rate` tokens are added per second up to `capacity`.\n   5|     `allow()` consumes one token and returns True, or returns False if empty.\"\"\"\n   6| \n   7|     def __init__(self, capacity: int, rate: float, now=time.monotonic):\n   8|         self.capacity = capacity\n   9|         self.rate = rate\n  10|         self._now = now\n  11|         self._tokens = float(capacity)\n  12|         self._last = None\n  13| \n  14|     def _refill(self):\n  15|         t = self._now()\n  16|         if self._last is not None:\n  17|             self._tokens += (t - self._last) * self.rate\n  18|             self._tokens = min(self._tokens, float(self.capacity))\n  19|         self._last = t\n  20| \n  21|     def allow(self) -> bool:\n  22|         self._refill()\n  23|         if self._tokens >= 1:\n  24|             self._tokens -= 1\n  25|             return True\n  26|         return False"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_zjCOb0pPOLCmHeYamcrqk1Du",
+    "name": "run_tests",
+    "arguments": {}
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_zjCOb0pPOLCmHeYamcrqk1Du",
+  "content": "exit=0\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nOK"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_3PSXpDVBY1XnzjDr7ekwWauX",
+    "name": "submit",
+    "arguments": {
+     "summary": "Fixed TokenBucket refill logic by distinguishing an uninitialized timestamp from time 0 and capping refilled tokens at capacity, preventing idle buckets from exceeding capacity while allowing the first call at now() == 0."
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_3PSXpDVBY1XnzjDr7ekwWauX",
+  "content": "submitted"
+ }
+]

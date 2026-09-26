@@ -1,0 +1,24 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 2a55816..8366d83 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -457,9 +457,9 @@ ESCAPE_STARTS = frozenset((
+     '0', '1', '2', '3', '4', '5', '6', '7',  # octal escapes
+     'x',  # hex escapes
+     # only valid in non-bytestrings
+-    'N', 'u', 'U',
++    'u', 'U',
+ ))
+-ESCAPE_STARTS_BYTES = ESCAPE_STARTS - frozenset(('N', 'u', 'U'))
++ESCAPE_STARTS_BYTES = ESCAPE_STARTS - frozenset(('u', 'U'))
+ ESCAPE_RE = re.compile(r'\\.', re.DOTALL)
+ 
+ 
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..8b13789
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1 @@
++

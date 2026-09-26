@@ -1,0 +1,15 @@
+
+diff --git a/src/latexify/latexify_visitor.py b/src/latexify/latexify_visitor.py
+index 476d1ef..c579343 100644
+--- a/src/latexify/latexify_visitor.py
++++ b/src/latexify/latexify_visitor.py
+@@ -46,6 +46,9 @@ class LatexifyVisitor(node_visitor_base.NodeVisitorBase):
+         self.assign_var = {}
+ 
+     def generic_visit(self, node, action):
++        if isinstance(node, ast.Subscript):
++            # Handle Subscript nodes as indices
++            return f"{node.value.id}_{node.slice.value}"
+         return str(node)
+ 
+     def visit_Module(self, node, action):  # pylint: disable=invalid-name

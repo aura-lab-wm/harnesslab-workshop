@@ -1,0 +1,17 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 2a55816..383310a 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -80,6 +80,11 @@ def inty(s):
+ def _rewrite_string_literal(literal):
+     try:
+         parsed_fmt = parse_format(literal)
++        print("Encountered '\\N' escape sequence.")
++    except ValueError:
++        # Well, the format literal was malformed, so skip it
++        return literal
++        parsed_fmt = parse_format(literal)
+     except ValueError:
+         # Well, the format literal was malformed, so skip it
+         return literal

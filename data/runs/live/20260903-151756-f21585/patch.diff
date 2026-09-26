@@ -1,0 +1,43 @@
+--- a/cfg/loader.py
++++ b/cfg/loader.py
+@@ -1,5 +1,39 @@
+ def load_config(defaults: dict, env: dict) -> dict:
+     """Return a copy of `defaults` where any env var APP_<KEY> overrides the
+-    value for key <key> (lowercased), coerced to the type of the default."""
++    value for key <key> (lowercased), coerced to the type of the default.
++
++    Supported target types: bool, int, float, str. If conversion fails the
++    default value is left unchanged.
++    """
+     cfg = dict(defaults)
++
++    def parse_bool(v: str) -> bool:
++        t = v.strip().lower()
++        if t in ("1", "true", "yes", "on"): return True
++        if t in ("0", "false", "no", "off"): return False
++        raise ValueError(f"invalid boolean: {v}")
++
++    for k, v in env.items():
++        if not k.startswith("APP_"):
++            continue
++        key = k[4:].lower()
++        if key not in cfg:
++            continue
++        default_val = cfg[key]
++        # Determine target type, checking bool before int because bool is a
++        # subclass of int.
++        try:
++            if isinstance(default_val, bool):
++                cfg[key] = parse_bool(v)
++            elif isinstance(default_val, int):
++                cfg[key] = int(v)
++            elif isinstance(default_val, float):
++                cfg[key] = float(v)
++            else:
++                # Fallback to string for other types
++                cfg[key] = str(v)
++        except Exception:
++            # If conversion fails, leave the default as-is
++            cfg[key] = default_val
++
+     return cfg

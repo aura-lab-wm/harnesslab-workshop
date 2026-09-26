@@ -1,0 +1,23 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..48bc0f7
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,16 @@
++from sqlalchemy import Column, Integer
++from sqlalchemy_mixins import AllFeaturesMixin
++
++class MyBaseClass(AllFeaturesMixin):
++    __abstract__ = True
++
++    #SOME CODE
++    pass
++
++class MyClass(MyBaseClass):
++    __abstract__ = True
++
++    #SOME OTHER CODE
++    pass
++
++print("Script completed successfully, no errors.")

@@ -1,0 +1,22 @@
+--- a/limiter/bucket.py
++++ b/limiter/bucket.py
+@@ -9,12 +9,16 @@
+         self.rate = rate
+         self._now = now
+         self._tokens = float(capacity)
+-        self._last = None
++        self._last = self._now()
+ 
+     def _refill(self):
+         t = self._now()
+-        if self._last:
+-            self._tokens += (t - self._last) * self.rate
++        # If _last is None, it means this is the first call to _refill.
++        # In this case, we don't want to add tokens based on elapsed time.
++        # We just set _last to the current time.
++        # The problem description says "the very first call after construction should succeed even if `now()` returns 0".
++        # By initializing _last to self._now() in __init__, this case is handled.
++        self._tokens = min(self.capacity, self._tokens + (t - self._last) * self.rate)
+         self._last = t
+ 
+     def allow(self) -> bool:

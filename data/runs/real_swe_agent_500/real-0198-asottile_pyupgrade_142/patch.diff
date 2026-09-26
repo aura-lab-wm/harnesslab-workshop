@@ -1,0 +1,26 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 2a55816..441205f 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -487,7 +487,10 @@ def _fix_escape_sequences(token):
+     def cb(match):
+         matched = match.group()
+         if matched[1] in valid_escapes:
+-            return matched
++            if matched[1] == 'N':
++                return '\n'
++            else:
++                return matched
+         else:
+             return r'\{}'.format(matched)
+ 
+@@ -539,7 +542,7 @@ def _fix_octal(s):
+ 
+ 
+ def _is_string_prefix(token):
+-    return token.name == 'NAME' and set(token.src.lower()) <= set('bfru')
++    return token.name == 'NAME' and set(token.src.lower()) <= set('bfrNu')
+ 
+ 
+ def _fix_extraneous_parens(tokens, i):

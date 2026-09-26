@@ -1,0 +1,33 @@
+{
+  "run_id": "20260902-042933-4e75eb",
+  "task_id": "t03_ratelimit",
+  "harness_id": "tight_budget",
+  "model": "mock",
+  "provider": "mock",
+  "repeat_index": 3,
+  "started_at": "2026-09-02T04:29:33Z",
+  "finished_at": "2026-09-02T04:29:33Z",
+  "exit_reason": "submitted",
+  "steps": 5,
+  "tool_calls": 5,
+  "edits": 1,
+  "lines_added": 2,
+  "lines_removed": 2,
+  "files_touched": [
+    "limiter/bucket.py"
+  ],
+  "boundary_events": 0,
+  "boundary_kinds": [],
+  "tests_run_by_agent": 1,
+  "ran_tests_before_submit": false,
+  "input_tokens": 3961,
+  "output_tokens": 436,
+  "cost_usd": 0.006141000000000001,
+  "wall_ms": 184,
+  "visible_pass": true,
+  "hidden_pass": true,
+  "strong_pass": true,
+  "tests_modified": false,
+  "patch_bytes": 390,
+  "error": ""
+}

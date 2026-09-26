@@ -1,0 +1,14 @@
+
+diff --git a/delphin/tdl.py b/delphin/tdl.py
+index ec330f4..e9fc772 100644
+--- a/delphin/tdl.py
++++ b/delphin/tdl.py
+@@ -1007,6 +1007,8 @@ def iterparse(path: util.PathLike,
+     `"BeginEnvironment"`, `"EndEnvironment"`, `"FileInclude"`,
+     `"LineComment"`, or `"BlockComment"`), `object` is the interpreted
+     TDL object, and `lineno` is the line number where the entity began
++    in *path*. Both `LineComment` and `BlockComment` support the `format` method.
++    TDL object, and `lineno` is the line number where the entity began
+     in *path*.
+ 
+     Args:

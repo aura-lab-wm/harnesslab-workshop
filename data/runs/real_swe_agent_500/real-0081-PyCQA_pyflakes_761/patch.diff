@@ -1,0 +1,34 @@
+
+diff --git a/pyflakes/checker.py b/pyflakes/checker.py
+index e927715..bcebf39 100644
+--- a/pyflakes/checker.py
++++ b/pyflakes/checker.py
+@@ -991,7 +991,7 @@ class Checker:
+             elif scope is self.scope:
+                 if (
+                         (not existing.used and value.redefines(existing)) and
+-                        (value.name != '_' or isinstance(existing, Importation)) and
++                        (value.name!= '_' or isinstance(existing, Importation)) and
+                         not is_typing_overload(existing, self.scopeStack)
+                 ):
+                     self.report(messages.RedefinedWhileUnused,
+@@ -1000,6 +1000,19 @@ class Checker:
+             elif isinstance(existing, Importation) and value.redefines(existing):
+                 existing.redefined.append(node)
+ 
++        # Check for redefinition of attributes by methods
++        if value.name in self.scope:
++            existing = self.scope[value.name]
++            if isinstance(existing, FunctionDefinition) and isinstance(value, VariableKey):
++                self.report(messages.RedefinedWhileUnused,
++                            node, value.name, existing.source)
++            elif isinstance(existing, VariableKey) and isinstance(value, FunctionDefinition):
++                self.report(messages.RedefinedWhileUnused,
++                            node, value.name, existing.source)
++
++            elif isinstance(existing, Importation) and value.redefines(existing):
++                existing.redefined.append(node)
++
+         if value.name in self.scope:
+             # then assume the rebound name is used as a global or within a loop
+             value.used = self.scope[value.name].used

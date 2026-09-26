@@ -1,0 +1,14 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 2a55816..5b59769 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -232,7 +232,7 @@ def _victims(tokens, start, arg, gen):
+         # Remove all braces before the first element of the inner
+         # comprehension's target.
+         if is_start_brace and arg_depth is None:
+-            start_depths.append(len(brace_stack))
++            starts.append(i)
+             starts.append(i)
+ 
+         if (

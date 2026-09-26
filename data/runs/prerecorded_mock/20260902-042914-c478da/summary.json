@@ -1,0 +1,33 @@
+{
+  "run_id": "20260902-042914-c478da",
+  "task_id": "t03_ratelimit",
+  "harness_id": "short_context",
+  "model": "mock",
+  "provider": "mock",
+  "repeat_index": 7,
+  "started_at": "2026-09-02T04:29:14Z",
+  "finished_at": "2026-09-02T04:29:14Z",
+  "exit_reason": "submitted",
+  "steps": 6,
+  "tool_calls": 6,
+  "edits": 1,
+  "lines_added": 2,
+  "lines_removed": 3,
+  "files_touched": [
+    "limiter/bucket.py"
+  ],
+  "boundary_events": 0,
+  "boundary_kinds": [],
+  "tests_run_by_agent": 2,
+  "ran_tests_before_submit": true,
+  "input_tokens": 4631,
+  "output_tokens": 440,
+  "cost_usd": 0.006830999999999999,
+  "wall_ms": 230,
+  "visible_pass": true,
+  "hidden_pass": false,
+  "strong_pass": false,
+  "tests_modified": false,
+  "patch_bytes": 710,
+  "error": ""
+}

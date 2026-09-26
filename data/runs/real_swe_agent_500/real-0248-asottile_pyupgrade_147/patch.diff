@@ -1,0 +1,22 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 31a603e..0022634 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -1,5 +1,5 @@
+-from __future__ import absolute_import
+ from __future__ import unicode_literals
++import os
+ 
+ import argparse
+ import ast
+@@ -1400,6 +1400,9 @@ def _fix_fstrings(contents_text):
+ 
+ 
+ def fix_file(filename, args):
++    if not os.path.exists(filename):
++        print('File does not exist: {}'.format(filename))
++        return 0
+     with open(filename, 'rb') as f:
+         contents_bytes = f.read()
+ 

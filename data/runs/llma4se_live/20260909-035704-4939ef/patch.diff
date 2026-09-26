@@ -1,0 +1,19 @@
+--- a/units/duration.py
++++ b/units/duration.py
+@@ -1,9 +1,12 @@
++import re
++
+ _UNIT = {"h": 3600, "m": 60, "s": 1}
++_TOKEN = re.compile(r"(\d+)([hms])")
++
+ 
+ def parse_duration(text: str) -> int:
+-    """Parse '45s', '2m', '1h' into seconds. Compound forms such as '1h30m'
+-    should also be accepted."""
++    """Parse a duration made up of hour, minute, and second components."""
+     text = text.strip()
+-    if len(text) < 2 or text[-1] not in _UNIT or not text[:-1].isdigit():
++    if not text or not re.fullmatch(r"(\d+[hms])+", text):
+         raise ValueError(f"bad duration: {text!r}")
+-    return int(text[:-1]) * _UNIT[text[-1]]
++    return sum(int(number) * _UNIT[unit] for number, unit in _TOKEN.findall(text))

@@ -1,0 +1,76 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..a0f960f
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,8 @@
++class Currency:
++    def __init__(self, symbol):
++        self.symbol = symbol
++
++currency = Currency('USD')
++print('{}\N{NO-BREAK SPACE}'.format(currency.symbol or ""))
++test_string = '{}\N{NO-BREAK SPACE}ABC'.format(currency.symbol or "")
++print(test_string)
+diff --git a/test_functions.py b/test_functions.py
+new file mode 100644
+index 0000000..7d1e3f5
+--- /dev/null
++++ b/test_functions.py
+@@ -0,0 +1,55 @@
++import ast
++from pyupgrade._main import _fix_format_literal, _fix_escape_sequences
++from pyupgrade._string_helpers import parse_format, unparse_parsed_string
++from pyupgrade._token_helpers import Token, is_open, is_close, find_name, find_op, victims
++
++# Create a test string
++test_string = '{}\N{NO-BREAK SPACE}ABC'.format('USD')
++
++# Create a token for the test string
++token = Token(name='STRING', src=test_string)
++
++# Test the _fix_format_literal function
++print("Testing _fix_format_literal function:")
++fixed_string = _fix_format_literal([token], 0)
++print(f"Output: {fixed_string}")
++
++# Test the _fix_escape_sequences function
++print("\nTesting _fix_escape_sequences function:")
++fixed_string = _fix_escape_sequences(token)
++print(f"Output: {fixed_string}")
++
++# Test the parse_format function
++print("\nTesting parse_format function:")
++parsed_string = parse_format(test_string)
++print(f"Output: {parsed_string}")
++
++# Test the unparse_parsed_string function
++print("\nTesting unparse_parsed_string function:")
++unparsed_string = unparse_parsed_string(parsed_string)
++print(f"Output: {unparsed_string}")
++
++# Test the is_open function
++print("\nTesting is_open function:")
++result = is_open(token)
++print(f"Output: {result}")
++token_list = [token, Token(name='OP', src='(')]
++
++# Test the find_name function
++print("\nTesting find_name function:")
++index = find_name(token_list, 0, "STRING")
++print(f"Output: {index}")
++
++# Test the find_op function
++print("\nTesting find_op function:")
++index = find_op(token_list, 0, "(")
++print(f"Output: {index}")
++# Test the find_op function
++print("\nTesting find_op function:")
++index = find_op(token_list, 0, "(")
++print(f"Output: {index}")
++
++# Test the victims function
++print("\nTesting victims function:")
++victim_indices = victims(token_list, 0, ast.expr(), False)
++print(f"Output: {victim_indices}")

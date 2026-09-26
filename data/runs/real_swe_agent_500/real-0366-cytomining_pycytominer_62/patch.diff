@@ -1,0 +1,224 @@
+
+diff --git a/pycytominer.egg-info/PKG-INFO b/pycytominer.egg-info/PKG-INFO
+new file mode 100644
+index 0000000..f39f3d3
+--- /dev/null
++++ b/pycytominer.egg-info/PKG-INFO
+@@ -0,0 +1,16 @@
++Metadata-Version: 2.1
++Name: pycytominer
++Version: 0.0.0
++Summary: package for processing and mining morphological profiles
++Home-page: https://github.com/cytomining/pycytominer
++Maintainer: Gregory Way
++Maintainer-email: gregory.way@gmail.com
++License: BSD 3-Clause License
++Requires-Python: >=3.4
++License-File: LICENSE.md
++Requires-Dist: numpy
++Requires-Dist: pandas
++Requires-Dist: scikit-learn
++Requires-Dist: sqlalchemy
++
++package to normalize, manipulate, and process morphological profiling data. The python implementation of cytominer.
+diff --git a/pycytominer.egg-info/SOURCES.txt b/pycytominer.egg-info/SOURCES.txt
+new file mode 100644
+index 0000000..b1428dc
+--- /dev/null
++++ b/pycytominer.egg-info/SOURCES.txt
+@@ -0,0 +1,55 @@
++LICENSE.md
++MANIFEST.in
++README.md
++setup.py
++pycytominer/__init__.py
++pycytominer/aggregate.py
++pycytominer/annotate.py
++pycytominer/audit.py
++pycytominer/consensus.py
++pycytominer/correlation_threshold.py
++pycytominer/count_na_features.py
++pycytominer/covariance.py
++pycytominer/feature_select.py
++pycytominer/get_na_columns.py
++pycytominer/normalize.py
++pycytominer/sparse_random_projection.py
++pycytominer/variance_threshold.py
++pycytominer/write_gct.py
++pycytominer.egg-info/PKG-INFO
++pycytominer.egg-info/SOURCES.txt
++pycytominer.egg-info/dependency_links.txt
++pycytominer.egg-info/requires.txt
++pycytominer.egg-info/top_level.txt
++pycytominer/cyto_utils/__init__.py
++pycytominer/cyto_utils/features.py
++pycytominer/cyto_utils/output.py
++pycytominer/cyto_utils/transform.py
++pycytominer/cyto_utils/util.py
++pycytominer/data/blacklist_features.txt
++pycytominer/data/metadata_feature_dictionary.txt
++pycytominer/pooled/__init__.py
++pycytominer/pooled/process.py
++pycytominer/tests/__init__.py
++pycytominer/tests/test_aggregate.py
++pycytominer/tests/test_aggregate_profiles.py
++pycytominer/tests/test_annotate.py
++pycytominer/tests/test_audit.py
++pycytominer/tests/test_consensus.py
++pycytominer/tests/test_correlation_threshold.py
++pycytominer/tests/test_count_na_features.py
++pycytominer/tests/test_covariance.py
++pycytominer/tests/test_feature_select.py
++pycytominer/tests/test_get_na_columns.py
++pycytominer/tests/test_normalize.py
++pycytominer/tests/test_sparse_random_projection.py
++pycytominer/tests/test_variance_threshold.py
++pycytominer/tests/test_write_gct.py
++pycytominer/tests/test_cyto_utils/__init__.py
++pycytominer/tests/test_cyto_utils/test_feature_blacklist.py
++pycytominer/tests/test_cyto_utils/test_feature_infer.py
++pycytominer/tests/test_cyto_utils/test_output.py
++pycytominer/tests/test_cyto_utils/test_transform.py
++pycytominer/tests/test_cyto_utils/test_util.py
++pycytominer/tests/test_pooled/__init__.py
++pycytominer/tests/test_pooled/test_process.py
+\ No newline at end of file
+diff --git a/pycytominer.egg-info/dependency_links.txt b/pycytominer.egg-info/dependency_links.txt
+new file mode 100644
+index 0000000..8b13789
+--- /dev/null
++++ b/pycytominer.egg-info/dependency_links.txt
+@@ -0,0 +1 @@
++
+diff --git a/pycytominer.egg-info/requires.txt b/pycytominer.egg-info/requires.txt
+new file mode 100644
+index 0000000..8978569
+--- /dev/null
++++ b/pycytominer.egg-info/requires.txt
+@@ -0,0 +1,4 @@
++numpy
++pandas
++scikit-learn
++sqlalchemy
+diff --git a/pycytominer.egg-info/top_level.txt b/pycytominer.egg-info/top_level.txt
+new file mode 100644
+index 0000000..8ad7cac
+--- /dev/null
++++ b/pycytominer.egg-info/top_level.txt
+@@ -0,0 +1 @@
++pycytominer
+diff --git a/pycytominer/variance_threshold.py b/pycytominer/variance_threshold.py
+index aa4299d..7ccee8a 100644
+--- a/pycytominer/variance_threshold.py
++++ b/pycytominer/variance_threshold.py
+@@ -87,3 +87,110 @@ def calculate_frequency(feature_column, freq_cut):
+         return np.nan
+     else:
+         return feature_column.name
++
++def variance_threshold(
++    population_df, features="infer", samples="none", freq_cut=0.05, unique_cut=0.01, max_value=None
++):
++    """
++    Exclude features that have correlations below a certain threshold
++
++    Arguments:
++    population_df - pandas DataFrame that includes metadata and observation features
++    features - a list of features present in the population dataframe [default: "infer"]
++               if "infer", then assume cell painting features are those that start with
++               "Cells_", "Nuclei_", or "Cytoplasm_"
++    samples - list samples to perform operation on
++              [default: "none"] - if "none", use all samples to calculate
++    freq_cut - float of ratio (second most common feature value / most common) [default: 0.1]
++    unique_cut - float of ratio (num unique features / num samples) [default: 0.1]
++    max_value - maximum allowed value for a feature [default: None]
++                 if a feature's value exceeds this, it will be excluded
++
++    Return:
++    list of features to exclude from the population_df
++    """
++
++    assert 0 <= freq_cut <= 1, "freq_cut variable must be between (0 and 1)"
++    assert 0 <= unique_cut <= 1, "unique_cut variable must be between (0 and 1)"
++    if max_value is not None:
++        assert max_value > 0, "max_value must be a positive number"
++
++    # Subset dataframe
++    if samples != "none":
++        population_df = population_df.loc[samples, :]
++
++    if features == "infer":
++        features = infer_cp_features(population_df)
++        population_df = population_df.loc[:, features]
++    else:
++        population_df = population_df.loc[:, features]
++
++    # Test if excluded for low frequency
++    excluded_features_freq = population_df.apply(
++        lambda x: calculate_frequency(x, freq_cut), axis="rows"
++    )
++
++    excluded_features_freq = excluded_features_freq[
++        excluded_features_freq.isna()
++    ].index.tolist()
++
++    # Test if excluded for uniqueness
++    n = population_df.shape[0]
++    num_unique_features = population_df.nunique()
++
++    unique_ratio = num_unique_features / n
++    unique_ratio = unique_ratio < unique_cut
++    excluded_features_unique = unique_ratio[unique_ratio].index.tolist()
++
++    # Test if excluded for maximum value
++    if max_value is not None:
++        excluded_features_max = population_df.apply(
++            lambda x: x.name if x.max() > max_value else np.nan, axis="rows"
++        )
++        excluded_features_max = excluded_features_max[
++            excluded_features_max.isna()
++        ].index.tolist()
++        excluded_features_freq += excluded_features_max
++
++    excluded_features = list(set(excluded_features_freq + excluded_features_unique))
++    return excluded_features
++
++    # Subset dataframe
++    if samples != "none":
++        population_df = population_df.loc[samples, :]
++
++    if features == "infer":
++        features = infer_cp_features(population_df)
++        population_df = population_df.loc[:, features]
++    else:
++        population_df = population_df.loc[:, features]
++
++    # Test if excluded for low frequency
++    excluded_features_freq = population_df.apply(
++        lambda x: calculate_frequency(x, freq_cut), axis="rows"
++    )
++
++    excluded_features_freq = excluded_features_freq[
++        excluded_features_freq.isna()
++    ].index.tolist()
++
++    # Test if excluded for uniqueness
++    n = population_df.shape[0]
++    num_unique_features = population_df.nunique()
++
++    unique_ratio = num_unique_features / n
++    unique_ratio = unique_ratio < unique_cut
++    excluded_features_unique = unique_ratio[unique_ratio].index.tolist()
++
++    # Test if excluded for maximum value
++    if max_value is not None:
++        excluded_features_max = population_df.apply(
++            lambda x: x.name if x.max() > max_value else np.nan, axis="rows"
++        )
++        excluded_features_max = excluded_features_max[
++            excluded_features_max.isna()
++        ].index.tolist()
++        excluded_features_freq += excluded_features_max
++
++    excluded_features = list(set(excluded_features_freq + excluded_features_unique))
++    return excluded_features

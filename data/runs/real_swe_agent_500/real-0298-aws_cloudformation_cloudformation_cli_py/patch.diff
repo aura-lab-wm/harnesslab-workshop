@@ -1,0 +1,38 @@
+
+diff --git a/install_dependencies.py b/install_dependencies.py
+new file mode 100644
+index 0000000..281556a
+--- /dev/null
++++ b/install_dependencies.py
+@@ -0,0 +1,18 @@
++import subprocess
++
++# Install a package using pip
++package_to_install = "numpy"
++
++# Log the output
++with open("pip_log.txt", "w") as log_file:
++    process = subprocess.Popen(["pip", "install", package_to_install], stdout=log_file, stderr=log_file)
++
++# Wait for the process to complete
++process.wait()
++
++# Check the exit code
++exit_code = process.returncode
++if exit_code != 0:
++    print("Error installing package:", exit_code)
++else:
++    print("Package installed successfully")
+diff --git a/pip_log.txt b/pip_log.txt
+new file mode 100644
+index 0000000..87e2c1f
+--- /dev/null
++++ b/pip_log.txt
+@@ -0,0 +1,7 @@
++Collecting numpy
++  Downloading numpy-2.0.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (60 kB)
++Downloading numpy-2.0.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (19.5 MB)
++   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 19.5/19.5 MB 64.8 MB/s eta 0:00:00
++Installing collected packages: numpy
++Successfully installed numpy-2.0.2
++WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable.It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.

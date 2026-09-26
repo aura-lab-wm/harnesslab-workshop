@@ -1,0 +1,30 @@
+--- a/units/duration.py
++++ b/units/duration.py
+@@ -1,9 +1,25 @@
++import re
++
+ _UNIT = {"h": 3600, "m": 60, "s": 1}
++_TOKEN = re.compile(r"(\d+)([hms])")
+ 
+ def parse_duration(text: str) -> int:
+     """Parse '45s', '2m', '1h' into seconds. Compound forms such as '1h30m'
+     should also be accepted."""
+     text = text.strip()
+-    if len(text) < 2 or text[-1] not in _UNIT or not text[:-1].isdigit():
++    if not text or not re.fullmatch(r"(\d+[hms]) +", text):
++        # Note: using a fullmatch guard to ensure the entire string is valid
++        # Accept sequences like '1h30m' or single units like '45s'
++        # The regex used in fullmatch must allow one or more repetitions.
++        # We'll use a simpler check using the _TOKEN to find all pieces and
++        # ensure they concatenate to the original string.
++        # Fall back to the more robust implementation below.
++        pass
++    # Robust implementation: find all tokens and ensure they join to the original string
++    tokens = _TOKEN.findall(text)
++    if not tokens:
+         raise ValueError(f"bad duration: {text!r}")
+-    return int(text[:-1]) * _UNIT[text[-1]]
++    joined = "".join(n + u for n, u in tokens)
++    if joined != text:
++        raise ValueError(f"bad duration: {text!r}")
++    return sum(int(n) * _UNIT[u] for n, u in tokens)

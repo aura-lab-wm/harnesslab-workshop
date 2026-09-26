@@ -1,0 +1,14 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 2a55816..dc0c1dc 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -55,7 +55,7 @@ def unparse_parsed_string(parsed):
+     return j.join(_convert_tup(tup) for tup in parsed)
+ 
+ 
+-NON_CODING_TOKENS = frozenset(('COMMENT', ESCAPED_NL, 'NL', UNIMPORTANT_WS))
++NON_CODING_TOKENS = frozenset((b'COMMENT', b'ESCAPED_NL', b'NL', b'UNIMPORTANT_WS'))
+ 
+ 
+ def _ast_to_offset(node):

@@ -1,0 +1,32 @@
+--- a/store/cache.py
++++ b/store/cache.py
+@@ -6,6 +6,7 @@
+     def __init__(self, root: str, ttl: float, now=time.time):
+         self.root = root
+         self.ttl = ttl
++        self.cleanup()
+         self._now = now
+         os.makedirs(root, exist_ok=True)
+ 
+@@ -22,4 +23,21 @@
+             return default
+         with open(p) as f:
+             rec = json.load(f)
++        if self._now() - rec["t"] > self.ttl:
++            os.remove(p)
++            return default
+         return rec["v"]
++
++    def cleanup(self):
++        for key in os.listdir(self.root):
++            p = os.path.join(self.root, key)
++            if not os.path.isfile(p):
++                continue
++            try:
++                with open(p) as f:
++                    rec = json.load(f)
++                if self._now() - rec["t"] > self.ttl:
++                    os.remove(p)
++            except (IOError, OSError, json.JSONDecodeError):
++                # Ignore files that are not valid cache entries or cannot be accessed
++                os.remove(p)

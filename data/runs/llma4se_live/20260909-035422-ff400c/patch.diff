@@ -1,0 +1,33 @@
+--- a/cfg/loader.py
++++ b/cfg/loader.py
+@@ -2,4 +2,30 @@
+     """Return a copy of `defaults` where any env var APP_<KEY> overrides the
+     value for key <key> (lowercased), coerced to the type of the default."""
+     cfg = dict(defaults)
++    for key, value in env.items():
++        if key.startswith("APP_"):
++            config_key = key[4:].lower()
++            if config_key in cfg:
++                default_value = cfg[config_key]
++                try:
++                    if isinstance(default_value, bool):
++                        # Special handling for booleans: 'true'/'false' (case-insensitive)
++                        if value.lower() == 'true':
++                            cfg[config_key] = True
++                        elif value.lower() == 'false':
++                            cfg[config_key] = False
++                        else:
++                            # If not 'true' or 'false', keep the default value or raise an error
++                            # For now, let's keep the default to avoid breaking existing configs
++                            # A more robust solution might raise a ValueError
++                            pass
++                    else:
++                        # Coerce to the type of the default value
++                        cfg[config_key] = type(default_value)(value)
++                except (ValueError, TypeError):
++                    # Handle cases where coercion fails, e.g., non-numeric string for int/float
++                    # For now, we'll ignore the override if coercion fails,
++                    # similar to how invalid types might be handled.
++                    # A more robust solution might log a warning or raise an error.
++                    pass
+     return cfg

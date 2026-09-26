@@ -1,0 +1,43 @@
+
+diff --git a/src/pyjen/utils/plugin_api.py b/src/pyjen/utils/plugin_api.py
+index 0c925e2..f20998f 100644
+--- a/src/pyjen/utils/plugin_api.py
++++ b/src/pyjen/utils/plugin_api.py
+@@ -1,7 +1,7 @@
+ """Primitives for interacting with the PyJen plugin subsystem"""
+ import logging
+ from pkg_resources import iter_entry_points
+-
++import inspect
+ # Every PyJen plugin must have a class registered with the following Python
+ # setup tools entrypoint
+ PLUGIN_ENTRYPOINT_NAME = "pyjen.plugins"
+@@ -52,3 +52,28 @@ def find_plugin(plugin_name):
+ 
+ if __name__ == "__main__":  # pragma: no cover
+     pass
++from pyjen.plugins import View, Job
++
++def get_all_plugins():
++    """Returns a list of all PyJen plugins"""
++    log = logging.getLogger(__name__)
++    all_plugins = list()
++    for entry_point in iter_entry_points(group=PLUGIN_ENTRYPOINT_NAME):
++        all_plugins.append(entry_point.load())
++    return all_plugins
++
++def get_view_plugins():
++    """Returns a list of PyJen plugins that derive from the View base class"""
++    view_plugins = list()
++    for plugin in get_all_plugins():
++        if inspect.isclass(plugin) and issubclass(plugin, View):
++            view_plugins.append(plugin)
++    return view_plugins
++
++def get_job_plugins():
++    """Returns a list of PyJen plugins that derive from the Job base class"""
++    job_plugins = list()
++    for plugin in get_all_plugins():
++        if inspect.isclass(plugin) and issubclass(plugin, Job):
++            job_plugins.append(plugin)
++    return job_plugins

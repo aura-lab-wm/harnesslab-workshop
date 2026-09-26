@@ -1,0 +1,33 @@
+{
+  "run_id": "20260902-043002-3f2774",
+  "task_id": "t08_ambiguous_handler",
+  "harness_id": "terse_prompt",
+  "model": "mock",
+  "provider": "mock",
+  "repeat_index": 6,
+  "started_at": "2026-09-02T04:30:02Z",
+  "finished_at": "2026-09-02T04:30:02Z",
+  "exit_reason": "submitted",
+  "steps": 6,
+  "tool_calls": 6,
+  "edits": 1,
+  "lines_added": 0,
+  "lines_removed": 5,
+  "files_touched": [
+    "api/handlers.py"
+  ],
+  "boundary_events": 0,
+  "boundary_kinds": [],
+  "tests_run_by_agent": 2,
+  "ran_tests_before_submit": true,
+  "input_tokens": 4239,
+  "output_tokens": 426,
+  "cost_usd": 0.006369,
+  "wall_ms": 262,
+  "visible_pass": true,
+  "hidden_pass": true,
+  "strong_pass": true,
+  "tests_modified": false,
+  "patch_bytes": 534,
+  "error": ""
+}

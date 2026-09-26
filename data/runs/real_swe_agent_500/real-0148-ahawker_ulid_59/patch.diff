@@ -1,0 +1,15 @@
+
+diff --git a/ulid/base32.py b/ulid/base32.py
+index 83f8a8a..c40c789 100644
+--- a/ulid/base32.py
++++ b/ulid/base32.py
+@@ -253,7 +253,8 @@ def decode_ulid(value: str) -> bytes:
+         raise ValueError('Expects 26 characters for timestamp + randomness; got {}'.format(length))
+ 
+     try:
+-        encoded = value.encode('ascii')
++        # Convert the string to uppercase and replace L, I, and O as per the specification
++        encoded = value.upper().replace('L', '1').replace('I', '1').replace('O', '0').encode('ascii')
+     except UnicodeEncodeError as ex:
+         raise ValueError('Expects value that can be encoded in ASCII charset: {}'.format(ex))
+ 

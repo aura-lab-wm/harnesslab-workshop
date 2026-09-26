@@ -1,0 +1,22 @@
+
+diff --git a/contact_maintainers.py b/contact_maintainers.py
+new file mode 100644
+index 0000000..db825ed
+--- /dev/null
++++ b/contact_maintainers.py
+@@ -0,0 +1,15 @@
++import smtplib
++from email.mime.text import MIMEText
++
++# Create the email message
++msg = MIMEText("Dear pyCasbin Maintainers,\n\nI am currently working on the pyCasbin project and need to track certain features or issues from the Casbin-core repository. Since I do not have direct access to the Casbin-core repository, I am reaching out to request a list of features or issues that need to be tracked and implemented in pyCasbin.\n\nCould you please provide me with this information or guide me on how to proceed?\n\nThank you for your assistance.\n\nBest regards,\nYour Name")
++msg['Subject'] = 'Tracking Casbin-core features in pyCasbin'
++msg['From'] = 'Your Email Address'
++msg['To'] = 'pyCasBin Maintainers Email Address'
++
++# Connect to the SMTP server and send the email
++s = smtplib.SMTP('Valid SMTP Server Address')
++s.send_message(msg)
++s.quit()
++
++print("Email sent successfully!")

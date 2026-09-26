@@ -1,0 +1,13 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 2a55816..c1044f3 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -66,6 +66,7 @@ def ast_parse(contents_text):
+     # intentionally ignore warnings, we might be fixing warning-ridden syntax
+     with warnings.catch_warnings():
+         warnings.simplefilter('ignore')
++        contents_text = _fix_format_literals(contents_text)
+         return ast.parse(contents_text.encode('UTF-8'))
+ 
+ 

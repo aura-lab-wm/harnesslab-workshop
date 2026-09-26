@@ -1,0 +1,47 @@
+
+diff --git a/auth0/management/branding.py b/auth0/management/branding.py
+index 38084a9..12e9c9b 100644
+--- a/auth0/management/branding.py
++++ b/auth0/management/branding.py
+@@ -45,7 +45,13 @@ class Branding:
+                 url = f"{url}/{p}"
+         return url
+ 
+-    def get(self, aud=None):
++    def get_default(self):
++        """Retrieve the default branding theme. Requires "read:branding" scope.
++
++        See: https://auth0.com/docs/api/management/v2#!/Branding/get_default_branding_theme
++        """
++        
++        return self.client.get(self._url("themes", "default"))
+         """Retrieve branding settings. Requires "read:branding" scope.
+ 
+         See: https://auth0.com/docs/api/management/v2#!/Branding/get_branding
+@@ -61,10 +67,24 @@ class Branding:
+ 
+         See: https://auth0.com/docs/api/management/v2#!/Branding/patch_branding
+         """
+-
+         return self.client.patch(self._url(), data=body)
++    def get_theme(self, theme_name):
++        """Retrieve a specific branding theme. Requires "read:branding" scope.
++
++        See: https://auth0.com/docs/api/management/v2#!/Branding/get_branding_theme
++        """
++        
++        return self.client.get(self._url("themes", theme_name))
++    def update_theme(self, theme_name, body):
++        """Update a specific branding theme. Requires "update:branding" scope.
+ 
+-    def get_template_universal_login(self):
++        Args:
++            body (dict): Attributes for the updated trigger binding.
++        
++        See: https://auth0.com/docs/api/management/v2#!/Branding/patch_branding_theme
++        """
++        
++        return self.client.patch(self._url("themes", theme_name), data=body)
+         """Get template for New Universal Login Experience. Requires "read:branding" scope.
+ 
+         See: https://auth0.com/docs/api/management/v2#!/Branding/get_universal_login

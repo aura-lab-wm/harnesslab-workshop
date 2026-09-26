@@ -1,0 +1,40 @@
+
+diff --git a/delphin/tdl.py b/delphin/tdl.py
+index ec330f4..e9a2490 100644
+--- a/delphin/tdl.py
++++ b/delphin/tdl.py
+@@ -78,7 +78,34 @@ class Term:
+             return Conjunction([self] + other._terms)
+         else:
+             return NotImplemented
++class CommentTerm(Term):
++    """
++    Class for handling LineComment and BlockComment events.
++    
++    This subclass of :class:`Term` is responsible for formatting 
++    LineComment and BlockComment events as TDL strings.
++    """
+ 
++    def __init__(self, docstring=None):
++        super().__init__(docstring=docstring)
++
++    def format(self, indent=0):
++        """
++        Format the comment event as a TDL string.
++        
++        Args:
++            indent (int): number of spaces to indent the formatted object
++        Returns:
++            str: serialized form of the comment event
++        """
++        if self.docstring is not None:
++            return '{}\n{}{}'.format(
++                _format_docstring(self.docstring, indent),
++                ' ' * indent,
++                ';'
++            )
++        else:
++            return ';'
+ 
+ class TypeTerm(Term, str):
+     """

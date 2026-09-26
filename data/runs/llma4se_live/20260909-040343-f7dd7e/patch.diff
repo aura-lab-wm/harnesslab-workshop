@@ -1,0 +1,35 @@
+--- a/store/cache.py
++++ b/store/cache.py
+@@ -8,9 +8,24 @@
+         self.ttl = ttl
+         self._now = now
+         os.makedirs(root, exist_ok=True)
++        self._cleanup()
+ 
+     def _path(self, key):
+         return os.path.join(self.root, f"{key}.json")
++
++    def _cleanup(self):
++        """Remove all expired cache entries from disk."""
++        for fname in os.listdir(self.root):
++            if not fname.endswith(".json"):
++                continue
++            p = os.path.join(self.root, fname)
++            try:
++                with open(p) as f:
++                    rec = json.load(f)
++                if self._now() - rec["t"] > self.ttl:
++                    os.remove(p)
++            except (OSError, json.JSONDecodeError, KeyError):
++                os.remove(p)
+ 
+     def set(self, key, value):
+         with open(self._path(key), "w") as f:
+@@ -22,4 +37,7 @@
+             return default
+         with open(p) as f:
+             rec = json.load(f)
++        if self._now() - rec["t"] > self.ttl:
++            os.remove(p)
++            return default
+         return rec["v"]

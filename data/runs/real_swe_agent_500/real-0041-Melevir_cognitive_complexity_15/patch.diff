@@ -1,0 +1,23 @@
+
+diff --git a/cognitive_complexity/utils/ast.py b/cognitive_complexity/utils/ast.py
+index 7e3938c..3cd30e7 100644
+--- a/cognitive_complexity/utils/ast.py
++++ b/cognitive_complexity/utils/ast.py
+@@ -6,12 +6,16 @@ from cognitive_complexity.common_types import AnyFuncdef
+ 
+ 
+ def has_recursive_calls(funcdef: AnyFuncdef) -> bool:
++    # Get the function name from the function definition
++    func_name = funcdef.name if isinstance(funcdef, ast.FunctionDef) else None
++    if not func_name:
++        return False
+     return bool([
+         n for n in ast.walk(funcdef)
+         if (
+             isinstance(n, ast.Call)
+             and isinstance(n.func, ast.Name)
+-            and n.func.id == funcdef.name
++            and n.func.id == func_name
+         )
+     ])
+ 

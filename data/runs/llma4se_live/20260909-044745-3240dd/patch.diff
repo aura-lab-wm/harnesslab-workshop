@@ -1,0 +1,14 @@
+--- a/limiter/bucket.py
++++ b/limiter/bucket.py
+@@ -13,8 +13,10 @@
+ 
+     def _refill(self):
+         t = self._now()
+-        if self._last:
++        if self._last is not None:
+             self._tokens += (t - self._last) * self.rate
++            if self._tokens > self.capacity:
++                self._tokens = self.capacity
+         self._last = t
+ 
+     def allow(self) -> bool:

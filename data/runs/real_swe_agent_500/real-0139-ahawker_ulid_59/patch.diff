@@ -1,0 +1,16 @@
+
+diff --git a/ulid/api.py b/ulid/api.py
+index ad5db3f..f65de04 100644
+--- a/ulid/api.py
++++ b/ulid/api.py
+@@ -88,6 +88,10 @@ def from_str(value: str) -> ulid.ULID:
+     :rtype: :class:`~ulid.ulid.ULID`
+     :raises ValueError: when the value is not 26 characters or malformed
+     """
++    # Preprocess the ULID string to ensure it conforms to the Crockford's Base32 specification
++    value = value.upper()
++    value = value.replace('I', '1').replace('L', '1').replace('O', '0')
++
+     return ulid.ULID(base32.decode_ulid(value))
+ 
+ 

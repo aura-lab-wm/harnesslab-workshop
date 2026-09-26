@@ -1,0 +1,15 @@
+
+diff --git a/geopandas/tools/sjoin.py b/geopandas/tools/sjoin.py
+index 9ac00d7..f785f03 100644
+--- a/geopandas/tools/sjoin.py
++++ b/geopandas/tools/sjoin.py
+@@ -195,8 +195,8 @@ def _geom_predicate_query(left_df, right_df, predicate, distance):
+     if original_predicate == "within":
+         # within is implemented as the inverse of contains
+         # flip back the results
++        # flip the r_idx array to account for the change in predicate
+         r_idx, l_idx = l_idx, r_idx
+-
+     return l_idx, r_idx
+ 
+ 

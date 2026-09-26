@@ -1,0 +1,11 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..f44a72e
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,4 @@
++expectedResult = (
++    ":example.com \u0442\u0435\u0441\u0442 " "\u043d\u0438\u043a\r\n"
++).encode("utf-8")
++print(expectedResult)

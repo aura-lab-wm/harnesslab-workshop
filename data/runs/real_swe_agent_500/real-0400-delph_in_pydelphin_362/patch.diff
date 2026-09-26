@@ -1,0 +1,75 @@
+
+diff --git a/delphin/tdl.py b/delphin/tdl.py
+index ec330f4..6abae02 100644
+--- a/delphin/tdl.py
++++ b/delphin/tdl.py
+@@ -1376,24 +1376,29 @@ def format(obj, indent=0):
+ 
+ 
+ def _format_term(term, indent):
+-    fmt = {
+-        TypeIdentifier: _format_id,
+-        String: _format_string,
+-        Regex: _format_regex,
+-        Coreference: _format_coref,
+-        AVM: _format_avm,
+-        ConsList: _format_conslist,
+-        DiffList: _format_difflist,
+-    }.get(term.__class__, None)
++    if term.startswith(';'):
++        return ';'+ term[1:]
++    elif term.startswith('#|'):
++        return '#|'+ term[2:] +'|#'
++    else:
++        fmt = {
++            TypeIdentifier: _format_id,
++            String: _format_string,
++            Regex: _format_regex,
++            Coreference: _format_coref,
++            AVM: _format_avm,
++            ConsList: _format_conslist,
++            DiffList: _format_difflist,
++        }.get(term.__class__, None)
+ 
+     if fmt is None:
+         raise TDLError('not a valid term: {}'
+-                       .format(type(term).__name__))
++                    .format(type(term).__name__))
+ 
+     if term.docstring is not None:
+         return '{}\n{}{}'.format(
+             _format_docstring(term.docstring, indent),
+-            ' ' * indent,
++           '' * indent,
+             fmt(term, indent))
+     else:
+         return fmt(term, indent)
+diff --git a/test_format.py b/test_format.py
+new file mode 100644
+index 0000000..685cd64
+--- /dev/null
++++ b/test_format.py
+@@ -0,0 +1,23 @@
++from delphin.tdl import Term, format
++
++def test_format():
++    # Simulate LineComment and BlockComment as subclasses of Term
++    class LineComment(Term):
++        pass
++
++    class BlockComment(Term):
++        pass
++
++    # Create instances of LineComment and BlockComment
++    line_comment = LineComment()
++    block_comment = BlockComment()
++
++    # Check if the format method works correctly
++    assert format(line_comment) is not None, "LineComment formatting failed"
++    assert format(block_comment) is not None, "BlockComment formatting failed"
++
++    print("All tests passed successfully")
++
++if __name__ == "__main__":
++    test_format()
++    print("Script completed successfully, no errors.")

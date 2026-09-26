@@ -1,0 +1,38 @@
+cff-version: 1.2.0
+message: "If you use harnesslab or the agentlab harness in academic work, please cite it as below."
+title: "harnesslab: treating the agent harness as a controlled experimental variable"
+abstract: >-
+  harnesslab is an open platform for measuring coding agents rather than only scoring them. It pairs a
+  small, fully configurable coding-agent harness with a measurement ledger that records every model
+  call, tool call, edit, and policy event, and a web platform that varies the harness as an
+  experimental factor, reports outcomes with uncertainty, replays trajectories, and intervenes on a
+  run while it is still going through a sentinel hook that scores the partial trajectory.
+type: software
+version: "0.3.0"
+date-released: "2026-09-03"
+license: MIT
+authors:
+  - family-names: Mastropaolo
+    given-names: Antonio
+    affiliation: "William & Mary"
+    orcid: "https://orcid.org/0000-0002-7965-7712"
+repository-code: "https://github.com/antonio-mastropaolo/harnesslab"
+url: "https://github.com/antonio-mastropaolo/harnesslab"
+keywords:
+  - large language models
+  - coding agents
+  - software engineering agents
+  - benchmarking
+  - evaluation
+  - agent trajectories
+  - observability
+references:
+  - type: data
+    title: "SWE-agent-trajectories"
+    authors:
+      - name: "Nebius"
+    license: CC-BY-4.0
+    url: "https://huggingface.co/datasets/nebius/SWE-agent-trajectories"
+    notes: >-
+      The 500 real runs shipped in data/runs/real_swe_agent_500 are a sample of this dataset,
+      converted to the agentlab ledger format.

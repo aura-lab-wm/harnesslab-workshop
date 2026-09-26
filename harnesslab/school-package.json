@@ -1,0 +1,117 @@
+{
+  "title": "School replication package",
+  "version": 1,
+  "datasets": [
+    "llma4se_live",
+    "live",
+    "real_swe_agent_500",
+    "prerecorded_mock",
+    "prerecorded_mock_weak",
+    "families_mock",
+    "demo_mock"
+  ],
+  "dataset_notes": {
+    "demo_mock": "A compact demonstration: the mock model under two harnesses (permissive, permissive+sentinel), across 3 tasks.",
+    "families_mock": "Mock models (mock, mock-b) under four harnesses, across 5 tasks — a small model × harness grid for trying the Experiment step.",
+    "prerecorded_mock": "Mock model, for exercises that must behave identically on every machine: the mock model under all six harnesses, across all 8 task probes.",
+    "prerecorded_mock_weak": "A second, weaker model (mock-weak) under two harnesses, across the same 8 tasks — pairs with prerecorded_mock for the exercise-8 factorial.",
+    "llma4se_live": "Real, collected for this lab through OpenRouter: 1,632 runs of five current models (DeepSeek V4 Flash, Gemini 2.5 Flash-Lite, Gemini 3.8 Flash, GPT-5.6 Luna, Qwen3.8 27B) under six harnesses, across all 8 task probes.",
+    "live": "Real, collected for this lab through OpenRouter: 576 runs of Claude Haiku 4.5, Gemini 2.5 Flash and GPT-5-mini under eight harnesses (including the sentinel variants), across all 8 task probes.",
+    "real_swe_agent_500": "Real, third-party: 500 SWE-agent trajectories (Llama 8B and 70B) on 30 GitHub-issue tasks, streamed from nebius/SWE-agent-trajectories (CC-BY-4.0), each with its resolved/unresolved label."
+  },
+  "materials": [
+    {
+      "title": "Start here",
+      "paths": [
+        "docs/STUDENT_GUIDE.md",
+        "docs/WORKSHOP.md",
+        "README.md",
+        "SCHOOL_PACKAGE.md",
+        "HANDOUT.md",
+        "LAB_1H.md"
+      ],
+      "description": "The step-by-step student guide, setup, the lab handout, and the one-hour teaching plan."
+    },
+    {
+      "title": "Exercises and task probes",
+      "paths": [
+        "exercises/",
+        "tasks/",
+        "harnesses/",
+        "trajectory_tests/"
+      ],
+      "description": "Eight exercises, eight task repositories, and the harness configurations."
+    },
+    {
+      "title": "Application and measurement engine",
+      "paths": [
+        "harnesslab/",
+        "pyproject.toml",
+        "setup.py",
+        "requirements.txt"
+      ],
+      "description": "Python source, the dashboard source and build, and installation requirements; local state excluded."
+    },
+    {
+      "title": "Reproduction and validation",
+      "paths": [
+        "tests_agentlab/",
+        "scripts/",
+        "Makefile",
+        "LICENSE",
+        "CITATION.cff"
+      ],
+      "description": "Infrastructure checks, packaging tools, and attribution."
+    }
+  ],
+  "excluded": [
+    "Any results directory not listed above",
+    "Captured coding sessions and capture watcher state",
+    "API keys, environment files, and local model selection",
+    "The macOS menu-bar app and machine census tools",
+    "Personal outputs, internal notes, caches, and Git history",
+    "Instructor solutions"
+  ],
+  "include": [
+    ".devcontainer/",
+    "HANDOUT.md",
+    "LAB_1H.md",
+    "LICENSE",
+    "CITATION.cff",
+    "pyproject.toml",
+    "setup.py",
+    "requirements.txt",
+    "Makefile",
+    "Dockerfile",
+    "docker-compose.yml",
+    "SCHOOL_PACKAGE.md",
+    "docs/img/student-guide/",
+    "docs/student-lab.md",
+    "docs/STUDENT_GUIDE.md",
+    "docs/WORKSHOP.md",
+    "exercises/",
+    "tasks/",
+    "harnesses/",
+    "trajectory_tests/",
+    "tests_agentlab/",
+    "scripts/",
+    "harnesslab/"
+  ],
+  "exclude": [
+    "harnesslab/data/",
+    "harnesslab/README.md",
+    "harnesslab/docs/",
+    "harnesslab/frontend/test/",
+    "harnesslab/frontend/scripts/",
+    "harnesslab/frontend/README.md"
+  ],
+  "extra_files": [
+    "harnesslab/data/models/mock_prerecorded.json",
+    "harnesslab/frontend/test/rig-testing.jsx"
+  ],
+  "generated_files": [
+    "README.md",
+    "PACKAGE_MANIFEST.json",
+    "harnesslab/data/active_model.txt"
+  ]
+}

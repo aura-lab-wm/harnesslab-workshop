@@ -1,0 +1,14 @@
+
+diff --git a/lexicon/cli.py b/lexicon/cli.py
+index dbef1ae2..23dc77d1 100644
+--- a/lexicon/cli.py
++++ b/lexicon/cli.py
+@@ -65,6 +65,8 @@ def handle_output(results, output_type):
+     """Print the relevant output for given output_type"""
+     if not output_type == 'QUIET':
+         if not output_type == 'JSON':
++            if isinstance(results, str):
++                results = [results]
+             table = generate_table_result(
+                 logger, results, output_type == 'TABLE-NO-HEADER')
+             if table:

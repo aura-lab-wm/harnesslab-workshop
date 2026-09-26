@@ -1,0 +1,142 @@
+
+diff --git a/drop_exploding_features.py b/drop_exploding_features.py
+new file mode 100644
+index 0000000..6f4a125
+--- /dev/null
++++ b/drop_exploding_features.py
+@@ -0,0 +1,6 @@
++def drop_exploding_features(population_df, features, samples, threshold):
++    # Logic to drop exploding features
++    exclude = []  # Initialize exclude list
++    # Your code to determine exploding features and add them to the exclude list
++    return exclude
++from pycytominer.drop_exploding_features import drop_exploding_features
+diff --git a/pycytominer.egg-info/PKG-INFO b/pycytominer.egg-info/PKG-INFO
+new file mode 100644
+index 0000000..f39f3d3
+--- /dev/null
++++ b/pycytominer.egg-info/PKG-INFO
+@@ -0,0 +1,16 @@
++Metadata-Version: 2.1
++Name: pycytominer
++Version: 0.0.0
++Summary: package for processing and mining morphological profiles
++Home-page: https://github.com/cytomining/pycytominer
++Maintainer: Gregory Way
++Maintainer-email: gregory.way@gmail.com
++License: BSD 3-Clause License
++Requires-Python: >=3.4
++License-File: LICENSE.md
++Requires-Dist: numpy
++Requires-Dist: pandas
++Requires-Dist: scikit-learn
++Requires-Dist: sqlalchemy
++
++package to normalize, manipulate, and process morphological profiling data. The python implementation of cytominer.
+diff --git a/pycytominer.egg-info/SOURCES.txt b/pycytominer.egg-info/SOURCES.txt
+new file mode 100644
+index 0000000..b1428dc
+--- /dev/null
++++ b/pycytominer.egg-info/SOURCES.txt
+@@ -0,0 +1,55 @@
++LICENSE.md
++MANIFEST.in
++README.md
++setup.py
++pycytominer/__init__.py
++pycytominer/aggregate.py
++pycytominer/annotate.py
++pycytominer/audit.py
++pycytominer/consensus.py
++pycytominer/correlation_threshold.py
++pycytominer/count_na_features.py
++pycytominer/covariance.py
++pycytominer/feature_select.py
++pycytominer/get_na_columns.py
++pycytominer/normalize.py
++pycytominer/sparse_random_projection.py
++pycytominer/variance_threshold.py
++pycytominer/write_gct.py
++pycytominer.egg-info/PKG-INFO
++pycytominer.egg-info/SOURCES.txt
++pycytominer.egg-info/dependency_links.txt
++pycytominer.egg-info/requires.txt
++pycytominer.egg-info/top_level.txt
++pycytominer/cyto_utils/__init__.py
++pycytominer/cyto_utils/features.py
++pycytominer/cyto_utils/output.py
++pycytominer/cyto_utils/transform.py
++pycytominer/cyto_utils/util.py
++pycytominer/data/blacklist_features.txt
++pycytominer/data/metadata_feature_dictionary.txt
++pycytominer/pooled/__init__.py
++pycytominer/pooled/process.py
++pycytominer/tests/__init__.py
++pycytominer/tests/test_aggregate.py
++pycytominer/tests/test_aggregate_profiles.py
++pycytominer/tests/test_annotate.py
++pycytominer/tests/test_audit.py
++pycytominer/tests/test_consensus.py
++pycytominer/tests/test_correlation_threshold.py
++pycytominer/tests/test_count_na_features.py
++pycytominer/tests/test_covariance.py
++pycytominer/tests/test_feature_select.py
++pycytominer/tests/test_get_na_columns.py
++pycytominer/tests/test_normalize.py
++pycytominer/tests/test_sparse_random_projection.py
++pycytominer/tests/test_variance_threshold.py
++pycytominer/tests/test_write_gct.py
++pycytominer/tests/test_cyto_utils/__init__.py
++pycytominer/tests/test_cyto_utils/test_feature_blacklist.py
++pycytominer/tests/test_cyto_utils/test_feature_infer.py
++pycytominer/tests/test_cyto_utils/test_output.py
++pycytominer/tests/test_cyto_utils/test_transform.py
++pycytominer/tests/test_cyto_utils/test_util.py
++pycytominer/tests/test_pooled/__init__.py
++pycytominer/tests/test_pooled/test_process.py
+\ No newline at end of file
+diff --git a/pycytominer.egg-info/dependency_links.txt b/pycytominer.egg-info/dependency_links.txt
+new file mode 100644
+index 0000000..8b13789
+--- /dev/null
++++ b/pycytominer.egg-info/dependency_links.txt
+@@ -0,0 +1 @@
++
+diff --git a/pycytominer.egg-info/requires.txt b/pycytominer.egg-info/requires.txt
+new file mode 100644
+index 0000000..8978569
+--- /dev/null
++++ b/pycytominer.egg-info/requires.txt
+@@ -0,0 +1,4 @@
++numpy
++pandas
++scikit-learn
++sqlalchemy
+diff --git a/pycytominer.egg-info/top_level.txt b/pycytominer.egg-info/top_level.txt
+new file mode 100644
+index 0000000..8ad7cac
+--- /dev/null
++++ b/pycytominer.egg-info/top_level.txt
+@@ -0,0 +1 @@
++pycytominer
+diff --git a/pycytominer/feature_select.py b/pycytominer/feature_select.py
+index fe64e3a..7841bd9 100644
+--- a/pycytominer/feature_select.py
++++ b/pycytominer/feature_select.py
+@@ -10,7 +10,7 @@ from pycytominer.variance_threshold import variance_threshold
+ from pycytominer.get_na_columns import get_na_columns
+ from pycytominer.cyto_utils.output import output
+ from pycytominer.cyto_utils.features import get_blacklist_features, infer_cp_features
+-
++from pycytominer.drop_exploding_features import drop_exploding_features
+ 
+ def feature_select(
+     profiles,
+@@ -58,6 +58,7 @@ def feature_select(
+         "correlation_threshold",
+         "drop_na_columns",
+         "blacklist",
++        "drop_exploding_features",  # new operation to drop exploding features
+     ]
+ 
+     # Make sure the user provides a supported operation

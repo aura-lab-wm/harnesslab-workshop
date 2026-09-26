@@ -1,0 +1,12 @@
+
+diff --git a/format_functions.py b/format_functions.py
+new file mode 100644
+index 0000000..fe69e7f
+--- /dev/null
++++ b/format_functions.py
+@@ -0,0 +1,5 @@
++def format_line_comment(comment_text, indent=0):
++    return '{}// {}'.format(' ' * indent, comment_text)
++
++def format_block_comment(comment_text, indent=0):
++    return '{}/* {} */'.format(' ' * indent, comment_text)

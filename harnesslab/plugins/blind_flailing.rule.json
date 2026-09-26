@@ -1,0 +1,10 @@
+{
+  "id": "blind_flailing",
+  "severity": "medium",
+  "when": "consecutive_failed_tests >= 1 and same_file_edits_max >= 3 and edits_since_test >= 1",
+  "label": "Editing the same file again after a failing test",
+  "reason": "The last test run failed, one file has now been rewritten at least three times, and there is an unverified edit on top of it: the agent is guessing rather than reading the failure.",
+  "nudge": "The tests failed and you have rewritten this file three times. Stop editing: print the failing assertion and the value it saw, then make one targeted change.",
+  "action_hint": "nudge",
+  "citation": "Ochiai feature repeated edits without a passing test on nebius/SWE-agent-trajectories."
+}

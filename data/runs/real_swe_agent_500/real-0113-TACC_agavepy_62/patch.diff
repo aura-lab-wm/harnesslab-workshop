@@ -1,0 +1,129 @@
+
+diff --git a/tests/sample_responses/sample-config.json b/tests/sample_responses/sample-config.json
+index cfb1ae4..1aff91c 100644
+--- a/tests/sample_responses/sample-config.json
++++ b/tests/sample_responses/sample-config.json
+@@ -1,43 +1,84 @@
+ {
+-  "current": {
+-    "access_token": "",
+-    "apikey": "",
+-    "apisecret": "",
+-    "baseurl": "https://api.sd2e.org",
+-    "created_at": "",
+-    "devurl": "",
+-    "expires_at": "",
+-    "expires_in": "",
+-    "refresh_token": "",
+-    "tenantid": "sd2e",
+-    "username": ""
+-  },
+-  "tenants": {
+-    "irec": {
+-      "access_token": "",
+-      "apikey": "",
+-      "apisecret": "",
+-      "baseurl": "https://irec.tenants.prod.tacc.cloud",
+-      "created_at": "",
+-      "devurl": "",
+-      "expires_at": "",
+-      "expires_in": "",
+-      "refresh_token": "",
+-      "tenantid": "irec",
+-      "username": ""
++    "current": {
++        "client-1" : {
++            // the configurations include tenant and user info already.
++        }
+     },
+-    "sd2e": {
+-      "access_token": "",
+-      "apikey": "",
+-      "apisecret": "",
+-      "baseurl": "https://api.sd2e.org",
+-      "created_at": "",
+-      "devurl": "",
+-      "expires_at": "",
+-      "expires_in": "",
+-      "refresh_token": "",
+-      "tenantid": "sd2e",
+-      "username": ""
++    "sessions": {
++        "sd2e": {
++            "admin": {
++                "client-1": {
++                    "access_token": "",
++                    "apikey": "",
++                    "apisecret": "",
++                    "baseurl": "https://api.sd2e.org",
++                    "created_at": "",
++                    "devurl": "",
++                    "expires_at": "",
++                    "expires_in": "",
++                    "refresh_token": "",
++                    "tenantid": "sd2e",
++                    "username": ""
++                },
++                "client-2": {
++                    "access_token": "",
++                    "apikey": "",
++                    "apisecret": "",
++                    "baseurl": "https://api.sd2e.org",
++                    "created_at": "",
++                    "devurl": "",
++                    "expires_at": "",
++                    "expires_in": "",
++                    "refresh_token": "",
++                    "tenantid": "sd2e",
++                    "username": ""
++                }
++            },
++            "user1":{
++                "client-1": {
++                    "access_token": "",
++                    "apikey": "",
++                    "apisecret": "",
++                    "baseurl": "https://api.sd2e.org",
++                    "created_at": "",
++                    "devurl": "",
++                    "expires_at": "",
++                    "expires_in": "",
++                    "refresh_token": "",
++                    "tenantid": "sd2e",
++                    "username": ""
++                },
++                "client-2": {
++                    "access_token": "",
++                    "apikey": "",
++                    "apisecret": "",
++                    "baseurl": "https://api.sd2e.org",
++                    "created_at": "",
++                    "devurl": "",
++                    "expires_at": "",
++                    "expires_in": "",
++                    "refresh_token": "",
++                    "tenantid": "sd2e",
++                    "username": ""
++                }
++            }
++        },
++        "tacc": {
++            "admin": {
++                "client-1": {
++                    "access_token": "",
++                    "apikey": "",
++                    "apisecret": "",
++                    "baseurl": "https://irec.tenants.prod.tacc.cloud",
++                    "created_at": "",
++                    "devurl": "",
++                    "expires_at": "",
++                    "expires_in": "",
++                    "refresh_token": "",
++                    "tenantid": "irec",
++                    "username": ""
++                }
++            }
++        }
+     }
+-  }
+ }

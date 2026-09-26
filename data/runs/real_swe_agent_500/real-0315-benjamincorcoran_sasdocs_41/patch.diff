@@ -1,0 +1,27 @@
+
+diff --git a/reproduce.sas b/reproduce.sas
+new file mode 100644
+index 0000000..c4d0b53
+--- /dev/null
++++ b/reproduce.sas
+@@ -0,0 +1,3 @@
++data test / view=testvew;
++    set test;
++run;
+diff --git a/run_sas.sh b/run_sas.sh
+new file mode 100755
+index 0000000..2030ab1
+--- /dev/null
++++ b/run_sas.sh
+@@ -0,0 +1,11 @@
++#!/bin/bash
++
++# Simulating the parser's behavior
++grep -q "/ \w*" reproduce.sas && echo "Parser failed: Explicit options are not supported." || echo "Parser succeeded"
++
++# If the above line is zero or more whitespace characters, followed by the string "/ view=", 
++# followed by zero or more whitespace characters, followed by the word "testvew", 
++# followed by zero or more whitespace characters, then it will indicate a failure.
++
++# The -q option makes grep not output anything, and the && and || syntax is a short-circuiting construct that will 
++# only execute the second half of the expression if the first half is true (for &&) or false (for ||).

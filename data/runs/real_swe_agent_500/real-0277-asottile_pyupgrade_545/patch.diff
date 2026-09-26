@@ -1,0 +1,45 @@
+
+diff --git a/pyupgrade/_token_helpers.py b/pyupgrade/_token_helpers.py
+index 44d9b57..604b203 100644
+--- a/pyupgrade/_token_helpers.py
++++ b/pyupgrade/_token_helpers.py
+@@ -456,7 +456,7 @@ def find_and_replace_call(
+ ) -> None:
+     j = find_open_paren(tokens, i)
+     func_args, end = parse_call_args(tokens, j)
+-    replace_call(tokens, i, end, func_args, template, parens=parens)
++    replace_call(tokens, i, end, func_args, template + '({{rest}})', parens=parens)
+ 
+ 
+ def replace_name(i: int, tokens: List[Token], *, name: str, new: str) -> None:
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..b03e67a
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,9 @@
++class Parent:
++    @staticmethod
++    def func(arg):
++        return 0
++
++class Child(Parent):
++    @staticmethod
++    def func(arg):
++        return Parent.func(arg)
+diff --git a/test_super.py b/test_super.py
+new file mode 100644
+index 0000000..4ad9eca
+--- /dev/null
++++ b/test_super.py
+@@ -0,0 +1,10 @@
++class Parent:
++    @staticmethod
++    def func(arg):
++        print("Parent.func called with argument:", arg)
++        return 0
++
++class Child(Parent):
++    def func(arg):
++        print("Child.func called with argument:", arg)
++        return Parent.func(arg) + 1  # add 1 to verify the call

@@ -1,0 +1,182 @@
+
+diff --git a/agavepy/utils/cachedir_helpers.py b/agavepy/utils/cachedir_helpers.py
+index 2f0af07..56924c1 100644
+--- a/agavepy/utils/cachedir_helpers.py
++++ b/agavepy/utils/cachedir_helpers.py
+@@ -34,7 +34,7 @@ def save_config(cache_dir, current_context):
+         * "current" will specify the configuration to be used for the current 
+           session. The contents of this section should match those of 
+           ~/.agave/current.
+-        * "tenants" will have one or more keys, and each key will have a json 
++        * "sessions" will have one or more keys, and each key will have a json 
+           object related to it. Each key will correspond to a tenant id.
+ 
+     For example:
+@@ -44,16 +44,31 @@ def save_config(cache_dir, current_context):
+             ...
+             "username": "user"
+         },
+-        "tenants": {
++        "sessions": {
+             "3dem": {
+-                "access_token": "other-token",
+-                ...
+-                "username": "user"
++                "admin": {
++                    "client-1": {
++                        ...
++                    },
++                    "client-2": {
++                        ...
++                    }
++                },
++                "user1":{
++                    "client-1": {
++                        ...
++                    },
++                    "client-2": {
++                        ...
++                    }
++                }
+             },
+             "sd2e": {
+-                "acces_token": "some-token",
+-                ...
+-                "usernamer":user"
++                "admin": {
++                    "client-1": {
++                        ...
++                    }
++                }
+             }
+         }
+     }
+@@ -67,7 +82,6 @@ def save_config(cache_dir, current_context):
+     config_file = "{}/config.json".format(cache_dir)
+     config_files = [current_file, config_file]
+ 
+-
+     # Read in configuration from cache dir if it exist, else create one.
+     if os.path.isfile(config_file):
+         with open(config_file, "r") as f:
+@@ -75,31 +89,110 @@ def save_config(cache_dir, current_context):
+     else:
+         agave_context = dict()
+ 
+-
+     # Set up ~/.agave/config.json
+ 
+     # We are saving configurations for the first time so we have to set 
+-    # "current" and add it to "tenants".
+-    if "tenants" not in agave_context:
+-        # No existing tenants, so we just add the current context.
++    # "current" and add it to "sessions".
++    if "sessions" not in agave_context:
++        # No existing sessions, so we just add the current context.
+         agave_context["current"] = current_context
+         
+-        # Create an empty dictionary for "tenants" key.
+-        agave_context["tenants"] = dict()
++        # Create an empty dictionary for "sessions" key.
++        agave_context["sessions"] = dict()
+         # Save current tenant context.
+-        agave_context["tenants"][current_context["tenantid"]] = agave_context["current"]
+-    # "tenants" already exist so we just have to put the current context
++        agave_context["sessions"][current_context["tenantid"]] = {
++            current_context["username"]: {
++                current_context["client_name"]: current_context
++            }
++        }
++    # "sessions" already exist so we just have to put the current context
+     # back in.
+     else:
+         # Save current tenant context.
+-        agave_context["tenants"][agave_context["current"]["tenantid"]] = agave_context["current"]
++        agave_context["sessions"][current_context["tenantid"]][current_context["username"]][current_context["client_name"]] = current_context
+ 
+         # Save current_context as such.
+         agave_context["current"] =  current_context
+ 
+-
+     # Save data to cache dir files.
+     with open(config_file, "w") as f:
+         json.dump(agave_context, f, sort_keys=True, indent=4)
+     with open(current_file, "w") as f:
+         json.dump(agave_context["current"], f, sort_keys=True)
++def switch_tenant(tenant_id, username, client_name, cache_dir):
++    """ Switch Agave Tenant
++
++    Switch the current context to a specified Agave tenant, username, and client name.
++    The current context along with all previous used are stored in a
++    local database (arguments.agavedb).
++
++    The ~/.agave/config.json file will have the following format:
++        * "current" will specify the configuration to be used for the current 
++          session. The contents of this section should match those of 
++          ~/.agave/current.
++        * "sessions" will have one or more keys, and each key will have a json 
++          object related to it. Each key will correspond to a tenant id.
++
++    For example:
++    {
++        "current": {
++            "access_token": "some-token",
++            ...
++            "username": "user"
++        },
++        "sessions": {
++            "3dem": {
++                "admin": {
++                    "client-1": {
++                        ...
++                    },
++                    "client-2": {
++                        ...
++                    }
++                },
++                "user1":{
++                    "client-1": {
++                        ...
++                    },
++                    "client-2": {
++                        ...
++                    }
++                }
++            },
++            "sd2e": {
++                "admin": {
++                    "client-1": {
++                        ...
++                    }
++                }
++            }
++        }
++    }
++
++    PARAMETERS
++    ----------
++    tenant_id: str
++        The id of the tenant to switch to.
++    username: str
++        The username to switch to.
++    client_name: str
++        The client name to switch to.
++    cache_dir: str
++        The location to store the configuration.
++    """
++    # Get location to store configuration.
++    make_cache_dir(cache_dir)
++    current_file = "{}/current".format(cache_dir)
++    config_file = "{}/config.json".format(cache_dir)
++    config_files = [current_file, config_file]
++
++    # Load the config.json file
++    with open(config_file, "r") as f:
++        agave_context = json.load(f)
++
++    # Set the current context
++    agave_context["current"] = agave_context["sessions"][tenant_id][username][client_name]
++
++    # Save the changes to the config.json file
++    with open(config_file, "w") as f:
++        json.dump(agave_context, f, sort_keys=True, indent=4)

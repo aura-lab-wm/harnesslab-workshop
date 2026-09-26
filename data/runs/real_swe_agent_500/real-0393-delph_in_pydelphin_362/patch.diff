@@ -1,0 +1,18 @@
+
+diff --git a/delphin/tdl.py b/delphin/tdl.py
+index ec330f4..84803ff 100644
+--- a/delphin/tdl.py
++++ b/delphin/tdl.py
+@@ -1451,8 +1451,10 @@ def _format_conslist(cl, indent):
+         lines = [f'< {values[0]}']
+         lines.extend(i + val for val in values[1:])
+         return ',\n'.join(lines) + end + ' >'
+-
+-
++    def _format_linecomment(linecomment, indent):
++        return f'{indent}# {linecomment.comment}'
++    def _format_blockcomment(blockcomment, indent):
++        return f'{indent}# {blockcomment.comment}'
+ def _format_difflist(dl, indent):
+     values = [_format_conjunction(val, indent + 3)  # 3 == len('<! ')
+               for val in dl.values()]

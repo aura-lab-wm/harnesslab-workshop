@@ -1,0 +1,60 @@
+--- a/store/cache.py
++++ b/store/cache.py
+@@ -8,6 +8,31 @@
+         self.ttl = ttl
+         self._now = now
+         os.makedirs(root, exist_ok=True)
++        # cleanup any expired or invalid entries left on disk
++        try:
++            for fn in os.listdir(root):
++                if not fn.endswith('.json'):
++                    continue
++                p = os.path.join(root, fn)
++                try:
++                    with open(p) as f:
++                        rec = json.load(f)
++                except Exception:
++                    # corrupted file -> remove
++                    try:
++                        os.remove(p)
++                    except OSError:
++                        pass
++                    continue
++                ts = rec.get('t')
++                if ts is None or (self._now() - ts) > self.ttl:
++                    try:
++                        os.remove(p)
++                    except OSError:
++                        pass
++        except OSError:
++            # if the directory cannot be listed, ignore
++            pass
+ 
+     def _path(self, key):
+         return os.path.join(self.root, f"{key}.json")
+@@ -20,6 +45,22 @@
+         p = self._path(key)
+         if not os.path.exists(p):
+             return default
+-        with open(p) as f:
+-            rec = json.load(f)
+-        return rec["v"]
++        try:
++            with open(p) as f:
++                rec = json.load(f)
++        except Exception:
++            # corrupted file: remove and treat as missing
++            try:
++                os.remove(p)
++            except OSError:
++                pass
++            return default
++        ts = rec.get("t")
++        # expired or missing timestamp: remove file and treat as missing
++        if ts is None or (self._now() - ts) > self.ttl:
++            try:
++                os.remove(p)
++            except OSError:
++                pass
++            return default
++        return rec.get("v", default)

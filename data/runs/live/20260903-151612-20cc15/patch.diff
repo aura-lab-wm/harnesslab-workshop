@@ -1,0 +1,18 @@
+--- a/limiter/bucket.py
++++ b/limiter/bucket.py
+@@ -13,8 +13,14 @@
+ 
+     def _refill(self):
+         t = self._now()
+-        if self._last:
++        # Only refill if we've recorded a previous timestamp. Use explicit
++        # None check because 0 is a valid time value (falsy) and should not
++        # prevent refilling.
++        if self._last is not None:
+             self._tokens += (t - self._last) * self.rate
++            # Never exceed capacity
++            if self._tokens > self.capacity:
++                self._tokens = float(self.capacity)
+         self._last = t
+ 
+     def allow(self) -> bool:

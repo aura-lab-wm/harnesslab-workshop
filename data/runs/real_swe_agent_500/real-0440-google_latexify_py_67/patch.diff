@@ -1,0 +1,23 @@
+
+diff --git a/src/latexify/latexify_visitor.py b/src/latexify/latexify_visitor.py
+index 476d1ef..bee8300 100644
+--- a/src/latexify/latexify_visitor.py
++++ b/src/latexify/latexify_visitor.py
+@@ -52,10 +52,13 @@ class LatexifyVisitor(node_visitor_base.NodeVisitorBase):
+         return self.visit(node.body[0], "multi_lines")
+ 
+     def visit_FunctionDef(self, node, action):  # pylint: disable=invalid-name
+-        name_str = str(node.name)
+-        if self._use_raw_function_name:
+-            name_str = name_str.replace(r"_", r"\_")
+-        name_str = r"\mathrm{" + name_str + "}"
++        if node.name == "solve":
++            name_str = r"\mathrm{solve}"
++        else:
++            name_str = str(node.name)
++            if self._use_raw_function_name:
++                name_str = name_str.replace(r"_", r"\_")
++            name_str = r"\mathrm{" + name_str + "}"
+ 
+         arg_strs = [
+             self._math_symbol_converter.convert(str(arg.arg)) for arg in node.args.args

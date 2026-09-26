@@ -1,0 +1,17 @@
+
+diff --git a/dask_jobqueue/htcondor.py b/dask_jobqueue/htcondor.py
+index fb7b0be..abd104a 100644
+--- a/dask_jobqueue/htcondor.py
++++ b/dask_jobqueue/htcondor.py
+@@ -245,8 +245,11 @@ class HTCondorCluster(JobQueueCluster):
+         Extra arguments to pass to condor_submit
+     cancel_command_extra : list of str
+         Extra arguments to pass to condor_rm
++    env_extra : list of str
++        Environment variables to be inserted into dask-worker's environment
+     {job}
+     {cluster}
++    {cluster}
+ 
+     Examples
+     --------

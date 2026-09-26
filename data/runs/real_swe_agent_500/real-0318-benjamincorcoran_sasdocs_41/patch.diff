@@ -1,0 +1,20 @@
+
+diff --git a/reproduce.sas b/reproduce.sas
+new file mode 100644
+index 0000000..734ff07
+--- /dev/null
++++ b/reproduce.sas
+@@ -0,0 +1,3 @@
++data test / view=testview;
++    set test;
++run;
+diff --git a/reproduce_patterns.vim b/reproduce_patterns.vim
+new file mode 100644
+index 0000000..048fdfc
+--- /dev/null
++++ b/reproduce_patterns.vim
+@@ -0,0 +1,4 @@
++syn region sasDataStep matchgroup=sasSectionKeyword start='data' end='run;' fold contains=@sasBasicSyntax,@sasDataStepSyntax
++syn keyword sasDataStepStatementKeyword abort array attrib by call cards datalines datalines4 dcl declare delete describe display do drop end error execute file format infile informat input keep label length lines lines4 list lostcard merge modify output put putlog redirect remove rename replace retain set stop update where window
++syn keyword sasGlobalStatementKeyword catname dm endsas filename footnote footnote1 footnote2 footnote3 footnote4 footnote5 footnote6 footnote7 footnote8 footnote9 footnote10 missing libname lock ods options page quit resetline run sasfile skip sysecho title title1 title2 title3 title4 title5 title6 title7 title8 title9 title10
++syn match sasDataStepStatement ';' display contained contains=sasDataStepStatementKeyword,sasGlobalStatementKeyword

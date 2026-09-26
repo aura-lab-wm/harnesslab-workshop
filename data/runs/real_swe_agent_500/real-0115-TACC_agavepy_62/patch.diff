@@ -1,0 +1,57 @@
+
+diff --git a/agavepy/agave.py b/agavepy/agave.py
+index ca599ce..b19a251 100644
+--- a/agavepy/agave.py
++++ b/agavepy/agave.py
+@@ -287,16 +287,14 @@ class Agave(object):
+ 
+     def to_dict(self):
+         """Return a dictionary representing this client."""
+-        d = {}
+-        if hasattr(self, 'token') and hasattr(self.token, 'token_info'):
+-            d = {'token': self.token.token_info.get('access_token'),
+-                 'refresh_token': self.token.token_info.get('refresh_token'),
+-                 'expires_in': self.token.token_info.get('expires_in'),
+-                 'expires_at': self.token.token_info.get('expires_at'),
+-                 'created_at': self.token.token_info.get('created_at'),
+-                 }
+-        d.update({attr: getattr(self, attr) for _, _, attr, _ in self.PARAMS \
+-                         if not attr in ['resources', '_token', '_refresh_token', 'header_name', 'jwt', 'password', 'token_callback']})
++        d = {'token': self.token.token_info.get('access_token'),
++             'refresh_token': self.token.token_info.get('refresh_token'),
++             'expires_in': self.token.token_info.get('expires_in'),
++             'expires_at': self.token.token_info.get('expires_at'),
++             'created_at': self.token.token_info.get('created_at'),
++             'username': self.username,  # add username
++             'client_name': self.client_name  # add client name
++             }
+         # if we are writing to the .agave/current file, modify the fields accordingly
+         if Agave.agpy_path() == Agave.agavecurrent_path():
+             d['tenantid'] = d.pop('tenant_id', '')
+@@ -410,16 +408,6 @@ class Agave(object):
+                     new_clients.append(client)
+             with open(Agave.agpy_path(), 'w') as agpy:
+                 agpy.write(json.dumps(new_clients))
+-
+-    def refresh_aris(self):
+-        self.clients_ari()
+-        # the resources are defined with a different authenticator in case a jwt is passed in, hence
+-        # we need to refresh using a different method
+-        if self.jwt:
+-            self.jwt_ari()
+-        elif self.use_nonce:
+-            self.nonce_ari()
+-        else:
+             self.full_ari()
+ 
+     def clients_ari(self):
+@@ -431,8 +419,7 @@ class Agave(object):
+     def full_ari(self):
+         # If there is a token, then create a resource object with a
+         # bearer token
+-        self.all = self.resource(
+-            'token', 'host', '_token')
++        self.all = self.resource('token', 'host', '_token')()  # call the resource function and get the SwaggerClient object
+ 
+     def nonce_ari(self):
+         # if use_nonce is passed in, we use the NonceAuthenticator which does not require any credentials at

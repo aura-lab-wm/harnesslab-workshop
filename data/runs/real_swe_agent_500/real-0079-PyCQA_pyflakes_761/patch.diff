@@ -1,0 +1,16 @@
+
+diff --git a/pyflakes/checker.py b/pyflakes/checker.py
+index e927715..b9ceb69 100644
+--- a/pyflakes/checker.py
++++ b/pyflakes/checker.py
+@@ -905,7 +905,9 @@ class Checker:
+                         else:
+                             messg = messages.RedefinedWhileUnused
+                         self.report(messg, node, value.name, value.source)
+-
++                elif isinstance(self.getParent(node), (ast.ClassDef, ast.AsyncFunctionDef)):
++                    messg = messages.RedefinedWhileUnused
++                    self.report(messg, node, value.name, value.source)
+     def report(self, messageClass, *args, **kwargs):
+         self.messages.append(messageClass(self.filename, *args, **kwargs))
+ 

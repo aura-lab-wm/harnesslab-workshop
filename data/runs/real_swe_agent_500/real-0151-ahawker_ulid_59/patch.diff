@@ -1,0 +1,11 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..e418857
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,4 @@
++import ulid
++
++u = ulid.from_str('01BX73KC0TNH409RTFD1JXKmO0')
++print(u.str)

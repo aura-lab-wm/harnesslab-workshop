@@ -1,0 +1,24 @@
+
+diff --git a/fail.py b/fail.py
+new file mode 100644
+index 0000000..9e9e4c1
+--- /dev/null
++++ b/fail.py
+@@ -0,0 +1,5 @@
++class Foo:
++    bar = 0
++
++    def bar(self):
++        return 1
+diff --git a/ok.py b/ok.py
+new file mode 100644
+index 0000000..a6f3e2f
+--- /dev/null
++++ b/ok.py
+@@ -0,0 +1,6 @@
++class Foo:
++    def bar(self):
++        return 0
++
++    def bar(self):
++        return 1

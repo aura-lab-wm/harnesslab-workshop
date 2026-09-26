@@ -1,0 +1,79 @@
+
+diff --git a/fail.py b/fail.py
+new file mode 100644
+index 0000000..9e9e4c1
+--- /dev/null
++++ b/fail.py
+@@ -0,0 +1,5 @@
++class Foo:
++    bar = 0
++
++    def bar(self):
++        return 1
+diff --git a/ok.py b/ok.py
+new file mode 100644
+index 0000000..a6f3e2f
+--- /dev/null
++++ b/ok.py
+@@ -0,0 +1,6 @@
++class Foo:
++    def bar(self):
++        return 0
++
++    def bar(self):
++        return 1
+diff --git a/pyflakes/checker.py b/pyflakes/checker.py
+index e927715..16c0f75 100644
+--- a/pyflakes/checker.py
++++ b/pyflakes/checker.py
+@@ -1956,12 +1956,15 @@ class Checker:
+     def ARG(self, node):
+         self.addBinding(node, Argument(node.arg, self.getScopeNode(node)))
+ 
+-    def CLASSDEF(self, node):
++        print("Inside CLASSDEF function...")
+         """
+         Check names used in a class definition, including its decorators, base
+         classes, and the body of its definition.  Additionally, add its name to
+         the current scope.
+         """
++        # Set to store the names of defined attributes
++        defined_attributes = set()
++
+         for deco in node.decorator_list:
+             self.handleNode(deco, node)
+         for baseNode in node.bases:
+@@ -1976,9 +1979,33 @@ class Checker:
+                     not isinstance(self.scope, FunctionScope)):
+                 self.deferFunction(lambda: self.handleDoctests(node))
+             for stmt in node.body:
++                # Check if the statement is an attribute definition
++                if isinstance(stmt, (ast.Assign, ast.AnnAssign)):
++                    print("Checking for redefined attributes...")
++                    attr_name = self._get_attribute_name(stmt)
++                    # Check if the attribute has already been defined
++                    if attr_name in defined_attributes:
++                        print("Redefinition of attribute:", attr_name)
++                        self.report(messages.RedefinedAttribute, stmt, attr_name)
++                    else:
++                        # Add the attribute to the set of defined attributes
++                        defined_attributes.add(attr_name)
+                 self.handleNode(stmt, node)
+         self.addBinding(node, ClassDefinition(node.name, node))
+ 
++    def _get_attribute_name(self, stmt):
++        """Get the attribute name from an assignment statement."""
++        if isinstance(stmt, ast.Assign):
++            target = stmt.targets[0]
++        else:
++            target = stmt.target
++        if isinstance(target, ast.Name):
++            return target.id
++        elif isinstance(target, ast.Attribute):
++            return target.attr
++        else:
++            return None
++
+     def AUGASSIGN(self, node):
+         self.handleNodeLoad(node.target, node)
+         self.handleNode(node.value, node)

@@ -1,0 +1,35 @@
+
+diff --git a/dask_jobqueue/jobqueue.yaml b/dask_jobqueue/jobqueue.yaml
+index 85da804..9e38545 100644
+--- a/dask_jobqueue/jobqueue.yaml
++++ b/dask_jobqueue/jobqueue.yaml
+@@ -208,5 +208,29 @@ jobqueue:
+     job-extra: []
+     log-directory: null
+     
++    # Scheduler options
++  htcondor:
++    name: dask-worker
++
++    # Dask worker options
++    cores: null                 # Total number of cores per job
++    memory: null                # Total amount of memory per job
++    processes: null                # Number of Python processes per job
++
++    interface: null             # Network interface to use like eth0 or ib0
++    death-timeout: 60           # Number of seconds to wait if a worker can not find a scheduler
++    local-directory: null       # Location of fast local storage like /scratch or $TMPDIR
++    shared-temp-directory: null       # Shared directory currently used to dump temporary security objects for workers
++    extra: []
++
++    # HTCondor resource manager options
++    shebang: "#!/usr/bin/env bash"
++    queue: null
++    project: null
++    walltime: '00:30:00'
++    env-extra: []  # Environment variables to set for the dask-worker process
++    job-extra: []
++    log-directory: null
++
+     # Scheduler options
+     scheduler-options: {}

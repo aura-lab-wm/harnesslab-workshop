@@ -1,0 +1,23 @@
+
+diff --git a/dask_jobqueue/htcondor.py b/dask_jobqueue/htcondor.py
+index fb7b0be..f3ce52c 100644
+--- a/dask_jobqueue/htcondor.py
++++ b/dask_jobqueue/htcondor.py
+@@ -62,12 +62,12 @@ Queue
+         else:
+             self.job_extra = job_extra
+ 
+-        env_extra = base_class_kwargs.get("env_extra", None)
+-        if env_extra is None:
+-            env_extra = dask.config.get(
+-                "jobqueue.%s.env-extra" % self.config_name, default=[]
++        job_script_extra = base_class_kwargs.get("job_script_extra", None)
++        if job_script_extra is None:
++            job_script_extra = dask.config.get(
++                "jobqueue.%s.job-script-extra" % self.config_name, default=[]
+             )
+-        self.env_dict = self.env_lines_to_dict(env_extra)
++        self.env_dict = self.env_lines_to_dict(job_script_extra)
+ 
+         self.job_header_dict = {
+             "MY.DaskWorkerName": '"htcondor--$F(MY.JobId)--"',

@@ -1,0 +1,44 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 8fe8d11..d589b0e 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -627,12 +627,13 @@ def _fix_encode_to_binary(tokens: List[Token], i: int) -> None:
+         latin1_ok = False
+     # .encode('encoding')
+     elif (
+-            i + 3 < len(tokens) and
++            i + 4 < len(tokens) and
+             tokens[i + 1].src == '(' and
+             tokens[i + 2].name == 'STRING' and
+-            tokens[i + 3].src == ')'
++            tokens[i + 3].src == ',' and
++            tokens[i + 4].src == ')'
+     ):
+-        victims = slice(i - 1, i + 4)
++        victims = slice(i - 1, i + 5)
+         prefix, rest = parse_string_literal(tokens[i + 2].src)
+         if 'f' in prefix.lower():
+             return
+@@ -645,11 +646,9 @@ def _fix_encode_to_binary(tokens: List[Token], i: int) -> None:
+             return
+     else:
+         return
+-
+     parts = rfind_string_parts(tokens, i - 2)
+     if not parts:
+         return
+-
+     for part in parts:
+         prefix, rest = parse_string_literal(tokens[part].src)
+         escapes = set(ESCAPE_RE.findall(rest))
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..0775276
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,4 @@
++expectedResult = (
++    ":example.com \u0442\u0435\u0441\u0442 " "\u043d\u0438\u043a\r\n"
++).encode("utf-8")
++print(expectedResult)

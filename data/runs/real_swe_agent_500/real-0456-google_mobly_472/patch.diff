@@ -1,0 +1,30 @@
+
+diff --git a/mobly/config_parser.py b/mobly/config_parser.py
+index aa43c03..c7dac57 100644
+--- a/mobly/config_parser.py
++++ b/mobly/config_parser.py
+@@ -18,14 +18,14 @@ import copy
+ import io
+ import os
+ import yaml
+-
++import logging
+ from mobly import keys
+ from mobly import utils
+ 
+ # An environment variable defining the base location for Mobly logs.
+ ENV_MOBLY_LOGPATH = 'MOBLY_LOGPATH'
+ _DEFAULT_LOG_PATH = '/tmp/logs/mobly/'
+-
++logger = logging.getLogger('mobly')
+ 
+ class MoblyConfigError(Exception):
+     """Raised when there is a problem in test configuration file."""
+@@ -135,6 +135,7 @@ def load_test_config_file(test_config_path, tb_filters=None):
+         test_run_config.user_params = original_bed_config.get(
+             keys.Config.key_testbed_test_params.value, {})
+         test_configs.append(test_run_config)
++    logger.debug('Configuration file contents: %s', configs)
+     return test_configs
+ 
+ 

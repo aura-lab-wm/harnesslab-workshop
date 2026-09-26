@@ -1,0 +1,43 @@
+--- a/.pytest_cache/.gitignore
++++ b/.pytest_cache/.gitignore
+@@ -0,0 +1,2 @@
++# Created by pytest automatically.
++*
+--- a/.pytest_cache/CACHEDIR.TAG
++++ b/.pytest_cache/CACHEDIR.TAG
+@@ -0,0 +1,4 @@
++Signature: 8a477f597d28d172789f06886806bc55
++# This file is a cache directory tag created by pytest.
++# For information about cache directory tags, see:
++#	https://bford.info/cachedir/spec.html
+--- a/.pytest_cache/README.md
++++ b/.pytest_cache/README.md
+@@ -0,0 +1,8 @@
++# pytest cache directory #
++
++This directory contains data from the pytest's cache plugin,
++which provides the `--lf` and `--ff` options, as well as the `cache` fixture.
++
++**Do not** commit this to version control.
++
++See [the docs](https://docs.pytest.org/en/stable/how-to/cache.html) for more information.
+--- a/.pytest_cache/v/cache/nodeids
++++ b/.pytest_cache/v/cache/nodeids
+@@ -0,0 +1,4 @@
++[
++  "tests/test_bucket.py::TestBucket::test_capacity",
++  "tests/test_bucket.py::TestBucket::test_no_overfill"
++]
+--- a/limiter/bucket.py
++++ b/limiter/bucket.py
+@@ -13,8 +13,8 @@
+ 
+     def _refill(self):
+         t = self._now()
+-        if self._last:
+-            self._tokens += (t - self._last) * self.rate
++        if self._last is not None:
++            self._tokens = min(self.capacity, self._tokens + (t - self._last) * self.rate)
+         self._last = t
+ 
+     def allow(self) -> bool:

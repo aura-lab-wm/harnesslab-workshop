@@ -1,0 +1,71 @@
+--- a/store/cache.py
++++ b/store/cache.py
+@@ -8,6 +8,36 @@
+         self.ttl = ttl
+         self._now = now
+         os.makedirs(root, exist_ok=True)
++        # Cleanup any stale files already on disk for this cache root
++        try:
++            for fn in os.listdir(self.root):
++                if not fn.endswith('.json'):
++                    continue
++                p = os.path.join(self.root, fn)
++                try:
++                    with open(p) as f:
++                        rec = json.load(f)
++                except Exception:
++                    # corrupted file - remove it
++                    try:
++                        os.remove(p)
++                    except Exception:
++                        pass
++                    continue
++                t = rec.get('t')
++                if t is None:
++                    try:
++                        os.remove(p)
++                    except Exception:
++                        pass
++                    continue
++                if self._now() - t > self.ttl:
++                    try:
++                        os.remove(p)
++                    except Exception:
++                        pass
++        except FileNotFoundError:
++            pass
+ 
+     def _path(self, key):
+         return os.path.join(self.root, f"{key}.json")
+@@ -20,6 +50,28 @@
+         p = self._path(key)
+         if not os.path.exists(p):
+             return default
+-        with open(p) as f:
+-            rec = json.load(f)
+-        return rec["v"]
++        try:
++            with open(p) as f:
++                rec = json.load(f)
++        except Exception:
++            # if file is unreadable, treat as missing
++            try:
++                os.remove(p)
++            except Exception:
++                pass
++            return default
++        t = rec.get('t')
++        if t is None:
++            try:
++                os.remove(p)
++            except Exception:
++                pass
++            return default
++        if self._now() - t > self.ttl:
++            # expired - remove file and return default
++            try:
++                os.remove(p)
++            except Exception:
++                pass
++            return default
++        return rec.get("v")

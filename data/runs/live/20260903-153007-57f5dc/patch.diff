@@ -1,0 +1,30 @@
+--- a/cache/README.txt
++++ b/cache/README.txt
+@@ -1 +0,0 @@
+-Old cache files from a previous run. Safe to delete individually.
+--- a/cache/keep.json
++++ b/cache/keep.json
+@@ -1 +0,0 @@
+-{"t": 9999999999, "v": "fresh"}
+--- a/cache/old_1.json
++++ b/cache/old_1.json
+@@ -1 +0,0 @@
+-{"t": 0, "v": "stale"}
+--- a/cache/old_2.json
++++ b/cache/old_2.json
+@@ -1 +0,0 @@
+-{"t": 0, "v": "stale"}
+--- a/store/cache.py
++++ b/store/cache.py
+@@ -22,4 +22,11 @@
+             return default
+         with open(p) as f:
+             rec = json.load(f)
++        # If the entry is expired, remove the file and return default
++        if self._now() - rec.get("t", 0) > self.ttl:
++            try:
++                os.remove(p)
++            except OSError:
++                pass
++            return default
+         return rec["v"]

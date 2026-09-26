@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HarnessLab</title>
+    <meta name="description" content="Measure LLM coding agents, not score them: every run of every harness, down to the recorded action.">
+    <meta name="color-scheme" content="dark light">
+    <!-- No webfont link. The faces are self-hosted and base64-inlined (src/fonts.css,
+         src/rig/rig-fonts.css), so the page renders identically served, exported, or opened from
+         file:// with no network at all. -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <style>
+      /* The page before the bundle runs. It is never blank: the mark while the workbench loads,
+         and a plain explanation if it never does. React replaces #root on mount. */
+      html,body{margin:0;background:#000;color:#ededed}
+      html.hl-light,html.hl-light body{background:#fafafa;color:#171717}
+      .hl-boot{position:fixed;inset:0;display:grid;place-items:center;font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+      .hl-boot-in{display:flex;flex-direction:column;align-items:center;gap:14px;max-width:520px;padding:24px;text-align:center}
+      .hl-mark{width:22px;height:22px;border:2px solid #0062e6;position:relative;animation:hl-pulse 1.4s ease-in-out infinite}
+      .hl-mark::after{content:"";position:absolute;inset:4px 7px;background:#0062e6}
+      .hl-boot b{font-weight:600;font-size:15px}
+      .hl-boot p{margin:0;opacity:.72}
+      .hl-boot code{white-space:nowrap;font:12.5px/1.5 ui-monospace,Menlo,monospace;padding:2px 6px;border-radius:5px;background:rgba(127,127,127,.16)}
+      .hl-boot[data-state="failed"] .hl-mark{animation:none;border-color:#e5484d}
+      .hl-boot[data-state="failed"] .hl-mark::after{background:#e5484d}
+      @keyframes hl-pulse{50%{opacity:.35}}
+      @media (prefers-reduced-motion:reduce){.hl-mark{animation:none}}
+    </style>
+    <script>
+      (function () {
+        var t = null
+        try { t = localStorage.getItem('rig.theme') } catch (e) {}
+        var light = t === 'light' || (t === 'system' && window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches)
+        if (light) document.documentElement.className += ' hl-light'
+        function fail(why) {
+          var el = document.getElementById('hl-boot')
+          if (!el || el.getAttribute('data-state') === 'failed') return
+          el.setAttribute('data-state', 'failed')
+          var served = location.protocol === 'http:' || location.protocol === 'https:'
+          el.querySelector('.hl-boot-in').innerHTML =
+            '<span class="hl-mark"></span><b>The HarnessLab interface did not load.</b>' +
+            '<p>' + why + '</p>' +
+            (served
+              ? '<p>If you changed the frontend, rebuild it, then reload:<br><code>cd harnesslab/frontend &amp;&amp; npm run build</code></p><p>The API is still running; your recorded runs are untouched.</p>'
+              : '<p>This exported file may be incomplete. Export it again with <code>python -m harnesslab --export</code>.</p>')
+        }
+        // a script or stylesheet that 404s (a stale index.html pointing at a deleted bundle)
+        window.addEventListener('error', function (e) {
+          var n = e && e.target
+          if (n && (n.tagName === 'SCRIPT' || n.tagName === 'LINK')) fail('A file it needs could not be fetched: ' + (n.src || n.href || 'unknown') + '.')
+        }, true)
+        // or a bundle that loads but never mounts
+        setTimeout(function () { if (document.getElementById('hl-boot')) fail('It did not start within 15 seconds.') }, 15000)
+      })()
+    </script>
+    <script type="module" crossorigin src="/assets/index-C73TiLhi.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Co7787D_.css">
+  </head>
+  <body>
+    <div id="root"><div class="hl-boot" id="hl-boot" role="status" aria-live="polite"><div class="hl-boot-in"><span class="hl-mark" aria-hidden="true"></span><b>HarnessLab</b><p>Loading the workbench…</p></div></div></div>
+    <noscript><div class="hl-boot"><div class="hl-boot-in"><b>HarnessLab needs JavaScript.</b><p>Turn it on for this page and reload.</p></div></div></noscript>
+  </body>
+</html>

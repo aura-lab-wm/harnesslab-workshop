@@ -1,0 +1,68 @@
+
+diff --git a/igseq/test_parse_vdj_paths.py b/igseq/test_parse_vdj_paths.py
+new file mode 100644
+index 0000000..a1a8211
+--- /dev/null
++++ b/igseq/test_parse_vdj_paths.py
+@@ -0,0 +1,33 @@
++from igseq.vdj import parse_vdj_paths
++
++# Simulate command-line arguments
++ref_paths = ["sonarramesh/IGH", "sonarramesh/IGH/IGHD"]
++
++# Call the function
++attrs_list = parse_vdj_paths(ref_paths)
++
++# Print the output
++print(attrs_list)
++
++# Check if the output contains duplicate paths
++duplicate_paths = [attrs["input"] for attrs in attrs_list if attrs["input"] in ref_paths]
++if duplicate_paths:
++    print("Error: Duplicate paths found:", duplicate_paths)
++else:
++    print("Test passed: No duplicate paths found.")
++
++# Simulate command-line arguments
++ref_paths = ["sonarramesh/IGH", "sonarramesh/IGH/IGHD"]
++
++# Call the function
++attrs_list = parse_vdj_paths(ref_paths)
++
++# Print the output
++print(attrs_list)
++
++# Check if the output contains duplicate paths
++duplicate_paths = [attrs["input"] for attrs in attrs_list if attrs["input"] in ref_paths]
++if duplicate_paths:
++    print("Error: Duplicate paths found:", duplicate_paths)
++else:
++    print("Test passed: No duplicate paths found.")
+diff --git a/igseq/vdj.py b/igseq/vdj.py
+index e6ac153..3f3e59b 100644
+--- a/igseq/vdj.py
++++ b/igseq/vdj.py
+@@ -28,11 +28,13 @@ def parse_vdj_paths(ref_paths):
+     input, "some/dir" split into separate V/D/J FASTA found inside, and
+     "rhesus" split into the built-in reference FASTAs provided by the package.
+     """
+-
+     if isinstance(ref_paths, (str, PathLike)):
+         ref_paths = [ref_paths]
+     attrs_list = []
++    processed_paths = set()
+     for entry in ref_paths:
++        if entry in processed_paths:
++            continue
+         internal_matches = get_internal_vdj(entry)
+         path = Path(entry)
+         # first priority: actual file name
+@@ -67,6 +69,8 @@ def parse_vdj_paths(ref_paths):
+                 attrs_list.append(attrs)
+         else:
+             raise util.IgSeqError("ref path not recognized: %s" % entry)
++        processed_paths.add(entry)
++    return attrs_list
+     return attrs_list
+ 
+ def get_internal_vdj(name):

@@ -1,0 +1,2 @@
+# no required dependencies; optional:
+matplotlib>=3.7

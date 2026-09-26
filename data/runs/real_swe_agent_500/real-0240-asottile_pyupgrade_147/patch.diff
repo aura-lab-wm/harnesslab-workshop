@@ -1,0 +1,28 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 31a603e..c6859ba 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -914,7 +914,7 @@ SIX_TYPE_CTX_ATTRS = {
+ SIX_CALLS = {
+     'u': '{args[0]}',
+     'byte2int': '{args[0]}[0]',
+-    'indexbytes': '{args[0]}[{rest}]',
++    'indexbytes': 'print("{args[0]}[{rest}]")',
+     'iteritems': '{args[0]}.items()',
+     'iterkeys': '{args[0]}.keys()',
+     'itervalues': '{args[0]}.values()',
+@@ -1400,7 +1400,12 @@ def _fix_fstrings(contents_text):
+ 
+ 
+ def fix_file(filename, args):
+-    with open(filename, 'rb') as f:
++    try:
++        with open(filename, 'rb') as f:
++            contents_bytes = f.read()
++    except FileNotFoundError:
++        print('{}: File not found'.format(filename))
++        return 1
+         contents_bytes = f.read()
+ 
+     try:

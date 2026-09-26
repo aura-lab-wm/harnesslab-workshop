@@ -1,0 +1,19 @@
+
+diff --git a/ulid/base32.py b/ulid/base32.py
+index 83f8a8a..9db0af3 100644
+--- a/ulid/base32.py
++++ b/ulid/base32.py
+@@ -252,8 +252,13 @@ def decode_ulid(value: str) -> bytes:
+     if length != 26:
+         raise ValueError('Expects 26 characters for timestamp + randomness; got {}'.format(length))
+ 
++    # Pre-process the string to handle non-Crockford's Base32 letters
++    value = value.replace('L', '1').replace('I', '1').replace('O', '0').upper()
+     try:
+         encoded = value.encode('ascii')
++    except UnicodeEncodeError as ex:
++        raise ValueError('Expects value that can be encoded in ASCII charset: {}'.format(ex))
++        encoded = value.encode('ascii')
+     except UnicodeEncodeError as ex:
+         raise ValueError('Expects value that can be encoded in ASCII charset: {}'.format(ex))
+ 

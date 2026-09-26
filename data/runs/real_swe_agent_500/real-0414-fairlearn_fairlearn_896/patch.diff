@@ -1,0 +1,29 @@
+
+diff --git a/fairlearn/metrics/_metric_frame.py b/fairlearn/metrics/_metric_frame.py
+index 9826c3d..b2aaf16 100644
+--- a/fairlearn/metrics/_metric_frame.py
++++ b/fairlearn/metrics/_metric_frame.py
+@@ -391,7 +391,10 @@ class MetricFrame:
+         if not self.control_levels:
+             result = pd.Series(index=self._by_group.columns, dtype='object')
+             for m in result.index:
+-                max_val = self._by_group[m].max()
++                try:
++                    max_val = self._by_group[m].max()
++                except Exception:
++                    max_val = np.nan
+                 result[m] = max_val
+         else:
+             result = self._by_group.groupby(level=self.control_levels).max()
+@@ -423,7 +426,10 @@ class MetricFrame:
+         if not self.control_levels:
+             result = pd.Series(index=self._by_group.columns, dtype='object')
+             for m in result.index:
+-                min_val = self._by_group[m].min()
++                try:
++                    min_val = self._by_group[m].min()
++                except Exception:
++                    min_val = np.nan
+                 result[m] = min_val
+         else:
+             result = self._by_group.groupby(level=self.control_levels).min()

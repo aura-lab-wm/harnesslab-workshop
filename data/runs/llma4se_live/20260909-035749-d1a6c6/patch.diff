@@ -1,0 +1,25 @@
+--- a/cache/old_1.json
++++ b/cache/old_1.json
+@@ -1 +0,0 @@
+-{"t": 0, "v": "stale"}
+--- a/cache/old_2.json
++++ b/cache/old_2.json
+@@ -1 +0,0 @@
+-{"t": 0, "v": "stale"}
+--- a/store/cache.py
++++ b/store/cache.py
+@@ -22,4 +22,14 @@
+             return default
+         with open(p) as f:
+             rec = json.load(f)
++
++        # An entry is valid only for ``ttl`` seconds after it was written.
++        # Remove expired entries so that a cache miss also cleans up disk.
++        if self._now() - rec["t"] > self.ttl:
++            try:
++                os.remove(p)
++            except FileNotFoundError:
++                # Another reader may have cleaned it up already.
++                pass
++            return default
+         return rec["v"]

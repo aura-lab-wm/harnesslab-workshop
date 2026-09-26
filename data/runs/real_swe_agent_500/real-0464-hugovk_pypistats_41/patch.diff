@@ -1,0 +1,114 @@
+
+diff --git a/pypistats/cli.py b/pypistats/cli.py
+index 092f9b7..59b42c1 100644
+--- a/pypistats/cli.py
++++ b/pypistats/cli.py
+@@ -242,10 +242,108 @@ def system(args):  # pragma: no cover
+ def _month(yyyy_mm):
+     """Helper to return start_date and end_date of a month as yyyy-mm-dd"""
+     year, month = map(int, yyyy_mm.split("-"))
++    if month not in range(1, 13):
++        raise ValueError("month must be in 1..12")
+     first = date(year, month, 1)
+     last = date(year, month + 1, 1) - relativedelta(days=1)
+     return str(first), str(last)
+ 
++def _last_month():
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.isoformat()[:7])
++
++def _last_month():
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.isoformat()[:7])
++
++def _last_month():
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.isoformat()[:7])
++
++def _last_month():
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.isoformat()[:7])
++
++def _last_month():
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.isoformat()[:7])
++
++def _last_month():
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.isoformat()[:7])
++
++def _last_month():
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.isoformat()[:7])
++
++def _last_month():
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.isoformat()[:7])
++
++def _last_month():
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.isoformat()[:7])
++
++def _last_month():
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.isoformat()[:7])
++
++def _last_month():
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.isoformat()[:7])
++
++def _last_month():
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.isoformat()[:7])
++
++def _last_month():
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.isoformat()[:7])
++
++def _last_month():
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.isoformat()[:7])
++
++def _last_month():
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.isoformat()[:7])
++
++def _last_month():
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.isoformat()[:7])
++
+ 
+ def _last_month():
+     """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""

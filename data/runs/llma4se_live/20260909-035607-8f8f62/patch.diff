@@ -1,0 +1,18 @@
+--- a/limiter/bucket.py
++++ b/limiter/bucket.py
+@@ -13,8 +13,13 @@
+ 
+     def _refill(self):
+         t = self._now()
+-        if self._last:
+-            self._tokens += (t - self._last) * self.rate
++        # ``0`` is a valid timestamp, so use ``None`` as the uninitialised
++        # marker rather than relying on timestamp truthiness.
++        if self._last is not None:
++            self._tokens = min(
++                float(self.capacity),
++                self._tokens + (t - self._last) * self.rate,
++            )
+         self._last = t
+ 
+     def allow(self) -> bool:

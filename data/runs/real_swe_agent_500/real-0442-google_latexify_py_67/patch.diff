@@ -1,0 +1,14 @@
+
+diff --git a/src/latexify/latexify_visitor.py b/src/latexify/latexify_visitor.py
+index 476d1ef..6c088cd 100644
+--- a/src/latexify/latexify_visitor.py
++++ b/src/latexify/latexify_visitor.py
+@@ -54,7 +54,7 @@ class LatexifyVisitor(node_visitor_base.NodeVisitorBase):
+     def visit_FunctionDef(self, node, action):  # pylint: disable=invalid-name
+         name_str = str(node.name)
+         if self._use_raw_function_name:
+-            name_str = name_str.replace(r"_", r"\_")
++            name_str = name_str.replace(r"_", r"_{") + "}"
+         name_str = r"\mathrm{" + name_str + "}"
+ 
+         arg_strs = [

@@ -1,0 +1,107 @@
+[
+ {
+  "role": "system",
+  "content": "You are an autonomous software engineer working inside a small Python repository.\nYou are given a GitHub issue. Resolve it by editing files with the tools provided.\nWork step by step: inspect the relevant code, make a minimal change, verify it, then call `submit`.\nDo not modify the tests. Do not run commands unrelated to the task."
+ },
+ {
+  "role": "user",
+  "content": "Task id: t02_intervals\n\n# Issue #7: touching intervals are not merged\n\n`merge_intervals([(1, 3), (3, 5)])` returns `[(1, 3), (3, 5)]` but the documented\nbehaviour is that closed intervals sharing an endpoint merge into `[(1, 5)]`.\nUnsorted input must also be handled. Fix `ranges/merge.py`.\n\n\nRepository files:\nranges/__init__.py\nranges/merge.py\ntests/test_merge.py"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_hqLyDjci57qfbkObeeNQDcNn",
+    "name": "read_file",
+    "arguments": {
+     "path": "ranges/merge.py"
+    }
+   },
+   {
+    "id": "call_R2yadY3bKfEi85QXP6jy8MvZ",
+    "name": "read_file",
+    "arguments": {
+     "path": "tests/test_merge.py"
+    }
+   },
+   {
+    "id": "call_eTSd444EWFImc8qrArAhDmlc",
+    "name": "read_file",
+    "arguments": {
+     "path": "ranges/__init__.py"
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_hqLyDjci57qfbkObeeNQDcNn",
+  "content": "   1| def merge_intervals(intervals):\n   2|     \"\"\"Merge a list of closed integer intervals (start, end).\n   3|     Touching intervals, e.g. (1,3) and (3,5), merge into (1,5).\n   4|     Input may be unsorted. Returns a sorted list of tuples.\"\"\"\n   5|     if not intervals:\n   6|         return []\n   7|     merged = [tuple(intervals[0])]\n   8|     for start, end in intervals[1:]:\n   9|         last_start, last_end = merged[-1]\n  10|         if start < last_end:\n  11|             merged[-1] = (last_start, max(last_end, end))\n  12|         else:\n  13|             merged.append((start, end))\n  14|     return merged"
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_R2yadY3bKfEi85QXP6jy8MvZ",
+  "content": "   1| import unittest\n   2| from ranges import merge_intervals\n   3| \n   4| class TestMerge(unittest.TestCase):\n   5|     def test_overlap(self):\n   6|         self.assertEqual(merge_intervals([(1, 4), (2, 6)]), [(1, 6)])\n   7|     def test_touching(self):\n   8|         self.assertEqual(merge_intervals([(1, 3), (3, 5)]), [(1, 5)])\n   9| \n  10| if __name__ == \"__main__\":\n  11|     unittest.main()"
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_eTSd444EWFImc8qrArAhDmlc",
+  "content": "   1| from .merge import merge_intervals"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_PXhwyhyEfJGiPef4Lu8A27qB",
+    "name": "write_file",
+    "arguments": {
+     "path": "ranges/merge.py",
+     "content": "def merge_intervals(intervals):\n    \"\"\"Merge a list of closed integer intervals (start, end).\n    Touching intervals, e.g. (1,3) and (3,5), merge into (1,5).\n    Input may be unsorted. Returns a sorted list of tuples.\"\"\"\n    ordered = sorted(tuple(interval) for interval in intervals)\n    if not ordered:\n        return []\n\n    merged = [ordered[0]]\n    for start, end in ordered[1:]:\n        last_start, last_end = merged[-1]\n        if start <= last_end:\n            merged[-1] = (last_start, max(last_end, end))\n        else:\n            merged.append((start, end))\n    return merged\n"
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_PXhwyhyEfJGiPef4Lu8A27qB",
+  "content": "wrote ranges/merge.py (587 bytes)"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_o0XsDU84oPcYQA0npXmBbkdk",
+    "name": "read_file",
+    "arguments": {
+     "path": "ranges/merge.py"
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_o0XsDU84oPcYQA0npXmBbkdk",
+  "content": "   1| def merge_intervals(intervals):\n   2|     \"\"\"Merge a list of closed integer intervals (start, end).\n   3|     Touching intervals, e.g. (1,3) and (3,5), merge into (1,5).\n   4|     Input may be unsorted. Returns a sorted list of tuples.\"\"\"\n   5|     ordered = sorted(tuple(interval) for interval in intervals)\n   6|     if not ordered:\n   7|         return []\n   8| \n   9|     merged = [ordered[0]]\n  10|     for start, end in ordered[1:]:\n  11|         last_start, last_end = merged[-1]\n  12|         if start <= last_end:\n  13|             merged[-1] = (last_start, max(last_end, end))\n  14|         else:\n  15|             merged.append((start, end))\n  16|     return merged"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_12d1IGupcX0j9qXtqyZtBP85",
+    "name": "submit",
+    "arguments": {
+     "summary": "Updated `ranges/merge.py` to sort intervals before merging and to treat shared endpoints as overlapping by using `start <= last_end`. The function now correctly handles unsorted input, touching closed intervals, and empty input while returning sorted tuple intervals."
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_12d1IGupcX0j9qXtqyZtBP85",
+  "content": "submitted"
+ }
+]

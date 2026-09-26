@@ -1,0 +1,53 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..01e997f
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,10 @@
++import ulid
++
++# Test ULID
++test_ulid = '01BX73KC0TNH409RTFD1JXKmO0'
++
++try:
++    u = ulid.from_str(test_ulid)
++    print(u.str)
++except Exception as e:
++    print(f"Error: {e}")
+diff --git a/ulid/base32.py b/ulid/base32.py
+index 83f8a8a..7aa9269 100644
+--- a/ulid/base32.py
++++ b/ulid/base32.py
+@@ -233,7 +233,6 @@ def decode(value: str) -> bytes:
+ 
+     raise ValueError('Expects string in lengths of 10, 16, or 26; got {}'.format(length))
+ 
+-
+ def decode_ulid(value: str) -> bytes:
+     """
+     Decode the given Base32 encoded :class:`~str` instance to :class:`~bytes`.
+@@ -259,6 +258,15 @@ def decode_ulid(value: str) -> bytes:
+ 
+     decoding = DECODING
+ 
++    # Conversion logic
++    encoded = encoded.replace(b'l', b'1')
++    encoded = encoded.replace(b'i', b'1')
++    encoded = encoded.replace(b'o', b'0')
++    encoded = encoded.replace(b'm', b'M')
++    encoded = encoded.upper()
++    encoded = encoded.replace(b'Q', b'K')
++    encoded = encoded.upper()
++
+     return bytes((
+         ((decoding[encoded[0]] << 5) | decoding[encoded[1]]) & 0xFF,
+         ((decoding[encoded[2]] << 3) | (decoding[encoded[3]] >> 2)) & 0xFF,
+@@ -278,7 +286,6 @@ def decode_ulid(value: str) -> bytes:
+         ((decoding[encoded[24]] << 5) | (decoding[encoded[25]])) & 0xFF
+     ))
+ 
+-
+ def decode_timestamp(timestamp: str) -> bytes:
+     """
+     Decode the given Base32 encoded :class:`~str` instance to :class:`~bytes`.

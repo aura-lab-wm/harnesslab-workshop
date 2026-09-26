@@ -1,0 +1,21 @@
+
+diff --git a/code_point.py b/code_point.py
+new file mode 100644
+index 0000000..8b13789
+--- /dev/null
++++ b/code_point.py
+@@ -0,0 +1 @@
++
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 2a55816..cbc0ed5 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -457,7 +457,7 @@ ESCAPE_STARTS = frozenset((
+     '0', '1', '2', '3', '4', '5', '6', '7',  # octal escapes
+     'x',  # hex escapes
+     # only valid in non-bytestrings
+-    'N', 'u', 'U',
++    r'\N', 'u', 'U',
+ ))
+ ESCAPE_STARTS_BYTES = ESCAPE_STARTS - frozenset(('N', 'u', 'U'))
+ ESCAPE_RE = re.compile(r'\\.', re.DOTALL)

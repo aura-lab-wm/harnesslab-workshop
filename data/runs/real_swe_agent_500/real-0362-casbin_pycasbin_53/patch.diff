@@ -1,0 +1,47 @@
+
+diff --git a/casbin/enforcer.py b/casbin/enforcer.py
+index deec151..527b630 100644
+--- a/casbin/enforcer.py
++++ b/casbin/enforcer.py
+@@ -156,3 +156,9 @@ class Enforcer(ManagementEnforcer):
+                 if item not in permissions:
+                     permissions.append(item)
+         return permissions
++    def get_roles_for_user_recursive(self, user):
++        """gets roles for a user recursively."""
++        roles = self.get_roles_for_user(user)
++        for role in roles:
++            roles.extend(self.get_roles_for_user_recursive(role))
++        return roles
+diff --git a/model.conf b/model.conf
+new file mode 100644
+index 0000000..8b13789
+--- /dev/null
++++ b/model.conf
+@@ -0,0 +1 @@
++
+diff --git a/policy.csv b/policy.csv
+new file mode 100644
+index 0000000..8b13789
+--- /dev/null
++++ b/policy.csv
+@@ -0,0 +1 @@
++
+diff --git a/test_recursive_roles.py b/test_recursive_roles.py
+new file mode 100644
+index 0000000..6f94611
+--- /dev/null
++++ b/test_recursive_roles.py
+@@ -0,0 +1,12 @@
++from casbin import Enforcer
++
++def test_get_roles_for_user_recursive():
++    e = Enforcer("path/to/model.conf", "path/to/policy.csv")
++    e.add_role_for_user("alice", "admin")
++    e.add_role_for_user("admin", "superadmin")
++    e.add_role_for_user("superadmin", "root")
++
++    roles = e.get_roles_for_user_recursive("alice")
++    print(roles)
++
++test_get_roles_for_user_recursive()

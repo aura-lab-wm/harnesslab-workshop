@@ -1,0 +1,10 @@
+
+diff --git a/dask_jobqueue/htcondor.py b/dask_jobqueue/htcondor.py
+index fb7b0be..5552ae1 100644
+--- a/dask_jobqueue/htcondor.py
++++ b/dask_jobqueue/htcondor.py
+@@ -264,3 +264,4 @@ class HTCondorCluster(JobQueueCluster):
+         job=job_parameters, cluster=cluster_parameters
+     )
+     job_cls = HTCondorJob
++    job_cls = HTCondorJob

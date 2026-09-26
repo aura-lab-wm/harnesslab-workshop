@@ -1,0 +1,27 @@
+--- a/ranges/merge.py
++++ b/ranges/merge.py
+@@ -1,13 +1,18 @@
+ def merge_intervals(intervals):
+     """Merge a list of closed integer intervals (start, end).
+-    Touching intervals, e.g. (1,3) and (3,5), merge into (1,5).
+-    Input may be unsorted. Returns a sorted list of tuples."""
+-    if not intervals:
++    Touching intervals, e.g. (1, 3) and (3, 5), merge into (1, 5).
++    Input may be unsorted. Returns a sorted list of tuples.
++    """
++    sorted_intervals = sorted((tuple(interval) for interval in intervals),
++                              key=lambda interval: interval[0])
++    if not sorted_intervals:
+         return []
+-    merged = [tuple(intervals[0])]
+-    for start, end in intervals[1:]:
++
++    merged = [sorted_intervals[0]]
++    for start, end in sorted_intervals[1:]:
+         last_start, last_end = merged[-1]
+-        if start < last_end:
++        # Closed intervals sharing an endpoint are contiguous and merge.
++        if start <= last_end:
+             merged[-1] = (last_start, max(last_end, end))
+         else:
+             merged.append((start, end))

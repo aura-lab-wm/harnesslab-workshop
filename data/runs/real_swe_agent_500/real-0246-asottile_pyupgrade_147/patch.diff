@@ -1,0 +1,13 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 31a603e..afbce0f 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -1178,7 +1178,6 @@ def _replace_call(tokens, start, end, args, tmpl):
+ 
+     rest = tokens_to_src(tokens[start_rest:end - 1])
+     src = tmpl.format(args=arg_strs, rest=rest)
+-    tokens[start:end] = [Token('CODE', src)]
+ 
+ 
+ def _fix_py3_plus(contents_text):

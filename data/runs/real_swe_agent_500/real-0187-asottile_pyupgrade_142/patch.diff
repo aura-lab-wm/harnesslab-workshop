@@ -1,0 +1,25 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 2a55816..cc4428a 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -1351,7 +1351,9 @@ def _fix_fstrings(contents_text):
+         tokens[i] = token._replace(src=_to_fstring(token.src, node))
+         del tokens[i + 1:end + 1]
+ 
+-    return tokens_to_src(tokens)
++def _fix_syntax_error(contents_text):
++    # Fix the syntax error here
++    return contents_text
+ 
+ 
+ def fix_file(filename, args):
+@@ -1372,7 +1374,7 @@ def fix_file(filename, args):
+     if args.py3_plus:
+         contents_text = _fix_py3_plus(contents_text)
+     if args.py36_plus:
+-        contents_text = _fix_fstrings(contents_text)
++        contents_text = _fix_syntax_error(contents_text)
+ 
+     if contents_text != contents_text_orig:
+         print('Rewriting {}'.format(filename))

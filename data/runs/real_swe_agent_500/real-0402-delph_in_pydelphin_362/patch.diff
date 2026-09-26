@@ -1,0 +1,23 @@
+
+diff --git a/comment_format.py b/comment_format.py
+new file mode 100644
+index 0000000..b5c3490
+--- /dev/null
++++ b/comment_format.py
+@@ -0,0 +1,16 @@
++def format_comment(comment_type, comment_string):
++    if comment_type == 'line':
++        # Format line comment
++        return '#' + comment_string
++    elif comment_type == 'block':
++        # Format block comment
++        return '/*' + comment_string + '*/'
++    else:
++        return 'Error: Invalid comment type'
++
++# Example usage
++line_comment = 'This is a line comment'
++block_comment = 'This is a block comment'
++
++print(format_comment('line', line_comment))
++print(format_comment('block', block_comment))

@@ -1,0 +1,59 @@
+--- a/tinycsv/rows.py
++++ b/tinycsv/rows.py
+@@ -1,4 +1,54 @@
+ def split_row(line: str):
+     """Split one CSV line into fields. Fields may be double-quoted; inside a
+-    quoted field a comma is literal and a doubled quote is a literal quote."""
+-    return [f.strip('"') for f in line.split(",")]
++    quoted field a comma is literal and a doubled quote is a literal quote.
++
++    This is a small CSV parser that does not use the stdlib csv module.
++    It keeps the exact field contents except outer quote delimiters are
++    removed and doubled quotes inside quoted fields become a single quote.
++    """
++    fields = []
++    field_chars = []
++    in_quotes = False
++    # track whether current field started with a quote
++    field_quoted = False
++    i = 0
++    n = len(line)
++    while i < n:
++        ch = line[i]
++        if ch == '"':
++            if in_quotes:
++                # possible doubled quote -> literal quote
++                if i + 1 < n and line[i + 1] == '"':
++                    field_chars.append('"')
++                    i += 2
++                    continue
++                else:
++                    # closing quote
++                    in_quotes = False
++                    i += 1
++                    continue
++            else:
++                # opening quote only valid if at start of field
++                if not field_chars:
++                    in_quotes = True
++                    field_quoted = True
++                    i += 1
++                    continue
++                else:
++                    # quote in the middle of an unquoted field: treat literally
++                    field_chars.append(ch)
++                    i += 1
++                    continue
++        if ch == ',' and not in_quotes:
++            fields.append(''.join(field_chars))
++            field_chars = []
++            field_quoted = False
++            i += 1
++            continue
++        # normal character
++        field_chars.append(ch)
++        i += 1
++    # append last field
++    fields.append(''.join(field_chars))
++    return fields
++

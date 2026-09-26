@@ -1,0 +1,79 @@
+
+diff --git a/pypistats/cli.py b/pypistats/cli.py
+index 092f9b7..c32f62e 100644
+--- a/pypistats/cli.py
++++ b/pypistats/cli.py
+@@ -237,20 +237,47 @@ def system(args):  # pragma: no cover
+             total="daily" if args.daily else ("monthly" if args.monthly else "all"),
+         )
+     )
+-
+-
+ def _month(yyyy_mm):
+     """Helper to return start_date and end_date of a month as yyyy-mm-dd"""
+     year, month = map(int, yyyy_mm.split("-"))
++    if month not in range(1, 13):
++        print("Error: month must be in 1..12")
++        exit(1)
+     first = date(year, month, 1)
+     last = date(year, month + 1, 1) - relativedelta(days=1)
+     return str(first), str(last)
+ 
+-
+ def _last_month():
+     """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
+     today = date.today()
+     d = today - relativedelta(months=1)
++    return _month(d.iso_format()[:7])
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.iso_format()[:7])
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.isoformat()[:7])
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.isoformat()[:7])
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.isoformat()[:7])
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.isoformat()[:7])
++    """Helper to return start_date and end_date of the previous month as yyyy-mm-dd"""
++    today = date.today()
++    d = today - relativedelta(months=1)
++    return _month(d.isoformat()[:7])
++    today = date.today()
++    d = today - relativedelta(months=1)
+     return _month(d.isoformat()[:7])
+ 
+ 
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..3264f44
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,17 @@
++import subprocess
++
++# The command that caused the error
++cmd = "pypistats python_minor pylast -m 2018-12"
++
++# Run the command
++process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
++
++# Wait for the command to complete
++process.wait()
++
++# Check the exit code
++exit_code = process.returncode
++if exit_code != 0:
++    print("Error:", process.stderr.read().decode())
++else:
++    print("Script completed successfully, no errors.")

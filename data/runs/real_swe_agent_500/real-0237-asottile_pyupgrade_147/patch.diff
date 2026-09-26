@@ -1,0 +1,39 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 31a603e..4c79576 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -1168,7 +1168,9 @@ def _get_tmpl(mapping, node):
+ 
+ def _replace_call(tokens, start, end, args, tmpl):
+     arg_strs = [tokens_to_src(tokens[slice(*arg)]).strip() for arg in args]
+-
++    if not args:
++        return
++    arg_strs = [tokens_to_src(tokens[slice(*arg)]).strip() for arg in args]
+     start_rest = args[0][1] + 1
+     while (
+             start_rest < end and
+@@ -1447,3 +1449,9 @@ def main(argv=None):
+ 
+ if __name__ == '__main__':
+     exit(main())
++from pyupgrade import main
++
++try:
++    main(['--py3-plus', 'src/_pytest/fixtures.py'])
++except Exception as e:
++    print(f"Error: {e}")
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..c44f57a
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,7 @@
++from pyupgrade import main
++from pyupgrade.exceptions import PyupgradeException
++
++try:
++    main()
++except PyupgradeException as e:
++    print(f"Error: {e}")

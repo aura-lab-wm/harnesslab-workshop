@@ -1,0 +1,21 @@
+
+diff --git a/geopandas/tools/sjoin.py b/geopandas/tools/sjoin.py
+index 9ac00d7..5890baf 100644
+--- a/geopandas/tools/sjoin.py
++++ b/geopandas/tools/sjoin.py
+@@ -176,12 +176,11 @@ def _geom_predicate_query(left_df, right_df, predicate, distance):
+         # contains is a faster predicate
+         # see discussion at https://github.com/geopandas/geopandas/pull/1421
+         predicate = "contains"
++        # sort the right data frame by the column that will be used for joining
++        right_df.sort_values(by="geometry", inplace=True)
+         sindex = left_df.sindex
+         input_geoms = right_df.geometry
+-    else:
+-        # all other predicates are symmetric
+-        # keep them the same
+-        sindex = right_df.sindex
++
+         input_geoms = left_df.geometry
+ 
+     if sindex:

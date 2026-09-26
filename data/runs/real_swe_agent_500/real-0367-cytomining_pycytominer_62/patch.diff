@@ -1,0 +1,202 @@
+
+diff --git a/pycytominer.egg-info/PKG-INFO b/pycytominer.egg-info/PKG-INFO
+new file mode 100644
+index 0000000..f39f3d3
+--- /dev/null
++++ b/pycytominer.egg-info/PKG-INFO
+@@ -0,0 +1,16 @@
++Metadata-Version: 2.1
++Name: pycytominer
++Version: 0.0.0
++Summary: package for processing and mining morphological profiles
++Home-page: https://github.com/cytomining/pycytominer
++Maintainer: Gregory Way
++Maintainer-email: gregory.way@gmail.com
++License: BSD 3-Clause License
++Requires-Python: >=3.4
++License-File: LICENSE.md
++Requires-Dist: numpy
++Requires-Dist: pandas
++Requires-Dist: scikit-learn
++Requires-Dist: sqlalchemy
++
++package to normalize, manipulate, and process morphological profiling data. The python implementation of cytominer.
+diff --git a/pycytominer.egg-info/SOURCES.txt b/pycytominer.egg-info/SOURCES.txt
+new file mode 100644
+index 0000000..b1428dc
+--- /dev/null
++++ b/pycytominer.egg-info/SOURCES.txt
+@@ -0,0 +1,55 @@
++LICENSE.md
++MANIFEST.in
++README.md
++setup.py
++pycytominer/__init__.py
++pycytominer/aggregate.py
++pycytominer/annotate.py
++pycytominer/audit.py
++pycytominer/consensus.py
++pycytominer/correlation_threshold.py
++pycytominer/count_na_features.py
++pycytominer/covariance.py
++pycytominer/feature_select.py
++pycytominer/get_na_columns.py
++pycytominer/normalize.py
++pycytominer/sparse_random_projection.py
++pycytominer/variance_threshold.py
++pycytominer/write_gct.py
++pycytominer.egg-info/PKG-INFO
++pycytominer.egg-info/SOURCES.txt
++pycytominer.egg-info/dependency_links.txt
++pycytominer.egg-info/requires.txt
++pycytominer.egg-info/top_level.txt
++pycytominer/cyto_utils/__init__.py
++pycytominer/cyto_utils/features.py
++pycytominer/cyto_utils/output.py
++pycytominer/cyto_utils/transform.py
++pycytominer/cyto_utils/util.py
++pycytominer/data/blacklist_features.txt
++pycytominer/data/metadata_feature_dictionary.txt
++pycytominer/pooled/__init__.py
++pycytominer/pooled/process.py
++pycytominer/tests/__init__.py
++pycytominer/tests/test_aggregate.py
++pycytominer/tests/test_aggregate_profiles.py
++pycytominer/tests/test_annotate.py
++pycytominer/tests/test_audit.py
++pycytominer/tests/test_consensus.py
++pycytominer/tests/test_correlation_threshold.py
++pycytominer/tests/test_count_na_features.py
++pycytominer/tests/test_covariance.py
++pycytominer/tests/test_feature_select.py
++pycytominer/tests/test_get_na_columns.py
++pycytominer/tests/test_normalize.py
++pycytominer/tests/test_sparse_random_projection.py
++pycytominer/tests/test_variance_threshold.py
++pycytominer/tests/test_write_gct.py
++pycytominer/tests/test_cyto_utils/__init__.py
++pycytominer/tests/test_cyto_utils/test_feature_blacklist.py
++pycytominer/tests/test_cyto_utils/test_feature_infer.py
++pycytominer/tests/test_cyto_utils/test_output.py
++pycytominer/tests/test_cyto_utils/test_transform.py
++pycytominer/tests/test_cyto_utils/test_util.py
++pycytominer/tests/test_pooled/__init__.py
++pycytominer/tests/test_pooled/test_process.py
+\ No newline at end of file
+diff --git a/pycytominer.egg-info/dependency_links.txt b/pycytominer.egg-info/dependency_links.txt
+new file mode 100644
+index 0000000..8b13789
+--- /dev/null
++++ b/pycytominer.egg-info/dependency_links.txt
+@@ -0,0 +1 @@
++
+diff --git a/pycytominer.egg-info/requires.txt b/pycytominer.egg-info/requires.txt
+new file mode 100644
+index 0000000..8978569
+--- /dev/null
++++ b/pycytominer.egg-info/requires.txt
+@@ -0,0 +1,4 @@
++numpy
++pandas
++scikit-learn
++sqlalchemy
+diff --git a/pycytominer.egg-info/top_level.txt b/pycytominer.egg-info/top_level.txt
+new file mode 100644
+index 0000000..8ad7cac
+--- /dev/null
++++ b/pycytominer.egg-info/top_level.txt
+@@ -0,0 +1 @@
++pycytominer
+diff --git a/pycytominer/correlation_threshold.py b/pycytominer/correlation_threshold.py
+index f4931ae..71225c0 100644
+--- a/pycytominer/correlation_threshold.py
++++ b/pycytominer/correlation_threshold.py
+@@ -13,7 +13,7 @@ from pycytominer.cyto_utils.util import (
+ 
+ 
+ def correlation_threshold(
+-    population_df, features="infer", samples="none", threshold=0.9, method="pearson"
++    population_df, features="infer", samples="none", threshold=0.9, method="pearson", value_range=None
+ ):
+     """
+     Exclude features that have correlations above a certain threshold
+@@ -41,13 +41,9 @@ def correlation_threshold(
+     if samples != "none":
+         population_df = population_df.loc[samples, :]
+ 
+-    if features == "infer":
++    if isinstance(features, str) and features == "infer":
+         features = infer_cp_features(population_df)
+-        population_df = population_df.loc[:, features]
+-    else:
+-        population_df = population_df.loc[:, features]
+-
+-    # Get correlation matrix and lower triangle of pairwise correlations in long format
++    population_df = population_df.loc[:, features]
+     data_cor_df, pairwise_df = get_pairwise_correlation(
+         population_df=population_df, method=method
+     )
+@@ -63,12 +59,19 @@ def correlation_threshold(
+     # Return an empty list if nothing is over correlation threshold
+     if pairwise_df.shape[0] == 0:
+         return []
+-
+-    # Output the excluded features
+     excluded = pairwise_df.apply(
+         lambda x: determine_high_cor_pair(x, variable_cor_sum), axis="columns"
+     )
+ 
++    # Check if values exceed specified range
++    if value_range is not None:
++        min_val, max_val = value_range
++        excluded_values = population_df[(population_df < min_val) | (population_df > max_val)].stack()
++        excluded_features_values = excluded_values.index.get_level_values(1).unique().tolist()
++        excluded = excluded + excluded_features_values
++
++    return list(set(excluded))
++
+     return list(set(excluded.tolist()))
+ 
+ 
+diff --git a/pycytominer/variance_threshold.py b/pycytominer/variance_threshold.py
+index aa4299d..f16bd4d 100644
+--- a/pycytominer/variance_threshold.py
++++ b/pycytominer/variance_threshold.py
+@@ -9,7 +9,7 @@ from pycytominer.cyto_utils.features import infer_cp_features
+ 
+ 
+ def variance_threshold(
+-    population_df, features="infer", samples="none", freq_cut=0.05, unique_cut=0.01
++    population_df, features="infer", samples="none", freq_cut=0.05, unique_cut=0.01, value_range=None
+ ):
+     """
+     Exclude features that have correlations below a certain threshold
+@@ -35,11 +35,9 @@ def variance_threshold(
+     if samples != "none":
+         population_df = population_df.loc[samples, :]
+ 
+-    if features == "infer":
++    if isinstance(features, str) and features == "infer":
+         features = infer_cp_features(population_df)
+-        population_df = population_df.loc[:, features]
+-    else:
+-        population_df = population_df.loc[:, features]
++    population_df = population_df.loc[:, features]
+ 
+     # Test if excluded for low frequency
+     excluded_features_freq = population_df.apply(
+@@ -59,6 +57,14 @@ def variance_threshold(
+     excluded_features_unique = unique_ratio[unique_ratio].index.tolist()
+ 
+     excluded_features = list(set(excluded_features_freq + excluded_features_unique))
++    
++    # Check if values exceed specified range
++    if value_range is not None:
++        min_val, max_val = value_range
++        excluded_values = population_df[(population_df < min_val) | (population_df > max_val)].stack()
++        excluded_features_values = excluded_values.index.get_level_values(1).unique().tolist()
++        excluded_features = excluded_features + excluded_features_values
++    
+     return excluded_features
+ 
+ 

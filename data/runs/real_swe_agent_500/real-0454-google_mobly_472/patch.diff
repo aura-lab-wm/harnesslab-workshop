@@ -1,0 +1,22 @@
+
+diff --git a/mobly/config_parser.py b/mobly/config_parser.py
+index aa43c03..f0c7c06 100644
+--- a/mobly/config_parser.py
++++ b/mobly/config_parser.py
+@@ -12,7 +12,7 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ 
+-from builtins import str
++import logging
+ 
+ import copy
+ import io
+@@ -102,6 +102,7 @@ def load_test_config_file(test_config_path, tb_filters=None):
+         test_runner.TestRunner.
+     """
+     configs = _load_config_file(test_config_path)
++    logging.debug("Contents of config file: %s", configs)  # Log the configs at debug level
+     if tb_filters:
+         tbs = []
+         for tb in configs[keys.Config.key_testbed.value]:

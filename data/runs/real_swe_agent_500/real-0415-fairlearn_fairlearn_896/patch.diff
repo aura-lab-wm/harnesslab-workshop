@@ -1,0 +1,43 @@
+
+diff --git a/fairlearn/metrics/_metric_frame.py b/fairlearn/metrics/_metric_frame.py
+index 9826c3d..20687b2 100644
+--- a/fairlearn/metrics/_metric_frame.py
++++ b/fairlearn/metrics/_metric_frame.py
+@@ -388,21 +388,24 @@ class MetricFrame:
+             The maximum value over sensitive features. The exact type
+             follows the table in :attr:`.MetricFrame.overall`.
+         """
+-        if not self.control_levels:
+-            result = pd.Series(index=self._by_group.columns, dtype='object')
+-            for m in result.index:
+-                max_val = self._by_group[m].max()
+-                result[m] = max_val
+-        else:
+-            result = self._by_group.groupby(level=self.control_levels).max()
++        try:
++            if not self.control_levels:
++                result = pd.Series(index=self._by_group.columns, dtype='object')
++                for m in result.index:
++                    max_val = self._by_group[m].max()
++                    result[m] = max_val
++            else:
++                result = self._by_group.groupby(level=self.control_levels).max()
+ 
+-        if self._user_supplied_callable:
+-            if self.control_levels:
+-                return result.iloc[:, 0]
++            if self._user_supplied_callable:
++                if self.control_levels:
++                    return result.iloc[:, 0]
++                else:
++                    return result.iloc[0]
+             else:
+-                return result.iloc[0]
+-        else:
+-            return result
++                return result
++        except Exception:
++            return pd.Series(index=self._by_group.columns, dtype='object')
+ 
+     def group_min(self) -> Union[Any, pd.Series, pd.DataFrame]:
+         """Return the minimum value of the metric over the sensitive features.

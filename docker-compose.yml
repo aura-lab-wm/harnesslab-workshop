@@ -1,0 +1,43 @@
+# harnesslab — one command to a running platform.
+#
+#   OPENROUTER_API_KEY=sk-or-... docker compose up --build
+#   -> http://127.0.0.1:8765
+#
+# Without a key everything still works against the mock provider and the pre-recorded runs;
+# live cells against real models need the key.
+
+services:
+  harnesslab:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: harnesslab:0.3.0
+    container_name: harnesslab
+    ports:
+      - "127.0.0.1:8765:8765"
+    environment:
+      # Passed through from the host shell or a .env file next to this compose file.
+      # Empty is fine: the platform starts and says the key is NOT set.
+      OPENROUTER_API_KEY: "${OPENROUTER_API_KEY:-}"
+      OPENROUTER_BASE_URL: "${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}"
+      HARNESSLAB_LAB: /lab
+      HARNESSLAB_NO_BROWSER: "1"
+    volumes:
+      # Run data is the thing you want to keep: bind it to the checkout so new runs land next to
+      # the pre-recorded ones and survive `docker compose down`. Swap for the named volume below
+      # if you would rather keep the host tree clean.
+      - ./data/runs:/lab/data/runs
+      # - runs:/lab/data/runs           # named-volume alternative (starts empty: no demo data)
+      # Trained sentinel models, so a model trained in the container is still there tomorrow.
+      - ./harnesslab/data/models:/lab/harnesslab/data/models
+    restart: unless-stopped
+    # The sandbox is a scratch copy plus a command policy, not a security boundary. These are the
+    # cheap hardening knobs that cost nothing; a permissive harness pointed at a real model still
+    # deserves a throwaway VM.
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
+
+# volumes:
+#   runs:

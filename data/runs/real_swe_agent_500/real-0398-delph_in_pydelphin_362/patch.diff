@@ -1,0 +1,33 @@
+
+diff --git a/delphin/tdl.py b/delphin/tdl.py
+index ec330f4..d6a1416 100644
+--- a/delphin/tdl.py
++++ b/delphin/tdl.py
+@@ -901,6 +901,7 @@ _tdl_lex_re = re.compile(
+ 
+ def _is_comment(data):
+     """helper function for filtering out comments"""
++    return 1 <= data[0] <= 3
+     return 2 <= data[0] <= 3
+ 
+ 
+diff --git a/test_parse.py b/test_parse.py
+new file mode 100644
+index 0000000..55be121
+--- /dev/null
++++ b/test_parse.py
+@@ -0,0 +1,14 @@
++from delphin.tdl import parse_tdl
++
++# TDL file with comments
++tdl_file = """
++# This is a LineComment
++block comment:
++This is a BlockComment
++"""
++
++# Parse the TDL file
++parse_events = parse_tdl(tdl_file)
++
++# Print the parse events
++print(parse_events)

@@ -1,0 +1,22 @@
+{
+  "id": "tight_budget",
+  "system_prompt": "You are an autonomous software engineer working inside a small Python repository.\nYou are given a GitHub issue. Resolve it by editing files with the tools provided.\nWork step by step: inspect the relevant code, make a minimal change, verify it, then call `submit`.\nDo not modify the tests. Do not run commands unrelated to the task.",
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "edit_file",
+    "run_tests",
+    "bash",
+    "submit"
+  ],
+  "policy": "strict",
+  "max_steps": 6,
+  "max_total_tokens": 400000,
+  "context_window": 0,
+  "observation_chars": 6000,
+  "temperature": 0.0,
+  "max_tokens_per_call": 2048,
+  "include_file_listing": true,
+  "notes": "Six model calls, then the run is cut off."
+}

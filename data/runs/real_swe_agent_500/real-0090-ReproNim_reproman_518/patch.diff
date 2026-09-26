@@ -1,0 +1,32 @@
+
+diff --git a/fetch b/fetch
+new file mode 100755
+index 0000000..ac32c8e
+--- /dev/null
++++ b/fetch
+@@ -0,0 +1,5 @@
++#!/bin/bash
++
++# Simulate the fetch command always failing
++exit 1
++    result = subprocess.run(["./fetch", "this_file_does_not_exist.txt"], check=True, text=True, capture_output=True)
+diff --git a/reproman/interface/jobs.py b/reproman/interface/jobs.py
+index 2246d4c..af6ff6d 100644
+--- a/reproman/interface/jobs.py
++++ b/reproman/interface/jobs.py
+@@ -137,9 +137,12 @@ def fetch(job):
+     """
+     orc = _resurrect_orc(job)
+     if orc.has_completed:
+-        orc.fetch()
+-        LREG.unregister(orc.jobid)
+-    else:
++        try:
++            orc.fetch()
++            LREG.unregister(orc.jobid)
++        except Exception as e:
++            lgr.error("Fetch failed: %s", e)
++            exit(1)
+         lgr.warning("Not fetching incomplete job %s [status: %s]",
+                     job["_jobid"],
+                     orc.status or "unknown")

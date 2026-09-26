@@ -1,0 +1,25 @@
+
+diff --git a/lexicon/cli.py b/lexicon/cli.py
+index dbef1ae2..80c0f7b8 100644
+--- a/lexicon/cli.py
++++ b/lexicon/cli.py
+@@ -16,7 +16,19 @@ logger = logging.getLogger(__name__)  # pylint: disable=C0103
+ 
+ def generate_table_result(lexicon_logger, output=None, without_header=None):
+     """Convert returned JSON into a nice table for command line usage"""
++    if output is None:
++        return None
++    
+     try:
++        if isinstance(output, str):
++            # Convert string to a list of dictionaries
++            output = [{
++                'id': output,
++                'type': '',
++                'name': '',
++                'content': '',
++                'ttl': ''
++            }]
+         _ = (entry for entry in output)
+     except TypeError:
+         lexicon_logger.debug('Command output is not iterable, and then cannot '

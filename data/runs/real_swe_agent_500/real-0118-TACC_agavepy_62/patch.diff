@@ -1,0 +1,29 @@
+
+diff --git a/convert_configurations.py b/convert_configurations.py
+new file mode 100644
+index 0000000..f83d44c
+--- /dev/null
++++ b/convert_configurations.py
+@@ -0,0 +1,22 @@
++import json
++
++# Read the existing configurations
++with open("configurations.json", "r") as f:
++    configurations = json.load(f)
++
++# Restructure the configurations
++sessions = {}
++for tenant_id, tenant_config in configurations.items():
++    for user, user_config in tenant_config["users"].items():
++        for client_name, client_config in user_config["clients"].items():
++            if tenant_id not in sessions:
++                sessions[tenant_id] = {}
++            if user not in sessions[tenant_id]:
++                sessions[tenant_id][user] = {}
++            sessions[tenant_id][user][client_name] = client_config
++
++# Save the configurations in the new format
++with open("configurations.json", "w") as f:
++    json.dump({"sessions": sessions}, f, indent=4)
++
++print("Configurations converted successfully.")

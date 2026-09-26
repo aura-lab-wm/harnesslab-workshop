@@ -1,0 +1,30 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..8d179a7
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,23 @@
++from pyupgrade import main, fix_file, _fix_py3_plus, _replace_call
++from pytest import fixtures as pf
++
++# Create a dummy fixtures.py file with the problematic code
++with open("src/_pytest/fixtures.py", "w") as f:
++    f.write("raise {args[1]}.with_traceback({args[2]})")
++
++# Attempt to upgrade the file using pyupgrade
++try:
++    main()
++except IndexError as e:
++    print(f"Caught an IndexError: {e}")
++from pytest import fixtures
++
++# Create a dummy fixtures.py file with the problematic code
++with open("src/_pytest/fixtures.py", "w") as f:
++    f.write("raise {args[1]}.with_traceback({args[2]})")
++
++# Attempt to upgrade the file using pyupgrade
++try:
++    main()
++except IndexError as e:
++    print(f"Caught an IndexError: {e}")

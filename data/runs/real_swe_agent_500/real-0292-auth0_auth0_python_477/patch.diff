@@ -1,0 +1,84 @@
+
+diff --git a/auth0/management/branding.py b/auth0/management/branding.py
+index 38084a9..50303cf 100644
+--- a/auth0/management/branding.py
++++ b/auth0/management/branding.py
+@@ -9,7 +9,7 @@ class Branding:
+ 
+         token (str): Management API v2 Token
+ 
+-        telemetry (bool, optional): Enable or disable Telemetry
++print(branding.get_default_branding_theme('default'))
+             (defaults to True)
+ 
+         timeout (float or tuple, optional): Change the requests
+@@ -45,7 +45,13 @@ class Branding:
+                 url = f"{url}/{p}"
+         return url
+ 
+-    def get(self, aud=None):
++    def get_default_branding_theme(self, theme_name):
++        """Retrieve default branding theme. Requires "read:branding" scope.
++
++        See: https://auth0.com/docs/api/management/v2#!/Branding/get_default_branding_theme
++        """
++        
++        return self.client.get(self._url("themes", theme_name))
+         """Retrieve branding settings. Requires "read:branding" scope.
+ 
+         See: https://auth0.com/docs/api/management/v2#!/Branding/get_branding
+diff --git a/manage_branding_themes.py b/manage_branding_themes.py
+new file mode 100644
+index 0000000..6e2960c
+--- /dev/null
++++ b/manage_branding_themes.py
+@@ -0,0 +1,49 @@
++import auth0.management
++from auth0.management import Auth0
++from auth0.management.branding import Branding
++
++# Create an Auth0 client
++auth0_client = Auth0('YOUR_AUTH0_DOMAIN', 'YOUR_AUTH0_API_TOKEN')
++
++# Initialize the Branding resource
++branding = Branding(auth0_client, token='YOUR_AUTH0_API_TOKEN')
++
++# List all branding themes
++print("URL:", branding._url("themes", 'default').format(domain='YOUR_AUTH0_DOMAIN'))
++print(branding.get_default_branding_theme('default'))
++
++# Get a specific branding theme
++theme_name = 'default'
++print(branding.get_theme(theme_name))
++
++# Update a branding theme
++theme_name = 'default'
++theme_updates = {
++    'colors': {
++        'primary': '#FF0000'
++    }
++}
++print(branding.update_theme(theme_name, theme_updates))
++
++# Create an Auth0 client
++auth0_client = Auth0('YOUR_AUTH0_DOMAIN', 'YOUR_AUTH0_API_TOKEN')
++
++# Initialize the Branding resource
++branding = Branding(auth0_client)
++
++# List all branding themes
++print(branding.list_themes())
++
++# Get a specific branding theme
++theme_name = 'default'
++print(branding.get_theme(theme_name))
++
++# Update a branding theme
++theme_name = 'default'
++theme_updates = {
++    'colors': {
++        'primary': '#FF0000'
++    }
++}
++print(branding.update(auth0_client._url("themes", theme_name), theme_updates))
++

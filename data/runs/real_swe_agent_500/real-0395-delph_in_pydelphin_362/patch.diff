@@ -1,0 +1,39 @@
+
+diff --git a/comment_classes.py b/comment_classes.py
+new file mode 100644
+index 0000000..8dbb0d5
+--- /dev/null
++++ b/comment_classes.py
+@@ -0,0 +1,15 @@
++class LineComment:
++    def __init__(self, token, line_no):
++        self.token = token
++        self.line_no = line_no
++
++    def format(self):
++        return f"LineComment({self.token}, {self.line_no})"
++
++class BlockComment:
++    def __init__(self, token, line_no):
++        self.token = token
++        self.line_no = line_no
++
++    def format(self):
++        return f"BlockComment({self.token}, {self.line_no})"
+diff --git a/delphin/tdl.py b/delphin/tdl.py
+index ec330f4..52ce39c 100644
+--- a/delphin/tdl.py
++++ b/delphin/tdl.py
+@@ -2,6 +2,12 @@
+ Classes and functions for parsing and inspecting TDL.
+ """
+ 
++from comment_classes import BlockComment, LineComment
++from typing import Tuple, Union, Generator
++import re
++from pathlib import Path
++import textwrap
++import warnings
+ from typing import Tuple, Union, Generator
+ import re
+ from pathlib import Path

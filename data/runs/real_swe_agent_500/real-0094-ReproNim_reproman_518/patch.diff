@@ -1,0 +1,32 @@
+
+diff --git a/reproman/interface/run.py b/reproman/interface/run.py
+index dd9ec19..8931e59 100644
+--- a/reproman/interface/run.py
++++ b/reproman/interface/run.py
+@@ -1,4 +1,4 @@
+-# -*- coding: utf-8 -*-
++import sys
+ # ex: set sts=4 ts=4 sw=4 noet:
+ # ## ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ##
+ #
+@@ -424,6 +424,13 @@ class Run(Interface):
+                 do_delete = follow.split("-")[0] == "delete"
+ 
+                 def remote_fn(res, failed):
++                    global failed_jobs
++                    if failed:
++                        failed_jobs = True
++                        lgr.info("Not stopping resource '%s' because there were failed jobs", res.name)
++                    else:
++                        lgr.info("Stopping resource '%s' after successful run", res.name)
++                        manager.stop(res)
+                     if failed and only_on_success:
+                         lgr.info("Not stopping%s resource '%s' "
+                                  "because there were failed jobs",
+@@ -438,4 +445,5 @@ class Run(Interface):
+                         if do_delete:
+                             manager.delete(res)
+             orc.fetch(on_remote_finish=remote_fn)
+-            lreg.unregister(orc.jobid)
++        if failed_jobs:
++            sys.exit(1)

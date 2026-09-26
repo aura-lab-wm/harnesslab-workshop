@@ -1,0 +1,15 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 31a603e..1361eea 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -1177,6 +1177,9 @@ def _replace_call(tokens, start, end, args, tmpl):
+         start_rest += 1
+ 
+     rest = tokens_to_src(tokens[start_rest:end - 1])
++    if len(args) < 2:
++        # Not enough arguments for template substitution, skip it
++        return
+     src = tmpl.format(args=arg_strs, rest=rest)
+     tokens[start:end] = [Token('CODE', src)]
+ 

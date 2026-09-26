@@ -1,0 +1,16 @@
+
+diff --git a/src/latexify/latexify_visitor.py b/src/latexify/latexify_visitor.py
+index 476d1ef..9715641 100644
+--- a/src/latexify/latexify_visitor.py
++++ b/src/latexify/latexify_visitor.py
+@@ -97,7 +97,9 @@ class LatexifyVisitor(node_visitor_base.NodeVisitorBase):
+         name_str, arg_strs, assign_vars, body_str = self.visit_FunctionDef(node, None)
+         return "".join(assign_vars) + body_str
+ 
+-    def visit_Assign(self, node, action):
++    def visit_Subscript(self, node, action):
++        """Visit a subscript node."""
++        return self.visit(node.value) + "_" + self.visit(node.slice)
+         var = self.visit(node.value)
+         if self._reduce_assignments:
+             self.assign_var[node.targets[0].id] = rf"\left( {var} \right)"

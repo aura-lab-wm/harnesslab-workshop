@@ -1,0 +1,49 @@
+
+diff --git a/mobly/config_parser.py b/mobly/config_parser.py
+index aa43c03..abcefe4 100644
+--- a/mobly/config_parser.py
++++ b/mobly/config_parser.py
+@@ -86,6 +86,43 @@ def _validate_testbed_configs(testbed_configs):
+ 
+ 
+ def load_test_config_file(test_config_path, tb_filters=None):
++    """Processes the test configuration file provided by user.
++
++    Loads the configuration file into a dict, unpacks each testbed
++    config into its own dict, and validates the configuration in the
++    process.
++
++    Args:
++        test_config_path: Path to the test configuration file.
++        tb_filters: A subset of test bed names to be pulled from the config
++            file. If None, then all test beds will be selected.
++
++    Returns:
++        A list of test bed configurations.
++    """
++    # Load the test configuration file
++    with open(test_config_path, 'r') as f:
++        test_config = yaml.load(f, Loader=yaml.FullLoader)
++
++    # Log the loaded config file contents at debug level
++    import logging
++    logging.getLogger(__name__).debug('Loaded config file contents:\n%s', str(test_config))
++
++    # Validate the test configuration
++    _validate_test_config(test_config)
++
++    # Process the testbed configurations
++    testbed_configs = test_config.get(keys.Config.key_testbeds.value, [])
++    _validate_testbed_configs(testbed_configs)
++
++    # Filter the testbeds if tb_filters is provided
++    if tb_filters:
++        testbed_configs = [
++            config for config in testbed_configs
++            if config.get(keys.Config.key_testbed_name.value) in tb_filters
++        ]
++
++    return testbed_configs
+     """Processes the test configuration file provied by user.
+ 
+     Loads the configuration file into a dict, unpacks each testbed

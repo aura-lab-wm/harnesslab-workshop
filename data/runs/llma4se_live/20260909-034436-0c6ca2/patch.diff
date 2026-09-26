@@ -1,0 +1,10 @@
+--- a/store/cache.py
++++ b/store/cache.py
+@@ -22,4 +22,7 @@
+             return default
+         with open(p) as f:
+             rec = json.load(f)
++        if self._now() - rec["t"] > self.ttl:
++            os.remove(p)
++            return default
+         return rec["v"]

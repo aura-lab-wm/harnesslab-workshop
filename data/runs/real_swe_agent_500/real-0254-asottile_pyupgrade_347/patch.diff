@@ -1,0 +1,23 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 8fe8d11..b16fa52 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -571,10 +571,15 @@ def _fix_extraneous_parens(tokens: List[Token], i: int) -> None:
+         i += 1
+ 
+     if tokens[i].src == ')':
++        # Check if the parentheses are necessary for the syntax
++        # If the contents inside the parentheses are a string literal,
++        # the parentheses might be necessary to preserve the encoding
++        contents = tokens_to_src(tokens[start + 1:i])
++        if contents.startswith('"') and contents.endswith('"'):
++            # The contents are a string literal, keep the parentheses
++            return
+         _remove_brace(tokens, end)
+         _remove_brace(tokens, start)
+-
+-
+ def _remove_fmt(tup: DotFormatPart) -> DotFormatPart:
+     if tup[1] is None:
+         return tup

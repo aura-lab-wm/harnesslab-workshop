@@ -1,0 +1,40 @@
+
+diff --git a/.rpdk-config b/.rpdk-config
+new file mode 100644
+index 0000000..e411460
+--- /dev/null
++++ b/.rpdk-config
+@@ -0,0 +1,21 @@
++{
++    "artifact_type": "HOOK",
++    "typeName": "XXX::XXX::XXX",
++    "language": "python37",
++    "runtime": "python3.7",
++    "entrypoint": "xxx.handlers.hook",
++    "testEntrypoint": "xxx.handlers.hook",
++    "settings": {
++        "version": false,
++        "subparser_name": null,
++        "verbose": 0,
++        "force": false,
++        "type_name": null,
++        "artifact_type": null,
++        "endpoint_url": null,
++        "region": null,
++        "target_schemas": [],
++        "use_docker": false,
++        "protocolVersion": "2.0.0"
++    }
++}
+diff --git a/hook-specification.yaml b/hook-specification.yaml
+new file mode 100644
+index 0000000..69d7d27
+--- /dev/null
++++ b/hook-specification.yaml
+@@ -0,0 +1,6 @@
++version: '1.0'
++hookType: 'preCreate'
++targetResourceTypes:
++  - 'AWS::S3::Bucket'
++properties:
++  bucketName: 'test-bucket'

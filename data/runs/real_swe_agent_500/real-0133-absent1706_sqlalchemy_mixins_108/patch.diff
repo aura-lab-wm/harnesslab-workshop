@@ -1,0 +1,40 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..98a0ecf
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,33 @@
++import sqlalchemy as sa
++from sqlalchemy_mixins import AllFeaturesMixin
++
++class Base:
++    pass
++
++class AnotherBaseClass(Base, AllFeaturesMixin):
++    __abstract__ = True
++
++    #SOME OTHER CODE
++
++class MyBaseClass(AnotherBaseClass):
++    __abstract__ = True
++
++    #SOME CODE
++
++class MyClass(MyBaseClass):
++    __tablename__ = "my_table"
++    __table_args__ = {'primary_key': ['id']}
++
++    pass
++    pass
++    pass
++    pass
++    pass
++    pass
++    pass
++    pass
++
++# Add code that triggers the error
++mapper = sa.orm.mapper(MyClass, sa.Table("my_table", sa.MetaData()))
++
++print("Script completed successfully, no errors.")

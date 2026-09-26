@@ -1,0 +1,15 @@
+
+diff --git a/test_with_latex.py b/test_with_latex.py
+new file mode 100644
+index 0000000..e93db77
+--- /dev/null
++++ b/test_with_latex.py
+@@ -0,0 +1,8 @@
++import math
++import latexify
++
++@latexify.with_latex
++def solve(a):
++    return a[0]
++
++print(solve)

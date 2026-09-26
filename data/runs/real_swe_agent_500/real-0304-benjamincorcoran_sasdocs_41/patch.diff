@@ -1,0 +1,2493 @@
+
+diff --git a/index.html b/index.html
+new file mode 100644
+index 0000000..2ae07c1
+--- /dev/null
++++ b/index.html
+@@ -0,0 +1,264 @@
++<!DOCTYPE html>
++<html class="writer-html5" lang="en" >
++<head>
++  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
++
++  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++  <title>API reference &mdash; parsy 2.1 documentation</title>
++      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
++      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
++    <link rel="canonical" href="https://parsy.readthedocs.io/en/latest/ref/index.html" />
++  <!--[if lt IE 9]>
++    <script src="../_static/js/html5shiv.min.js"></script>
++  <![endif]-->
++  
++        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
++        <script src="../_static/doctools.js"></script>
++        <script src="../_static/sphinx_highlight.js"></script>
++        <script async="async" src="/_/static/javascript/readthedocs-doc-embed.js"></script>
++    <script src="../_static/js/theme.js"></script>
++    <link rel="index" title="Index" href="../genindex.html" />
++    <link rel="search" title="Search" href="../search.html" />
++    <link rel="next" title="Parsing primitives" href="primitives.html" />
++    <link rel="prev" title="Tutorial" href="../tutorial.html" /> 
++
++<!-- RTD Extra Head -->
++
++<link rel="stylesheet" href="/_/static/css/readthedocs-doc-embed.css" type="text/css" />
++
++<script type="application/json" id="READTHEDOCS_DATA">{"ad_free": false, "api_host": "https://readthedocs.org", "build_date": "2023-04-14T17:23:05Z", "builder": "sphinx", "canonical_url": null, "commit": "5be0cd30", "docroot": "/docs/", "features": {"docsearch_disabled": false}, "global_analytics_code": "UA-17997319-1", "language": "en", "page": "ref/index", "programming_language": "py", "project": "parsy", "proxied_api_host": "/_", "source_suffix": ".rst", "subprojects": {}, "theme": "sphinx_rtd_theme", "user_analytics_code": "", "version": "latest"}</script>
++
++<!--
++Using this variable directly instead of using `JSON.parse` is deprecated.
++The READTHEDOCS_DATA global variable will be removed in the future.
++-->
++<script type="text/javascript">
++READTHEDOCS_DATA = JSON.parse(document.getElementById('READTHEDOCS_DATA').innerHTML);
++</script>
++
++<script type="text/javascript" src="/_/static/javascript/readthedocs-analytics.js" async="async"></script>
++
++<!-- end RTD <extrahead> -->
++</head>
++
++<body class="wy-body-for-nav"> 
++  <div class="wy-grid-for-nav">
++    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
++      <div class="wy-side-scroll">
++        <div class="wy-side-nav-search" >
++
++          
++          
++          <a href="../index.html" class="icon icon-home">
++            parsy
++          </a>
++              <div class="version">
++                latest
++              </div>
++<div role="search">
++  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
++    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
++    <input type="hidden" name="check_keywords" value="yes" />
++    <input type="hidden" name="area" value="default" />
++  </form>
++</div>
++        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
++              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
++<ul class="current">
++<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
++<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
++<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
++<li class="toctree-l1 current"><a class="current reference internal" href="#">API reference</a><ul>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html">Parsing primitives</a></li>
++<li class="toctree-l2"><a class="reference internal" href="methods_and_combinators.html">Parser methods, operators and combinators</a></li>
++<li class="toctree-l2"><a class="reference internal" href="generating.html">Generating a parser</a></li>
++<li class="toctree-l2"><a class="reference internal" href="parser_instances.html">Creating new Parser instances</a></li>
++</ul>
++</li>
++<li class="toctree-l1"><a class="reference internal" href="../howto/index.html">Howto’s, cookbooks and examples</a></li>
++<li class="toctree-l1"><a class="reference internal" href="../history.html">History and release notes</a></li>
++<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to parsy</a></li>
++</ul>
++
++        </div>
++      </div>
++    </nav>
++
++    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
++          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
++          <a href="../index.html">parsy</a>
++      </nav>
++
++      <div class="wy-nav-content">
++        <div class="rst-content">
++          <div role="navigation" aria-label="Page navigation">
++  <ul class="wy-breadcrumbs">
++      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
++      <li class="breadcrumb-item active">API reference</li>
++      <li class="wy-breadcrumbs-aside">
++              <a href="https://github.com/python-parsy/parsy/blob/master/docs/ref/index.rst" class="fa fa-github"> Edit on GitHub</a>
++      </li>
++  </ul>
++  <hr/>
++</div>
++          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
++           <div itemprop="articleBody">
++             
++  <section id="api-reference">
++<h1>API reference<a class="headerlink" href="#api-reference" title="Permalink to this heading"></a></h1>
++<div class="toctree-wrapper compound">
++<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
++<ul>
++<li class="toctree-l1"><a class="reference internal" href="primitives.html">Parsing primitives</a><ul>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.string"><code class="docutils literal notranslate"><span class="pre">string()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.regex"><code class="docutils literal notranslate"><span class="pre">regex()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.test_char"><code class="docutils literal notranslate"><span class="pre">test_char()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.test_item"><code class="docutils literal notranslate"><span class="pre">test_item()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.char_from"><code class="docutils literal notranslate"><span class="pre">char_from()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.string_from"><code class="docutils literal notranslate"><span class="pre">string_from()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.match_item"><code class="docutils literal notranslate"><span class="pre">match_item()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.eof"><code class="docutils literal notranslate"><span class="pre">eof</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.success"><code class="docutils literal notranslate"><span class="pre">success()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.fail"><code class="docutils literal notranslate"><span class="pre">fail()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.from_enum"><code class="docutils literal notranslate"><span class="pre">from_enum()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.peek"><code class="docutils literal notranslate"><span class="pre">peek()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#pre-built-parsers">Pre-built parsers</a><ul>
++<li class="toctree-l3"><a class="reference internal" href="primitives.html#parsy.any_char"><code class="docutils literal notranslate"><span class="pre">any_char</span></code></a></li>
++<li class="toctree-l3"><a class="reference internal" href="primitives.html#parsy.whitespace"><code class="docutils literal notranslate"><span class="pre">whitespace</span></code></a></li>
++<li class="toctree-l3"><a class="reference internal" href="primitives.html#parsy.letter"><code class="docutils literal notranslate"><span class="pre">letter</span></code></a></li>
++<li class="toctree-l3"><a class="reference internal" href="primitives.html#parsy.digit"><code class="docutils literal notranslate"><span class="pre">digit</span></code></a></li>
++<li class="toctree-l3"><a class="reference internal" href="primitives.html#parsy.decimal_digit"><code class="docutils literal notranslate"><span class="pre">decimal_digit</span></code></a></li>
++<li class="toctree-l3"><a class="reference internal" href="primitives.html#parsy.line_info"><code class="docutils literal notranslate"><span class="pre">line_info</span></code></a></li>
++<li class="toctree-l3"><a class="reference internal" href="primitives.html#parsy.index"><code class="docutils literal notranslate"><span class="pre">index</span></code></a></li>
++</ul>
++</li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#forward-declarations">Forward declarations</a><ul>
++<li class="toctree-l3"><a class="reference internal" href="primitives.html#parsy.forward_declaration"><code class="docutils literal notranslate"><span class="pre">forward_declaration</span></code></a></li>
++</ul>
++</li>
++</ul>
++</li>
++<li class="toctree-l1"><a class="reference internal" href="methods_and_combinators.html">Parser methods, operators and combinators</a><ul>
++<li class="toctree-l2"><a class="reference internal" href="methods_and_combinators.html#parser-methods">Parser methods</a><ul>
++<li class="toctree-l3"><a class="reference internal" href="methods_and_combinators.html#parsy.Parser"><code class="docutils literal notranslate"><span class="pre">Parser</span></code></a></li>
++</ul>
++</li>
++<li class="toctree-l2"><a class="reference internal" href="methods_and_combinators.html#parser-operators">Parser operators</a><ul>
++<li class="toctree-l3"><a class="reference internal" href="methods_and_combinators.html#operator"><code class="docutils literal notranslate"><span class="pre">|</span></code> operator</a></li>
++<li class="toctree-l3"><a class="reference internal" href="methods_and_combinators.html#parser-lshift"><code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span></code> operator</a></li>
++<li class="toctree-l3"><a class="reference internal" href="methods_and_combinators.html#parser-rshift"><code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span></code> operator</a></li>
++<li class="toctree-l3"><a class="reference internal" href="methods_and_combinators.html#parser-plus"><code class="docutils literal notranslate"><span class="pre">+</span></code> operator</a></li>
++<li class="toctree-l3"><a class="reference internal" href="methods_and_combinators.html#parser-times"><code class="docutils literal notranslate"><span class="pre">*</span></code> operator</a></li>
++</ul>
++</li>
++<li class="toctree-l2"><a class="reference internal" href="methods_and_combinators.html#parser-combinators">Parser combinators</a><ul>
++<li class="toctree-l3"><a class="reference internal" href="methods_and_combinators.html#parsy.alt"><code class="docutils literal notranslate"><span class="pre">alt()</span></code></a></li>
++<li class="toctree-l3"><a class="reference internal" href="methods_and_combinators.html#parsy.seq"><code class="docutils literal notranslate"><span class="pre">seq()</span></code></a></li>
++</ul>
++</li>
++<li class="toctree-l2"><a class="reference internal" href="methods_and_combinators.html#other-combinators">Other combinators</a></li>
++</ul>
++</li>
++<li class="toctree-l1"><a class="reference internal" href="generating.html">Generating a parser</a><ul>
++<li class="toctree-l2"><a class="reference internal" href="generating.html#parsy.generate"><code class="docutils literal notranslate"><span class="pre">generate()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="generating.html#motivation-and-examples">Motivation and examples</a><ul>
++<li class="toctree-l3"><a class="reference internal" href="generating.html#alternative-syntax-to-combinators">Alternative syntax to combinators</a></li>
++<li class="toctree-l3"><a class="reference internal" href="generating.html#building-complex-objects">Building complex objects</a></li>
++<li class="toctree-l3"><a class="reference internal" href="generating.html#using-values-already-parsed">Using values already parsed</a></li>
++<li class="toctree-l3"><a class="reference internal" href="generating.html#implementing-recursive-definitions">Implementing recursive definitions</a></li>
++</ul>
++</li>
++</ul>
++</li>
++<li class="toctree-l1"><a class="reference internal" href="parser_instances.html">Creating new Parser instances</a><ul>
++<li class="toctree-l2"><a class="reference internal" href="parser_instances.html#result-objects">Result objects</a><ul>
++<li class="toctree-l3"><a class="reference internal" href="parser_instances.html#parsy.Result"><code class="docutils literal notranslate"><span class="pre">Result</span></code></a></li>
++</ul>
++</li>
++</ul>
++</li>
++</ul>
++</div>
++</section>
++
++
++           </div>
++          </div>
++          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
++        <a href="../tutorial.html" class="btn btn-neutral float-left" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
++        <a href="primitives.html" class="btn btn-neutral float-right" title="Parsing primitives" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
++    </div>
++
++  <hr/>
++
++  <div role="contentinfo">
++    <p>&#169; Copyright 2017, Jeanine Adkisson, Luke Plant.
++      <span class="commit">Revision <code>5be0cd30</code>.
++      </span></p>
++  </div>
++
++  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
++    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
++    provided by <a href="https://readthedocs.org">Read the Docs</a>.
++   
++
++</footer>
++        </div>
++      </div>
++    </section>
++  </div>
++  
++
++  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Versions">
++    <span class="rst-current-version" data-toggle="rst-current-version">
++      <span class="fa fa-book"> Read the Docs</span>
++      v: latest
++      <span class="fa fa-caret-down"></span>
++    </span>
++    <div class="rst-other-versions">
++      <dl>
++        <dt>Versions</dt>
++        
++          <dd><a href="/en/latest/">latest</a></dd>
++        
++          <dd><a href="/en/stable/">stable</a></dd>
++        
++          <dd><a href="/en/v2.1/">v2.1</a></dd>
++        
++          <dd><a href="/en/v2.0/">v2.0</a></dd>
++        
++          <dd><a href="/en/v1.4.0/">v1.4.0</a></dd>
++        
++          <dd><a href="/en/v1.3.0/">v1.3.0</a></dd>
++        
++          <dd><a href="/en/v1.2.0/">v1.2.0</a></dd>
++        
++          <dd><a href="/en/v1.1.0/">v1.1.0</a></dd>
++        
++          <dd><a href="/en/v1.0.0/">v1.0.0</a></dd>
++        
++      </dl>
++      <dl>
++        <dt>Downloads</dt>
++        
++      </dl>
++      <dl>
++        
++        <dt>On Read the Docs</dt>
++          <dd>
++            <a href="//readthedocs.org/projects/parsy/?fromdocs=parsy">Project Home</a>
++          </dd>
++          <dd>
++            <a href="//readthedocs.org/builds/parsy/?fromdocs=parsy">Builds</a>
++          </dd>
++      </dl>
++    </div>
++  </div>
++<script>
++      jQuery(function () {
++          SphinxRtdTheme.Navigation.enable(true);
++      });
++  </script> 
++
++</body>
++</html>
+\ No newline at end of file
+diff --git a/index.html.1 b/index.html.1
+new file mode 100644
+index 0000000..2ae07c1
+--- /dev/null
++++ b/index.html.1
+@@ -0,0 +1,264 @@
++<!DOCTYPE html>
++<html class="writer-html5" lang="en" >
++<head>
++  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
++
++  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++  <title>API reference &mdash; parsy 2.1 documentation</title>
++      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
++      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
++    <link rel="canonical" href="https://parsy.readthedocs.io/en/latest/ref/index.html" />
++  <!--[if lt IE 9]>
++    <script src="../_static/js/html5shiv.min.js"></script>
++  <![endif]-->
++  
++        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
++        <script src="../_static/doctools.js"></script>
++        <script src="../_static/sphinx_highlight.js"></script>
++        <script async="async" src="/_/static/javascript/readthedocs-doc-embed.js"></script>
++    <script src="../_static/js/theme.js"></script>
++    <link rel="index" title="Index" href="../genindex.html" />
++    <link rel="search" title="Search" href="../search.html" />
++    <link rel="next" title="Parsing primitives" href="primitives.html" />
++    <link rel="prev" title="Tutorial" href="../tutorial.html" /> 
++
++<!-- RTD Extra Head -->
++
++<link rel="stylesheet" href="/_/static/css/readthedocs-doc-embed.css" type="text/css" />
++
++<script type="application/json" id="READTHEDOCS_DATA">{"ad_free": false, "api_host": "https://readthedocs.org", "build_date": "2023-04-14T17:23:05Z", "builder": "sphinx", "canonical_url": null, "commit": "5be0cd30", "docroot": "/docs/", "features": {"docsearch_disabled": false}, "global_analytics_code": "UA-17997319-1", "language": "en", "page": "ref/index", "programming_language": "py", "project": "parsy", "proxied_api_host": "/_", "source_suffix": ".rst", "subprojects": {}, "theme": "sphinx_rtd_theme", "user_analytics_code": "", "version": "latest"}</script>
++
++<!--
++Using this variable directly instead of using `JSON.parse` is deprecated.
++The READTHEDOCS_DATA global variable will be removed in the future.
++-->
++<script type="text/javascript">
++READTHEDOCS_DATA = JSON.parse(document.getElementById('READTHEDOCS_DATA').innerHTML);
++</script>
++
++<script type="text/javascript" src="/_/static/javascript/readthedocs-analytics.js" async="async"></script>
++
++<!-- end RTD <extrahead> -->
++</head>
++
++<body class="wy-body-for-nav"> 
++  <div class="wy-grid-for-nav">
++    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
++      <div class="wy-side-scroll">
++        <div class="wy-side-nav-search" >
++
++          
++          
++          <a href="../index.html" class="icon icon-home">
++            parsy
++          </a>
++              <div class="version">
++                latest
++              </div>
++<div role="search">
++  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
++    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
++    <input type="hidden" name="check_keywords" value="yes" />
++    <input type="hidden" name="area" value="default" />
++  </form>
++</div>
++        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
++              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
++<ul class="current">
++<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
++<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
++<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
++<li class="toctree-l1 current"><a class="current reference internal" href="#">API reference</a><ul>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html">Parsing primitives</a></li>
++<li class="toctree-l2"><a class="reference internal" href="methods_and_combinators.html">Parser methods, operators and combinators</a></li>
++<li class="toctree-l2"><a class="reference internal" href="generating.html">Generating a parser</a></li>
++<li class="toctree-l2"><a class="reference internal" href="parser_instances.html">Creating new Parser instances</a></li>
++</ul>
++</li>
++<li class="toctree-l1"><a class="reference internal" href="../howto/index.html">Howto’s, cookbooks and examples</a></li>
++<li class="toctree-l1"><a class="reference internal" href="../history.html">History and release notes</a></li>
++<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to parsy</a></li>
++</ul>
++
++        </div>
++      </div>
++    </nav>
++
++    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
++          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
++          <a href="../index.html">parsy</a>
++      </nav>
++
++      <div class="wy-nav-content">
++        <div class="rst-content">
++          <div role="navigation" aria-label="Page navigation">
++  <ul class="wy-breadcrumbs">
++      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
++      <li class="breadcrumb-item active">API reference</li>
++      <li class="wy-breadcrumbs-aside">
++              <a href="https://github.com/python-parsy/parsy/blob/master/docs/ref/index.rst" class="fa fa-github"> Edit on GitHub</a>
++      </li>
++  </ul>
++  <hr/>
++</div>
++          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
++           <div itemprop="articleBody">
++             
++  <section id="api-reference">
++<h1>API reference<a class="headerlink" href="#api-reference" title="Permalink to this heading"></a></h1>
++<div class="toctree-wrapper compound">
++<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
++<ul>
++<li class="toctree-l1"><a class="reference internal" href="primitives.html">Parsing primitives</a><ul>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.string"><code class="docutils literal notranslate"><span class="pre">string()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.regex"><code class="docutils literal notranslate"><span class="pre">regex()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.test_char"><code class="docutils literal notranslate"><span class="pre">test_char()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.test_item"><code class="docutils literal notranslate"><span class="pre">test_item()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.char_from"><code class="docutils literal notranslate"><span class="pre">char_from()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.string_from"><code class="docutils literal notranslate"><span class="pre">string_from()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.match_item"><code class="docutils literal notranslate"><span class="pre">match_item()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.eof"><code class="docutils literal notranslate"><span class="pre">eof</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.success"><code class="docutils literal notranslate"><span class="pre">success()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.fail"><code class="docutils literal notranslate"><span class="pre">fail()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.from_enum"><code class="docutils literal notranslate"><span class="pre">from_enum()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#parsy.peek"><code class="docutils literal notranslate"><span class="pre">peek()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#pre-built-parsers">Pre-built parsers</a><ul>
++<li class="toctree-l3"><a class="reference internal" href="primitives.html#parsy.any_char"><code class="docutils literal notranslate"><span class="pre">any_char</span></code></a></li>
++<li class="toctree-l3"><a class="reference internal" href="primitives.html#parsy.whitespace"><code class="docutils literal notranslate"><span class="pre">whitespace</span></code></a></li>
++<li class="toctree-l3"><a class="reference internal" href="primitives.html#parsy.letter"><code class="docutils literal notranslate"><span class="pre">letter</span></code></a></li>
++<li class="toctree-l3"><a class="reference internal" href="primitives.html#parsy.digit"><code class="docutils literal notranslate"><span class="pre">digit</span></code></a></li>
++<li class="toctree-l3"><a class="reference internal" href="primitives.html#parsy.decimal_digit"><code class="docutils literal notranslate"><span class="pre">decimal_digit</span></code></a></li>
++<li class="toctree-l3"><a class="reference internal" href="primitives.html#parsy.line_info"><code class="docutils literal notranslate"><span class="pre">line_info</span></code></a></li>
++<li class="toctree-l3"><a class="reference internal" href="primitives.html#parsy.index"><code class="docutils literal notranslate"><span class="pre">index</span></code></a></li>
++</ul>
++</li>
++<li class="toctree-l2"><a class="reference internal" href="primitives.html#forward-declarations">Forward declarations</a><ul>
++<li class="toctree-l3"><a class="reference internal" href="primitives.html#parsy.forward_declaration"><code class="docutils literal notranslate"><span class="pre">forward_declaration</span></code></a></li>
++</ul>
++</li>
++</ul>
++</li>
++<li class="toctree-l1"><a class="reference internal" href="methods_and_combinators.html">Parser methods, operators and combinators</a><ul>
++<li class="toctree-l2"><a class="reference internal" href="methods_and_combinators.html#parser-methods">Parser methods</a><ul>
++<li class="toctree-l3"><a class="reference internal" href="methods_and_combinators.html#parsy.Parser"><code class="docutils literal notranslate"><span class="pre">Parser</span></code></a></li>
++</ul>
++</li>
++<li class="toctree-l2"><a class="reference internal" href="methods_and_combinators.html#parser-operators">Parser operators</a><ul>
++<li class="toctree-l3"><a class="reference internal" href="methods_and_combinators.html#operator"><code class="docutils literal notranslate"><span class="pre">|</span></code> operator</a></li>
++<li class="toctree-l3"><a class="reference internal" href="methods_and_combinators.html#parser-lshift"><code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span></code> operator</a></li>
++<li class="toctree-l3"><a class="reference internal" href="methods_and_combinators.html#parser-rshift"><code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span></code> operator</a></li>
++<li class="toctree-l3"><a class="reference internal" href="methods_and_combinators.html#parser-plus"><code class="docutils literal notranslate"><span class="pre">+</span></code> operator</a></li>
++<li class="toctree-l3"><a class="reference internal" href="methods_and_combinators.html#parser-times"><code class="docutils literal notranslate"><span class="pre">*</span></code> operator</a></li>
++</ul>
++</li>
++<li class="toctree-l2"><a class="reference internal" href="methods_and_combinators.html#parser-combinators">Parser combinators</a><ul>
++<li class="toctree-l3"><a class="reference internal" href="methods_and_combinators.html#parsy.alt"><code class="docutils literal notranslate"><span class="pre">alt()</span></code></a></li>
++<li class="toctree-l3"><a class="reference internal" href="methods_and_combinators.html#parsy.seq"><code class="docutils literal notranslate"><span class="pre">seq()</span></code></a></li>
++</ul>
++</li>
++<li class="toctree-l2"><a class="reference internal" href="methods_and_combinators.html#other-combinators">Other combinators</a></li>
++</ul>
++</li>
++<li class="toctree-l1"><a class="reference internal" href="generating.html">Generating a parser</a><ul>
++<li class="toctree-l2"><a class="reference internal" href="generating.html#parsy.generate"><code class="docutils literal notranslate"><span class="pre">generate()</span></code></a></li>
++<li class="toctree-l2"><a class="reference internal" href="generating.html#motivation-and-examples">Motivation and examples</a><ul>
++<li class="toctree-l3"><a class="reference internal" href="generating.html#alternative-syntax-to-combinators">Alternative syntax to combinators</a></li>
++<li class="toctree-l3"><a class="reference internal" href="generating.html#building-complex-objects">Building complex objects</a></li>
++<li class="toctree-l3"><a class="reference internal" href="generating.html#using-values-already-parsed">Using values already parsed</a></li>
++<li class="toctree-l3"><a class="reference internal" href="generating.html#implementing-recursive-definitions">Implementing recursive definitions</a></li>
++</ul>
++</li>
++</ul>
++</li>
++<li class="toctree-l1"><a class="reference internal" href="parser_instances.html">Creating new Parser instances</a><ul>
++<li class="toctree-l2"><a class="reference internal" href="parser_instances.html#result-objects">Result objects</a><ul>
++<li class="toctree-l3"><a class="reference internal" href="parser_instances.html#parsy.Result"><code class="docutils literal notranslate"><span class="pre">Result</span></code></a></li>
++</ul>
++</li>
++</ul>
++</li>
++</ul>
++</div>
++</section>
++
++
++           </div>
++          </div>
++          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
++        <a href="../tutorial.html" class="btn btn-neutral float-left" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
++        <a href="primitives.html" class="btn btn-neutral float-right" title="Parsing primitives" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
++    </div>
++
++  <hr/>
++
++  <div role="contentinfo">
++    <p>&#169; Copyright 2017, Jeanine Adkisson, Luke Plant.
++      <span class="commit">Revision <code>5be0cd30</code>.
++      </span></p>
++  </div>
++
++  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
++    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
++    provided by <a href="https://readthedocs.org">Read the Docs</a>.
++   
++
++</footer>
++        </div>
++      </div>
++    </section>
++  </div>
++  
++
++  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Versions">
++    <span class="rst-current-version" data-toggle="rst-current-version">
++      <span class="fa fa-book"> Read the Docs</span>
++      v: latest
++      <span class="fa fa-caret-down"></span>
++    </span>
++    <div class="rst-other-versions">
++      <dl>
++        <dt>Versions</dt>
++        
++          <dd><a href="/en/latest/">latest</a></dd>
++        
++          <dd><a href="/en/stable/">stable</a></dd>
++        
++          <dd><a href="/en/v2.1/">v2.1</a></dd>
++        
++          <dd><a href="/en/v2.0/">v2.0</a></dd>
++        
++          <dd><a href="/en/v1.4.0/">v1.4.0</a></dd>
++        
++          <dd><a href="/en/v1.3.0/">v1.3.0</a></dd>
++        
++          <dd><a href="/en/v1.2.0/">v1.2.0</a></dd>
++        
++          <dd><a href="/en/v1.1.0/">v1.1.0</a></dd>
++        
++          <dd><a href="/en/v1.0.0/">v1.0.0</a></dd>
++        
++      </dl>
++      <dl>
++        <dt>Downloads</dt>
++        
++      </dl>
++      <dl>
++        
++        <dt>On Read the Docs</dt>
++          <dd>
++            <a href="//readthedocs.org/projects/parsy/?fromdocs=parsy">Project Home</a>
++          </dd>
++          <dd>
++            <a href="//readthedocs.org/builds/parsy/?fromdocs=parsy">Builds</a>
++          </dd>
++      </dl>
++    </div>
++  </div>
++<script>
++      jQuery(function () {
++          SphinxRtdTheme.Navigation.enable(true);
++      });
++  </script> 
++
++</body>
++</html>
+\ No newline at end of file
+diff --git a/reproduce.sas b/reproduce.sas
+new file mode 100644
+index 0000000..c4d0b53
+--- /dev/null
++++ b/reproduce.sas
+@@ -0,0 +1,3 @@
++data test / view=testvew;
++    set test;
++run;
+diff --git a/search.html?q=Parser+methods,+operators+and+combinators b/search.html?q=Parser+methods,+operators+and+combinators
+new file mode 100644
+index 0000000..e528d6c
+--- /dev/null
++++ b/search.html?q=Parser+methods,+operators+and+combinators
+@@ -0,0 +1,196 @@
++<!DOCTYPE html>
++<html class="writer-html5" lang="en" >
++<head>
++  <meta charset="utf-8" />
++  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++  <title>Search &mdash; parsy 2.1 documentation</title>
++      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
++      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
++    <link rel="canonical" href="https://parsy.readthedocs.io/en/latest/search.html" />
++    
++  <!--[if lt IE 9]>
++    <script src="_static/js/html5shiv.min.js"></script>
++  <![endif]-->
++  
++        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
++        <script src="_static/doctools.js"></script>
++        <script src="_static/sphinx_highlight.js"></script>
++        <script async="async" src="/_/static/javascript/readthedocs-doc-embed.js"></script>
++    <script src="_static/js/theme.js"></script>
++    <script src="_static/searchtools.js"></script>
++    <script src="_static/language_data.js"></script>
++    <link rel="index" title="Index" href="genindex.html" />
++    <link rel="search" title="Search" href="#" /> 
++
++<!-- RTD Extra Head -->
++
++<link rel="stylesheet" href="/_/static/css/readthedocs-doc-embed.css" type="text/css" />
++
++<script type="application/json" id="READTHEDOCS_DATA">{"ad_free": false, "api_host": "https://readthedocs.org", "build_date": "2023-04-14T17:23:05Z", "builder": "sphinx", "canonical_url": null, "commit": "5be0cd30", "docroot": "/docs/", "features": {"docsearch_disabled": false}, "global_analytics_code": "UA-17997319-1", "language": "en", "page": "search", "programming_language": "py", "project": "parsy", "proxied_api_host": "/_", "source_suffix": ".rst", "subprojects": {}, "theme": "sphinx_rtd_theme", "user_analytics_code": "", "version": "latest"}</script>
++
++<!--
++Using this variable directly instead of using `JSON.parse` is deprecated.
++The READTHEDOCS_DATA global variable will be removed in the future.
++-->
++<script type="text/javascript">
++READTHEDOCS_DATA = JSON.parse(document.getElementById('READTHEDOCS_DATA').innerHTML);
++</script>
++
++<script type="text/javascript" src="/_/static/javascript/readthedocs-analytics.js" async="async"></script>
++
++<!-- end RTD <extrahead> -->
++</head>
++
++<body class="wy-body-for-nav"> 
++  <div class="wy-grid-for-nav">
++    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
++      <div class="wy-side-scroll">
++        <div class="wy-side-nav-search" >
++
++          
++          
++          <a href="index.html" class="icon icon-home">
++            parsy
++          </a>
++              <div class="version">
++                latest
++              </div>
++<div role="search">
++  <form id="rtd-search-form" class="wy-form" action="#" method="get">
++    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
++    <input type="hidden" name="check_keywords" value="yes" />
++    <input type="hidden" name="area" value="default" />
++  </form>
++</div>
++        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
++              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
++<ul>
++<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
++<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
++<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
++<li class="toctree-l1"><a class="reference internal" href="ref/index.html">API reference</a></li>
++<li class="toctree-l1"><a class="reference internal" href="howto/index.html">Howto’s, cookbooks and examples</a></li>
++<li class="toctree-l1"><a class="reference internal" href="history.html">History and release notes</a></li>
++<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to parsy</a></li>
++</ul>
++
++        </div>
++      </div>
++    </nav>
++
++    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
++          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
++          <a href="index.html">parsy</a>
++      </nav>
++
++      <div class="wy-nav-content">
++        <div class="rst-content">
++          <div role="navigation" aria-label="Page navigation">
++  <ul class="wy-breadcrumbs">
++      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
++      <li class="breadcrumb-item active">Search</li>
++      <li class="wy-breadcrumbs-aside">
++      </li>
++  </ul>
++  <hr/>
++</div>
++          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
++           <div itemprop="articleBody">
++             
++  <noscript>
++  <div id="fallback" class="admonition warning">
++    <p class="last">
++      Please activate JavaScript to enable the search functionality.
++    </p>
++  </div>
++  </noscript>
++
++  
++  <div id="search-results">
++  
++  </div>
++
++           </div>
++          </div>
++          <footer>
++
++  <hr/>
++
++  <div role="contentinfo">
++    <p>&#169; Copyright 2017, Jeanine Adkisson, Luke Plant.
++      <span class="commit">Revision <code>5be0cd30</code>.
++      </span></p>
++  </div>
++
++  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
++    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
++    provided by <a href="https://readthedocs.org">Read the Docs</a>.
++   
++
++</footer>
++        </div>
++      </div>
++    </section>
++  </div>
++  
++
++  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Versions">
++    <span class="rst-current-version" data-toggle="rst-current-version">
++      <span class="fa fa-book"> Read the Docs</span>
++      v: latest
++      <span class="fa fa-caret-down"></span>
++    </span>
++    <div class="rst-other-versions">
++      <dl>
++        <dt>Versions</dt>
++        
++          <dd><a href="/en/latest/">latest</a></dd>
++        
++          <dd><a href="/en/stable/">stable</a></dd>
++        
++          <dd><a href="/en/v2.1/">v2.1</a></dd>
++        
++          <dd><a href="/en/v2.0/">v2.0</a></dd>
++        
++          <dd><a href="/en/v1.4.0/">v1.4.0</a></dd>
++        
++          <dd><a href="/en/v1.3.0/">v1.3.0</a></dd>
++        
++          <dd><a href="/en/v1.2.0/">v1.2.0</a></dd>
++        
++          <dd><a href="/en/v1.1.0/">v1.1.0</a></dd>
++        
++          <dd><a href="/en/v1.0.0/">v1.0.0</a></dd>
++        
++      </dl>
++      <dl>
++        <dt>Downloads</dt>
++        
++      </dl>
++      <dl>
++        
++        <dt>On Read the Docs</dt>
++          <dd>
++            <a href="//readthedocs.org/projects/parsy/?fromdocs=parsy">Project Home</a>
++          </dd>
++          <dd>
++            <a href="//readthedocs.org/builds/parsy/?fromdocs=parsy">Builds</a>
++          </dd>
++      </dl>
++    </div>
++  </div>
++<script>
++      jQuery(function () {
++          SphinxRtdTheme.Navigation.enable(true);
++      });
++  </script>
++  <script>
++    jQuery(function() { Search.loadIndex("searchindex.js"); });
++  </script>
++  
++  <script id="searchindexloader"></script>
++   
++
++
++</body>
++</html>
+\ No newline at end of file
+diff --git a/search.html?q=Parser+methods,+operators+and+combinators.1 b/search.html?q=Parser+methods,+operators+and+combinators.1
+new file mode 100644
+index 0000000..e528d6c
+--- /dev/null
++++ b/search.html?q=Parser+methods,+operators+and+combinators.1
+@@ -0,0 +1,196 @@
++<!DOCTYPE html>
++<html class="writer-html5" lang="en" >
++<head>
++  <meta charset="utf-8" />
++  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++  <title>Search &mdash; parsy 2.1 documentation</title>
++      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
++      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
++    <link rel="canonical" href="https://parsy.readthedocs.io/en/latest/search.html" />
++    
++  <!--[if lt IE 9]>
++    <script src="_static/js/html5shiv.min.js"></script>
++  <![endif]-->
++  
++        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
++        <script src="_static/doctools.js"></script>
++        <script src="_static/sphinx_highlight.js"></script>
++        <script async="async" src="/_/static/javascript/readthedocs-doc-embed.js"></script>
++    <script src="_static/js/theme.js"></script>
++    <script src="_static/searchtools.js"></script>
++    <script src="_static/language_data.js"></script>
++    <link rel="index" title="Index" href="genindex.html" />
++    <link rel="search" title="Search" href="#" /> 
++
++<!-- RTD Extra Head -->
++
++<link rel="stylesheet" href="/_/static/css/readthedocs-doc-embed.css" type="text/css" />
++
++<script type="application/json" id="READTHEDOCS_DATA">{"ad_free": false, "api_host": "https://readthedocs.org", "build_date": "2023-04-14T17:23:05Z", "builder": "sphinx", "canonical_url": null, "commit": "5be0cd30", "docroot": "/docs/", "features": {"docsearch_disabled": false}, "global_analytics_code": "UA-17997319-1", "language": "en", "page": "search", "programming_language": "py", "project": "parsy", "proxied_api_host": "/_", "source_suffix": ".rst", "subprojects": {}, "theme": "sphinx_rtd_theme", "user_analytics_code": "", "version": "latest"}</script>
++
++<!--
++Using this variable directly instead of using `JSON.parse` is deprecated.
++The READTHEDOCS_DATA global variable will be removed in the future.
++-->
++<script type="text/javascript">
++READTHEDOCS_DATA = JSON.parse(document.getElementById('READTHEDOCS_DATA').innerHTML);
++</script>
++
++<script type="text/javascript" src="/_/static/javascript/readthedocs-analytics.js" async="async"></script>
++
++<!-- end RTD <extrahead> -->
++</head>
++
++<body class="wy-body-for-nav"> 
++  <div class="wy-grid-for-nav">
++    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
++      <div class="wy-side-scroll">
++        <div class="wy-side-nav-search" >
++
++          
++          
++          <a href="index.html" class="icon icon-home">
++            parsy
++          </a>
++              <div class="version">
++                latest
++              </div>
++<div role="search">
++  <form id="rtd-search-form" class="wy-form" action="#" method="get">
++    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
++    <input type="hidden" name="check_keywords" value="yes" />
++    <input type="hidden" name="area" value="default" />
++  </form>
++</div>
++        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
++              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
++<ul>
++<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
++<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
++<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
++<li class="toctree-l1"><a class="reference internal" href="ref/index.html">API reference</a></li>
++<li class="toctree-l1"><a class="reference internal" href="howto/index.html">Howto’s, cookbooks and examples</a></li>
++<li class="toctree-l1"><a class="reference internal" href="history.html">History and release notes</a></li>
++<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to parsy</a></li>
++</ul>
++
++        </div>
++      </div>
++    </nav>
++
++    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
++          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
++          <a href="index.html">parsy</a>
++      </nav>
++
++      <div class="wy-nav-content">
++        <div class="rst-content">
++          <div role="navigation" aria-label="Page navigation">
++  <ul class="wy-breadcrumbs">
++      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
++      <li class="breadcrumb-item active">Search</li>
++      <li class="wy-breadcrumbs-aside">
++      </li>
++  </ul>
++  <hr/>
++</div>
++          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
++           <div itemprop="articleBody">
++             
++  <noscript>
++  <div id="fallback" class="admonition warning">
++    <p class="last">
++      Please activate JavaScript to enable the search functionality.
++    </p>
++  </div>
++  </noscript>
++
++  
++  <div id="search-results">
++  
++  </div>
++
++           </div>
++          </div>
++          <footer>
++
++  <hr/>
++
++  <div role="contentinfo">
++    <p>&#169; Copyright 2017, Jeanine Adkisson, Luke Plant.
++      <span class="commit">Revision <code>5be0cd30</code>.
++      </span></p>
++  </div>
++
++  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
++    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
++    provided by <a href="https://readthedocs.org">Read the Docs</a>.
++   
++
++</footer>
++        </div>
++      </div>
++    </section>
++  </div>
++  
++
++  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Versions">
++    <span class="rst-current-version" data-toggle="rst-current-version">
++      <span class="fa fa-book"> Read the Docs</span>
++      v: latest
++      <span class="fa fa-caret-down"></span>
++    </span>
++    <div class="rst-other-versions">
++      <dl>
++        <dt>Versions</dt>
++        
++          <dd><a href="/en/latest/">latest</a></dd>
++        
++          <dd><a href="/en/stable/">stable</a></dd>
++        
++          <dd><a href="/en/v2.1/">v2.1</a></dd>
++        
++          <dd><a href="/en/v2.0/">v2.0</a></dd>
++        
++          <dd><a href="/en/v1.4.0/">v1.4.0</a></dd>
++        
++          <dd><a href="/en/v1.3.0/">v1.3.0</a></dd>
++        
++          <dd><a href="/en/v1.2.0/">v1.2.0</a></dd>
++        
++          <dd><a href="/en/v1.1.0/">v1.1.0</a></dd>
++        
++          <dd><a href="/en/v1.0.0/">v1.0.0</a></dd>
++        
++      </dl>
++      <dl>
++        <dt>Downloads</dt>
++        
++      </dl>
++      <dl>
++        
++        <dt>On Read the Docs</dt>
++          <dd>
++            <a href="//readthedocs.org/projects/parsy/?fromdocs=parsy">Project Home</a>
++          </dd>
++          <dd>
++            <a href="//readthedocs.org/builds/parsy/?fromdocs=parsy">Builds</a>
++          </dd>
++      </dl>
++    </div>
++  </div>
++<script>
++      jQuery(function () {
++          SphinxRtdTheme.Navigation.enable(true);
++      });
++  </script>
++  <script>
++    jQuery(function() { Search.loadIndex("searchindex.js"); });
++  </script>
++  
++  <script id="searchindexloader"></script>
++   
++
++
++</body>
++</html>
+\ No newline at end of file
+diff --git a/search.html?q=defining+parsers b/search.html?q=defining+parsers
+new file mode 100644
+index 0000000..e528d6c
+--- /dev/null
++++ b/search.html?q=defining+parsers
+@@ -0,0 +1,196 @@
++<!DOCTYPE html>
++<html class="writer-html5" lang="en" >
++<head>
++  <meta charset="utf-8" />
++  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++  <title>Search &mdash; parsy 2.1 documentation</title>
++      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
++      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
++    <link rel="canonical" href="https://parsy.readthedocs.io/en/latest/search.html" />
++    
++  <!--[if lt IE 9]>
++    <script src="_static/js/html5shiv.min.js"></script>
++  <![endif]-->
++  
++        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
++        <script src="_static/doctools.js"></script>
++        <script src="_static/sphinx_highlight.js"></script>
++        <script async="async" src="/_/static/javascript/readthedocs-doc-embed.js"></script>
++    <script src="_static/js/theme.js"></script>
++    <script src="_static/searchtools.js"></script>
++    <script src="_static/language_data.js"></script>
++    <link rel="index" title="Index" href="genindex.html" />
++    <link rel="search" title="Search" href="#" /> 
++
++<!-- RTD Extra Head -->
++
++<link rel="stylesheet" href="/_/static/css/readthedocs-doc-embed.css" type="text/css" />
++
++<script type="application/json" id="READTHEDOCS_DATA">{"ad_free": false, "api_host": "https://readthedocs.org", "build_date": "2023-04-14T17:23:05Z", "builder": "sphinx", "canonical_url": null, "commit": "5be0cd30", "docroot": "/docs/", "features": {"docsearch_disabled": false}, "global_analytics_code": "UA-17997319-1", "language": "en", "page": "search", "programming_language": "py", "project": "parsy", "proxied_api_host": "/_", "source_suffix": ".rst", "subprojects": {}, "theme": "sphinx_rtd_theme", "user_analytics_code": "", "version": "latest"}</script>
++
++<!--
++Using this variable directly instead of using `JSON.parse` is deprecated.
++The READTHEDOCS_DATA global variable will be removed in the future.
++-->
++<script type="text/javascript">
++READTHEDOCS_DATA = JSON.parse(document.getElementById('READTHEDOCS_DATA').innerHTML);
++</script>
++
++<script type="text/javascript" src="/_/static/javascript/readthedocs-analytics.js" async="async"></script>
++
++<!-- end RTD <extrahead> -->
++</head>
++
++<body class="wy-body-for-nav"> 
++  <div class="wy-grid-for-nav">
++    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
++      <div class="wy-side-scroll">
++        <div class="wy-side-nav-search" >
++
++          
++          
++          <a href="index.html" class="icon icon-home">
++            parsy
++          </a>
++              <div class="version">
++                latest
++              </div>
++<div role="search">
++  <form id="rtd-search-form" class="wy-form" action="#" method="get">
++    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
++    <input type="hidden" name="check_keywords" value="yes" />
++    <input type="hidden" name="area" value="default" />
++  </form>
++</div>
++        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
++              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
++<ul>
++<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
++<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
++<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
++<li class="toctree-l1"><a class="reference internal" href="ref/index.html">API reference</a></li>
++<li class="toctree-l1"><a class="reference internal" href="howto/index.html">Howto’s, cookbooks and examples</a></li>
++<li class="toctree-l1"><a class="reference internal" href="history.html">History and release notes</a></li>
++<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to parsy</a></li>
++</ul>
++
++        </div>
++      </div>
++    </nav>
++
++    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
++          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
++          <a href="index.html">parsy</a>
++      </nav>
++
++      <div class="wy-nav-content">
++        <div class="rst-content">
++          <div role="navigation" aria-label="Page navigation">
++  <ul class="wy-breadcrumbs">
++      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
++      <li class="breadcrumb-item active">Search</li>
++      <li class="wy-breadcrumbs-aside">
++      </li>
++  </ul>
++  <hr/>
++</div>
++          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
++           <div itemprop="articleBody">
++             
++  <noscript>
++  <div id="fallback" class="admonition warning">
++    <p class="last">
++      Please activate JavaScript to enable the search functionality.
++    </p>
++  </div>
++  </noscript>
++
++  
++  <div id="search-results">
++  
++  </div>
++
++           </div>
++          </div>
++          <footer>
++
++  <hr/>
++
++  <div role="contentinfo">
++    <p>&#169; Copyright 2017, Jeanine Adkisson, Luke Plant.
++      <span class="commit">Revision <code>5be0cd30</code>.
++      </span></p>
++  </div>
++
++  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
++    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
++    provided by <a href="https://readthedocs.org">Read the Docs</a>.
++   
++
++</footer>
++        </div>
++      </div>
++    </section>
++  </div>
++  
++
++  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Versions">
++    <span class="rst-current-version" data-toggle="rst-current-version">
++      <span class="fa fa-book"> Read the Docs</span>
++      v: latest
++      <span class="fa fa-caret-down"></span>
++    </span>
++    <div class="rst-other-versions">
++      <dl>
++        <dt>Versions</dt>
++        
++          <dd><a href="/en/latest/">latest</a></dd>
++        
++          <dd><a href="/en/stable/">stable</a></dd>
++        
++          <dd><a href="/en/v2.1/">v2.1</a></dd>
++        
++          <dd><a href="/en/v2.0/">v2.0</a></dd>
++        
++          <dd><a href="/en/v1.4.0/">v1.4.0</a></dd>
++        
++          <dd><a href="/en/v1.3.0/">v1.3.0</a></dd>
++        
++          <dd><a href="/en/v1.2.0/">v1.2.0</a></dd>
++        
++          <dd><a href="/en/v1.1.0/">v1.1.0</a></dd>
++        
++          <dd><a href="/en/v1.0.0/">v1.0.0</a></dd>
++        
++      </dl>
++      <dl>
++        <dt>Downloads</dt>
++        
++      </dl>
++      <dl>
++        
++        <dt>On Read the Docs</dt>
++          <dd>
++            <a href="//readthedocs.org/projects/parsy/?fromdocs=parsy">Project Home</a>
++          </dd>
++          <dd>
++            <a href="//readthedocs.org/builds/parsy/?fromdocs=parsy">Builds</a>
++          </dd>
++      </dl>
++    </div>
++  </div>
++<script>
++      jQuery(function () {
++          SphinxRtdTheme.Navigation.enable(true);
++      });
++  </script>
++  <script>
++    jQuery(function() { Search.loadIndex("searchindex.js"); });
++  </script>
++  
++  <script id="searchindexloader"></script>
++   
++
++
++</body>
++</html>
+\ No newline at end of file
+diff --git a/search.html?q=defining+parsers.1 b/search.html?q=defining+parsers.1
+new file mode 100644
+index 0000000..e528d6c
+--- /dev/null
++++ b/search.html?q=defining+parsers.1
+@@ -0,0 +1,196 @@
++<!DOCTYPE html>
++<html class="writer-html5" lang="en" >
++<head>
++  <meta charset="utf-8" />
++  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++  <title>Search &mdash; parsy 2.1 documentation</title>
++      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
++      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
++    <link rel="canonical" href="https://parsy.readthedocs.io/en/latest/search.html" />
++    
++  <!--[if lt IE 9]>
++    <script src="_static/js/html5shiv.min.js"></script>
++  <![endif]-->
++  
++        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
++        <script src="_static/doctools.js"></script>
++        <script src="_static/sphinx_highlight.js"></script>
++        <script async="async" src="/_/static/javascript/readthedocs-doc-embed.js"></script>
++    <script src="_static/js/theme.js"></script>
++    <script src="_static/searchtools.js"></script>
++    <script src="_static/language_data.js"></script>
++    <link rel="index" title="Index" href="genindex.html" />
++    <link rel="search" title="Search" href="#" /> 
++
++<!-- RTD Extra Head -->
++
++<link rel="stylesheet" href="/_/static/css/readthedocs-doc-embed.css" type="text/css" />
++
++<script type="application/json" id="READTHEDOCS_DATA">{"ad_free": false, "api_host": "https://readthedocs.org", "build_date": "2023-04-14T17:23:05Z", "builder": "sphinx", "canonical_url": null, "commit": "5be0cd30", "docroot": "/docs/", "features": {"docsearch_disabled": false}, "global_analytics_code": "UA-17997319-1", "language": "en", "page": "search", "programming_language": "py", "project": "parsy", "proxied_api_host": "/_", "source_suffix": ".rst", "subprojects": {}, "theme": "sphinx_rtd_theme", "user_analytics_code": "", "version": "latest"}</script>
++
++<!--
++Using this variable directly instead of using `JSON.parse` is deprecated.
++The READTHEDOCS_DATA global variable will be removed in the future.
++-->
++<script type="text/javascript">
++READTHEDOCS_DATA = JSON.parse(document.getElementById('READTHEDOCS_DATA').innerHTML);
++</script>
++
++<script type="text/javascript" src="/_/static/javascript/readthedocs-analytics.js" async="async"></script>
++
++<!-- end RTD <extrahead> -->
++</head>
++
++<body class="wy-body-for-nav"> 
++  <div class="wy-grid-for-nav">
++    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
++      <div class="wy-side-scroll">
++        <div class="wy-side-nav-search" >
++
++          
++          
++          <a href="index.html" class="icon icon-home">
++            parsy
++          </a>
++              <div class="version">
++                latest
++              </div>
++<div role="search">
++  <form id="rtd-search-form" class="wy-form" action="#" method="get">
++    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
++    <input type="hidden" name="check_keywords" value="yes" />
++    <input type="hidden" name="area" value="default" />
++  </form>
++</div>
++        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
++              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
++<ul>
++<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
++<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
++<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
++<li class="toctree-l1"><a class="reference internal" href="ref/index.html">API reference</a></li>
++<li class="toctree-l1"><a class="reference internal" href="howto/index.html">Howto’s, cookbooks and examples</a></li>
++<li class="toctree-l1"><a class="reference internal" href="history.html">History and release notes</a></li>
++<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to parsy</a></li>
++</ul>
++
++        </div>
++      </div>
++    </nav>
++
++    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
++          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
++          <a href="index.html">parsy</a>
++      </nav>
++
++      <div class="wy-nav-content">
++        <div class="rst-content">
++          <div role="navigation" aria-label="Page navigation">
++  <ul class="wy-breadcrumbs">
++      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
++      <li class="breadcrumb-item active">Search</li>
++      <li class="wy-breadcrumbs-aside">
++      </li>
++  </ul>
++  <hr/>
++</div>
++          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
++           <div itemprop="articleBody">
++             
++  <noscript>
++  <div id="fallback" class="admonition warning">
++    <p class="last">
++      Please activate JavaScript to enable the search functionality.
++    </p>
++  </div>
++  </noscript>
++
++  
++  <div id="search-results">
++  
++  </div>
++
++           </div>
++          </div>
++          <footer>
++
++  <hr/>
++
++  <div role="contentinfo">
++    <p>&#169; Copyright 2017, Jeanine Adkisson, Luke Plant.
++      <span class="commit">Revision <code>5be0cd30</code>.
++      </span></p>
++  </div>
++
++  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
++    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
++    provided by <a href="https://readthedocs.org">Read the Docs</a>.
++   
++
++</footer>
++        </div>
++      </div>
++    </section>
++  </div>
++  
++
++  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Versions">
++    <span class="rst-current-version" data-toggle="rst-current-version">
++      <span class="fa fa-book"> Read the Docs</span>
++      v: latest
++      <span class="fa fa-caret-down"></span>
++    </span>
++    <div class="rst-other-versions">
++      <dl>
++        <dt>Versions</dt>
++        
++          <dd><a href="/en/latest/">latest</a></dd>
++        
++          <dd><a href="/en/stable/">stable</a></dd>
++        
++          <dd><a href="/en/v2.1/">v2.1</a></dd>
++        
++          <dd><a href="/en/v2.0/">v2.0</a></dd>
++        
++          <dd><a href="/en/v1.4.0/">v1.4.0</a></dd>
++        
++          <dd><a href="/en/v1.3.0/">v1.3.0</a></dd>
++        
++          <dd><a href="/en/v1.2.0/">v1.2.0</a></dd>
++        
++          <dd><a href="/en/v1.1.0/">v1.1.0</a></dd>
++        
++          <dd><a href="/en/v1.0.0/">v1.0.0</a></dd>
++        
++      </dl>
++      <dl>
++        <dt>Downloads</dt>
++        
++      </dl>
++      <dl>
++        
++        <dt>On Read the Docs</dt>
++          <dd>
++            <a href="//readthedocs.org/projects/parsy/?fromdocs=parsy">Project Home</a>
++          </dd>
++          <dd>
++            <a href="//readthedocs.org/builds/parsy/?fromdocs=parsy">Builds</a>
++          </dd>
++      </dl>
++    </div>
++  </div>
++<script>
++      jQuery(function () {
++          SphinxRtdTheme.Navigation.enable(true);
++      });
++  </script>
++  <script>
++    jQuery(function() { Search.loadIndex("searchindex.js"); });
++  </script>
++  
++  <script id="searchindexloader"></script>
++   
++
++
++</body>
++</html>
+\ No newline at end of file
+diff --git a/tests/samples/simple_1.sas b/tests/samples/simple_1.sas
+index 70606a9..3ddbb84 100644
+--- a/tests/samples/simple_1.sas
++++ b/tests/samples/simple_1.sas
+@@ -1,7 +1,5 @@
+-%include "a/bad/path";
+-
+-data test1;
+-    set test;
+-run;
+-
+-proc sort data=test1 out=test2; run;
++%include "a/bad/path";
++data test1;
++    set test;
++run;
++proc sort data=test1 out=test2; run;
+diff --git a/tutorial.html b/tutorial.html
+new file mode 100644
+index 0000000..2219088
+--- /dev/null
++++ b/tutorial.html
+@@ -0,0 +1,549 @@
++<!DOCTYPE html>
++<html class="writer-html5" lang="en" >
++<head>
++  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
++
++  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++  <title>Tutorial &mdash; parsy 2.1 documentation</title>
++      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
++      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
++    <link rel="canonical" href="https://parsy.readthedocs.io/en/latest/tutorial.html" />
++  <!--[if lt IE 9]>
++    <script src="_static/js/html5shiv.min.js"></script>
++  <![endif]-->
++  
++        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
++        <script src="_static/doctools.js"></script>
++        <script src="_static/sphinx_highlight.js"></script>
++        <script async="async" src="/_/static/javascript/readthedocs-doc-embed.js"></script>
++    <script src="_static/js/theme.js"></script>
++    <link rel="index" title="Index" href="genindex.html" />
++    <link rel="search" title="Search" href="search.html" />
++    <link rel="next" title="API reference" href="ref/index.html" />
++    <link rel="prev" title="Overview" href="overview.html" /> 
++
++<!-- RTD Extra Head -->
++
++<link rel="stylesheet" href="/_/static/css/readthedocs-doc-embed.css" type="text/css" />
++
++<script type="application/json" id="READTHEDOCS_DATA">{"ad_free": false, "api_host": "https://readthedocs.org", "build_date": "2023-04-14T17:23:05Z", "builder": "sphinx", "canonical_url": null, "commit": "5be0cd30", "docroot": "/docs/", "features": {"docsearch_disabled": false}, "global_analytics_code": "UA-17997319-1", "language": "en", "page": "tutorial", "programming_language": "py", "project": "parsy", "proxied_api_host": "/_", "source_suffix": ".rst", "subprojects": {}, "theme": "sphinx_rtd_theme", "user_analytics_code": "", "version": "latest"}</script>
++
++<!--
++Using this variable directly instead of using `JSON.parse` is deprecated.
++The READTHEDOCS_DATA global variable will be removed in the future.
++-->
++<script type="text/javascript">
++READTHEDOCS_DATA = JSON.parse(document.getElementById('READTHEDOCS_DATA').innerHTML);
++</script>
++
++<script type="text/javascript" src="/_/static/javascript/readthedocs-analytics.js" async="async"></script>
++
++<!-- end RTD <extrahead> -->
++</head>
++
++<body class="wy-body-for-nav"> 
++  <div class="wy-grid-for-nav">
++    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
++      <div class="wy-side-scroll">
++        <div class="wy-side-nav-search" >
++
++          
++          
++          <a href="index.html" class="icon icon-home">
++            parsy
++          </a>
++              <div class="version">
++                latest
++              </div>
++<div role="search">
++  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
++    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
++    <input type="hidden" name="check_keywords" value="yes" />
++    <input type="hidden" name="area" value="default" />
++  </form>
++</div>
++        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
++              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
++<ul class="current">
++<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
++<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
++<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
++<li class="toctree-l2"><a class="reference internal" href="#building-an-iso-8601-parser">Building an ISO 8601 parser</a></li>
++<li class="toctree-l2"><a class="reference internal" href="#using-previously-parsed-values">Using previously parsed values</a></li>
++<li class="toctree-l2"><a class="reference internal" href="#alternatives-and-backtracking">Alternatives and backtracking</a></li>
++<li class="toctree-l2"><a class="reference internal" href="#custom-data-structures">Custom data structures</a></li>
++<li class="toctree-l2"><a class="reference internal" href="#learn-more">Learn more</a></li>
++</ul>
++</li>
++<li class="toctree-l1"><a class="reference internal" href="ref/index.html">API reference</a></li>
++<li class="toctree-l1"><a class="reference internal" href="howto/index.html">Howto’s, cookbooks and examples</a></li>
++<li class="toctree-l1"><a class="reference internal" href="history.html">History and release notes</a></li>
++<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to parsy</a></li>
++</ul>
++
++        </div>
++      </div>
++    </nav>
++
++    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
++          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
++          <a href="index.html">parsy</a>
++      </nav>
++
++      <div class="wy-nav-content">
++        <div class="rst-content">
++          <div role="navigation" aria-label="Page navigation">
++  <ul class="wy-breadcrumbs">
++      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
++      <li class="breadcrumb-item active">Tutorial</li>
++      <li class="wy-breadcrumbs-aside">
++              <a href="https://github.com/python-parsy/parsy/blob/master/docs/tutorial.rst" class="fa fa-github"> Edit on GitHub</a>
++      </li>
++  </ul>
++  <hr/>
++</div>
++          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
++           <div itemprop="articleBody">
++             
++  <section id="tutorial">
++<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this heading"></a></h1>
++<p>First <a class="reference internal" href="installation.html"><span class="doc">install parsy</span></a>, and check that the documentation you
++are reading matches the version you just installed.</p>
++<section id="building-an-iso-8601-parser">
++<h2>Building an ISO 8601 parser<a class="headerlink" href="#building-an-iso-8601-parser" title="Permalink to this heading"></a></h2>
++<p>In this tutorial, we are going to gradually build a parser for a subset of an
++ISO 8601 date. Specifically, we want to handle dates that look like this:
++<code class="docutils literal notranslate"><span class="pre">2017-09-25</span></code>.</p>
++<p>A problem of this size could admittedly be solved fairly easily with regexes.
++But very quickly regexes don’t scale, especially when it comes to getting the
++parsed data out, and for this tutorial we need to start with a simple example.</p>
++<p>With parsy, you start by breaking the problem down into the smallest components.
++So we need first to match the 4 digit year at the beginning.</p>
++<p>There are various ways we can do this, but a regex works nicely, and
++<a class="reference internal" href="ref/primitives.html#parsy.regex" title="parsy.regex"><code class="xref py py-func docutils literal notranslate"><span class="pre">regex()</span></code></a> is a built-in primitive of the parsy library:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">parsy</span> <span class="kn">import</span> <span class="n">regex</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">year</span> <span class="o">=</span> <span class="n">regex</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[0-9]</span><span class="si">{4}</span><span class="s2">&quot;</span><span class="p">)</span>
++</pre></div>
++</div>
++<p>(For those who don’t know regular expressions, the regex <code class="docutils literal notranslate"><span class="pre">[0-9]{4}</span></code> means
++“match any character from 0123456789 exactly 4 times”.)</p>
++<p>This has produced a <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser" title="parsy.Parser"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parser</span></code></a> object which has various methods. We can
++immediately check that it works using the <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.parse" title="parsy.Parser.parse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.parse()</span></code></a> method:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">year</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017&quot;</span><span class="p">)</span>
++<span class="go">&#39;2017&#39;</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">year</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;abc&quot;</span><span class="p">)</span>
++<span class="go">ParseError: expected &#39;[0-9]{4}&#39; at 0:0</span>
++</pre></div>
++</div>
++<p>Notice first of all that a parser consumes input (the value we pass to
++<code class="docutils literal notranslate"><span class="pre">parse</span></code>), and it produces an output. In the case of <code class="docutils literal notranslate"><span class="pre">regex</span></code>, the produced
++output is the string that was matched, but this doesn’t have to be the case for
++all parsers.</p>
++<p>If there is no match, it raises a <code class="docutils literal notranslate"><span class="pre">ParseError</span></code>.</p>
++<p>Notice as well that the <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.parse" title="parsy.Parser.parse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.parse()</span></code></a> method expects to consume all the
++input, so if there are extra characters at the end, even if it is just
++whitespace, parsing will fail with a message saying it expected EOF (End Of
++File/Data):</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">year</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017 &quot;</span><span class="p">)</span>
++<span class="go">ParseError: expected &#39;EOF&#39; at 0:4</span>
++</pre></div>
++</div>
++<p>You can use <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.parse_partial" title="parsy.Parser.parse_partial"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.parse_partial()</span></code></a> if you want to just keep parsing as far
++as possible and not throw an exception.</p>
++<p>To parse the data, we need to parse months, days, and the dash symbol, so we’ll
++add those:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">parsy</span> <span class="kn">import</span> <span class="n">string</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">month</span> <span class="o">=</span> <span class="n">regex</span><span class="p">(</span><span class="s2">&quot;[0-9]</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">day</span> <span class="o">=</span> <span class="n">regex</span><span class="p">(</span><span class="s2">&quot;[0-9]</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">dash</span> <span class="o">=</span> <span class="n">string</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
++</pre></div>
++</div>
++<p>We’ve added use of the <a class="reference internal" href="ref/primitives.html#parsy.string" title="parsy.string"><code class="xref py py-func docutils literal notranslate"><span class="pre">string()</span></code></a> primitive here, that matches just the
++string passed in, and returns that string.</p>
++<p>Next we need to combine these parsers into something that will parse the whole
++date. The simplest way is to use the <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.then" title="parsy.Parser.then"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.then()</span></code></a> method:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span> <span class="o">=</span> <span class="n">year</span><span class="o">.</span><span class="n">then</span><span class="p">(</span><span class="n">dash</span><span class="p">)</span><span class="o">.</span><span class="n">then</span><span class="p">(</span><span class="n">month</span><span class="p">)</span><span class="o">.</span><span class="n">then</span><span class="p">(</span><span class="n">dash</span><span class="p">)</span><span class="o">.</span><span class="n">then</span><span class="p">(</span><span class="n">day</span><span class="p">)</span>
++</pre></div>
++</div>
++<p>The <code class="docutils literal notranslate"><span class="pre">then</span></code> method returns a new parser that requires the first parser to
++succeed, followed by the second parser (the argument to the method).</p>
++<p>We could also write this using the <a class="reference internal" href="ref/methods_and_combinators.html#parser-rshift"><span class="std std-ref">&gt;&gt; operator</span></a> which
++does the same thing as <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.then" title="parsy.Parser.then"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.then()</span></code></a>:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span> <span class="o">=</span> <span class="n">year</span> <span class="o">&gt;&gt;</span> <span class="n">dash</span> <span class="o">&gt;&gt;</span> <span class="n">month</span> <span class="o">&gt;&gt;</span> <span class="n">dash</span> <span class="o">&gt;&gt;</span> <span class="n">day</span>
++</pre></div>
++</div>
++<p>This parser has some problems which we need to address, but it is already useful
++as a basic validator:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017-xx&quot;</span><span class="p">)</span>
++<span class="go">ParseError: expected &#39;[0-9]{2}&#39; at 0:5</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017-01&quot;</span><span class="p">)</span>
++<span class="go">ParseError: expected &#39;-&#39; at 0:7</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017-02-01&quot;</span><span class="p">)</span>
++<span class="go">&#39;01&#39;</span>
++</pre></div>
++</div>
++<p>If the parse doesn’t succeed, we’ll get <code class="docutils literal notranslate"><span class="pre">ParseError</span></code>, otherwise it is valid
++(at least as far as the basic syntax checks we’ve added).</p>
++<p>The first problem with this parser is that it doesn’t return a very useful
++value. Due to the way that <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.then" title="parsy.Parser.then"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.then()</span></code></a> works, when it combines two
++parsers to produce a larger one, the value from the first parser is discarded,
++and the value returned by the second parser is the overall return value. So, we
++end up getting only the ‘day’ component as the result of our parse. We really
++want the year, month and day packaged up nicely, and converted to integers.</p>
++<p>A second problem is that our error messages are not very friendly.</p>
++<p>Our first attempt at fixing these might be to use the <a class="reference internal" href="ref/methods_and_combinators.html#parser-plus"><span class="std std-ref">+ operator</span></a> instead
++of <code class="docutils literal notranslate"><span class="pre">then</span></code>. This operator is defined to combine the results of the two parsers
++using the normal plus operator, which will work fine on strings:</p>
++<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span> <span class="o">=</span> <span class="n">year</span> <span class="o">+</span> <span class="n">dash</span> <span class="o">+</span> <span class="n">month</span> <span class="o">+</span> <span class="n">dash</span> <span class="o">+</span> <span class="n">day</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017-02-01&quot;</span><span class="p">)</span>
++<span class="go">&#39;2017-02-01&#39;</span>
++</pre></div>
++</div>
++<p>However, it won’t help us if we want to split our data up into a set of
++integers.</p>
++<p>Our first step should actually be to work on the year, month and day components
++using <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.map" title="parsy.Parser.map"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.map()</span></code></a>, which allows us to convert the strings to other
++objects - in our case we want integers.</p>
++<p>We can also use the <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.desc" title="parsy.Parser.desc"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.desc()</span></code></a> method to give nicer error messages, so
++our components now look this this:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">year</span> <span class="o">=</span> <span class="n">regex</span><span class="p">(</span><span class="s2">&quot;[0-9]</span><span class="si">{4}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;4 digit year&quot;</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">month</span> <span class="o">=</span> <span class="n">regex</span><span class="p">(</span><span class="s2">&quot;[0-9]</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;2 digit month&quot;</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">day</span> <span class="o">=</span> <span class="n">regex</span><span class="p">(</span><span class="s2">&quot;[0-9]</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;2 digit day&quot;</span><span class="p">)</span>
++</pre></div>
++</div>
++<p>We get better error messages now:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">year</span><span class="o">.</span><span class="n">then</span><span class="p">(</span><span class="n">dash</span><span class="p">)</span><span class="o">.</span><span class="n">then</span><span class="p">(</span><span class="n">month</span><span class="p">)</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017-xx&quot;</span><span class="p">)</span>
++<span class="go">ParseError: expected &#39;2 digit month&#39; at 0:5</span>
++</pre></div>
++</div>
++<p>Notice that the <code class="docutils literal notranslate"><span class="pre">map</span></code> and <code class="docutils literal notranslate"><span class="pre">desc</span></code> methods, like all similar methods on
++<code class="docutils literal notranslate"><span class="pre">Parser</span></code>, return new parser objects - they do not modify the existing one.
++This allows us to build up parsers with a ‘fluent’ interface, and avoid problems
++caused by mutating objects.</p>
++<p>However, we still need a way to package up the year, month and day as separate
++values.</p>
++<p>The <a class="reference internal" href="ref/methods_and_combinators.html#parsy.seq" title="parsy.seq"><code class="xref py py-func docutils literal notranslate"><span class="pre">seq()</span></code></a> combinator provides one easy way to do that. It takes the
++sequence of parsers that are passed in as arguments, and returns a parser that
++runs each parser in order and combines their results into a list:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">parsy</span> <span class="kn">import</span> <span class="n">seq</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span> <span class="o">=</span> <span class="n">seq</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">dash</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">dash</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017-01-02&quot;</span><span class="p">)</span>
++<span class="go">[2017, &#39;-&#39;, 1, &#39;-&#39;, 2]</span>
++</pre></div>
++</div>
++<p>Now, we don’t need those dashes, so we can eliminate them using the <a class="reference internal" href="ref/methods_and_combinators.html#parser-rshift"><span class="std std-ref">&gt;&gt; operator</span></a> or <a class="reference internal" href="ref/methods_and_combinators.html#parser-lshift"><span class="std std-ref">&lt;&lt; operator</span></a>:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span> <span class="o">=</span> <span class="n">seq</span><span class="p">(</span><span class="n">year</span> <span class="o">&lt;&lt;</span> <span class="n">dash</span><span class="p">,</span> <span class="n">month</span> <span class="o">&lt;&lt;</span> <span class="n">dash</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017-01-02&quot;</span><span class="p">)</span>
++<span class="go">[2017, 1, 2]</span>
++</pre></div>
++</div>
++<p>At this point, we could also convert this to a date object if we wanted using
++<a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.combine" title="parsy.Parser.combine"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.combine()</span></code></a>, which passes the produced sequence to another function
++using <code class="docutils literal notranslate"><span class="pre">*args</span></code> syntax.</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span> <span class="o">=</span> <span class="n">seq</span><span class="p">(</span><span class="n">year</span> <span class="o">&lt;&lt;</span> <span class="n">dash</span><span class="p">,</span> <span class="n">month</span> <span class="o">&lt;&lt;</span> <span class="n">dash</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
++</pre></div>
++</div>
++<p>This works because the positional argument order of <code class="docutils literal notranslate"><span class="pre">date</span></code> matches the order
++of the values parsed i.e. (year, month, day).</p>
++<p>A slightly more readable and flexible version would use the keyword argument
++version of <a class="reference internal" href="ref/methods_and_combinators.html#parsy.seq" title="parsy.seq"><code class="xref py py-func docutils literal notranslate"><span class="pre">seq()</span></code></a>, followed by <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.combine_dict" title="parsy.Parser.combine_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.combine_dict()</span></code></a>. Putting
++everything together for our final solution:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
++<span class="kn">from</span> <span class="nn">parsy</span> <span class="kn">import</span> <span class="n">regex</span><span class="p">,</span> <span class="n">seq</span><span class="p">,</span> <span class="n">string</span>
++
++<span class="n">year</span> <span class="o">=</span> <span class="n">regex</span><span class="p">(</span><span class="s2">&quot;[0-9]</span><span class="si">{4}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;4 digit year&quot;</span><span class="p">)</span>
++<span class="n">month</span> <span class="o">=</span> <span class="n">regex</span><span class="p">(</span><span class="s2">&quot;[0-9]</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;2 digit month&quot;</span><span class="p">)</span>
++<span class="n">day</span> <span class="o">=</span> <span class="n">regex</span><span class="p">(</span><span class="s2">&quot;[0-9]</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;2 digit day&quot;</span><span class="p">)</span>
++<span class="n">dash</span> <span class="o">=</span> <span class="n">string</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
++
++<span class="n">fulldate</span> <span class="o">=</span> <span class="n">seq</span><span class="p">(</span>
++    <span class="n">year</span><span class="o">=</span><span class="n">year</span> <span class="o">&lt;&lt;</span> <span class="n">dash</span><span class="p">,</span>
++    <span class="n">month</span><span class="o">=</span><span class="n">month</span> <span class="o">&lt;&lt;</span> <span class="n">dash</span><span class="p">,</span>
++    <span class="n">day</span><span class="o">=</span><span class="n">day</span><span class="p">,</span>
++<span class="p">)</span><span class="o">.</span><span class="n">combine_dict</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
++</pre></div>
++</div>
++<p>Breaking that down:</p>
++<ul>
++<li><p>for clarity, and to allow us test separately, we have defined individual
++parsers for the YYYY, MM and DD components.</p></li>
++<li><p>the <code class="docutils literal notranslate"><span class="pre">seq</span></code> call produces a parser that parses the year, month and day
++components in order, discarding the dashes, to produce a dictionary like this:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
++  <span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="mi">2017</span><span class="p">,</span>
++  <span class="s2">&quot;month&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
++  <span class="s2">&quot;day&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
++<span class="p">}</span>
++</pre></div>
++</div>
++</li>
++<li><p>when we chain the <code class="docutils literal notranslate"><span class="pre">combine_dict</span></code> call, we have a parser that passes this
++dictionary to the <code class="docutils literal notranslate"><span class="pre">date</span></code> constructor using <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> syntax, so we end up
++calling <code class="docutils literal notranslate"><span class="pre">date(year=2017,</span> <span class="pre">month=1,</span> <span class="pre">day=2)</span></code></p></li>
++</ul>
++<p>So now it does exactly what we want:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017-02-01&quot;</span><span class="p">)</span>
++<span class="go">datetime.date(2017, 2, 1)</span>
++</pre></div>
++</div>
++</section>
++<section id="using-previously-parsed-values">
++<span id="using-previous-values"></span><h2>Using previously parsed values<a class="headerlink" href="#using-previously-parsed-values" title="Permalink to this heading"></a></h2>
++<p>Now, sometimes we might want to do more complex logic with the values that are
++collected as parse results, and do so while we are still parsing.</p>
++<p>To continue our example, the above parser has a problem that it will raise an
++exception if the day and month values are not valid. We’d like to be able to
++check this, and produce a parse error instead, which will make our parser play
++better with others if we want to use it to build something bigger.</p>
++<p>Also, in ISO8601, strictly speaking you can just write the year, or the year and
++the month, and leave off the other parts. We’d like to handle that by returning
++a tuple for the result, and <code class="docutils literal notranslate"><span class="pre">None</span></code> for the missing data.</p>
++<p>To do this, we need to allow the parse to continue if the later components (with
++their leading dashes) are missing - that is, we need to express optional
++components, and we need a way to be able to test earlier values while in the
++middle of parsing, to see if we should continue looking for another component.</p>
++<p>The <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.bind" title="parsy.Parser.bind"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.bind()</span></code></a> method provides one way to do it (yay monads!).
++Unfortunately, it gets ugly pretty fast, and in Python we don’t have Haskell’s
++<code class="docutils literal notranslate"><span class="pre">do</span></code> notation to tidy it up. But thankfully we can use generators and the
++<code class="docutils literal notranslate"><span class="pre">yield</span></code> keyword to great effect.</p>
++<p>We use a generator function and convert it into a parser by using the
++<a class="reference internal" href="ref/generating.html#parsy.generate" title="parsy.generate"><code class="xref py py-func docutils literal notranslate"><span class="pre">generate()</span></code></a> decorator. The idea is that you <code class="docutils literal notranslate"><span class="pre">yield</span></code> every parser that you
++want to run, and receive the result of that parser as the value of the yield
++expression. You can then put parsers together using any logic you like, and
++finally return the value.</p>
++<p>An equivalent parser to the one above can be written like this:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">parsy</span> <span class="kn">import</span> <span class="n">generate</span>
++
++<span class="nd">@generate</span>
++<span class="k">def</span> <span class="nf">fulldate</span><span class="p">():</span>
++    <span class="n">y</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">year</span>
++    <span class="k">yield</span> <span class="n">dash</span>  <span class="c1"># implicit skip, since we do nothing with the value</span>
++    <span class="n">m</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">month</span>
++    <span class="k">yield</span> <span class="n">dash</span>
++    <span class="n">d</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">day</span>
++    <span class="k">return</span> <span class="n">date</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
++</pre></div>
++</div>
++<p>Notice how this follows the previous definition of <code class="docutils literal notranslate"><span class="pre">fulldate</span></code> using <code class="docutils literal notranslate"><span class="pre">seq</span></code>
++with keyword arguments. It’s more verbose than before, but provides a good
++starting point for our next set of requirements.</p>
++<p>First of all, we need to express optional components - that is we need to be
++able to handle missing dashes, and return what we’ve got so far rather than
++failing the whole parse.</p>
++<p><a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser" title="parsy.Parser"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parser</span></code></a> has a set of methods that convert parsers into ones that allow
++multiples of the parser - including <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.many" title="parsy.Parser.many"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.many()</span></code></a>, <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.times" title="parsy.Parser.times"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.times()</span></code></a>,
++<a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.at_most" title="parsy.Parser.at_most"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.at_most()</span></code></a> and <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.at_least" title="parsy.Parser.at_least"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.at_least()</span></code></a>. There is also
++<a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.optional" title="parsy.Parser.optional"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.optional()</span></code></a> which allows matching zero times (in which case the
++parser will return the default value specified or <code class="docutils literal notranslate"><span class="pre">None</span></code> otherwise),
++or exactly once - just what we need in this case.</p>
++<p>We also need to do checking on the month and the day. We’ll take a shortcut and
++use the built-in <code class="docutils literal notranslate"><span class="pre">datetime.date</span></code> class to do the validation for us. However,
++rather than allow exceptions to be raised, we convert the exception into a
++parsing failure.</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">parsy</span> <span class="kn">import</span> <span class="n">fail</span><span class="p">,</span> <span class="n">generate</span>
++
++<span class="n">optional_dash</span> <span class="o">=</span> <span class="n">dash</span><span class="o">.</span><span class="n">optional</span><span class="p">()</span>
++
++<span class="nd">@generate</span>
++<span class="k">def</span> <span class="nf">full_or_partial_date</span><span class="p">():</span>
++    <span class="n">d</span> <span class="o">=</span> <span class="kc">None</span>
++    <span class="n">m</span> <span class="o">=</span> <span class="kc">None</span>
++    <span class="n">y</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">year</span>
++    <span class="n">dash1</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">optional_dash</span>
++    <span class="k">if</span> <span class="n">dash1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
++        <span class="n">m</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">month</span>
++        <span class="n">dash2</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">optional_dash</span>
++        <span class="k">if</span> <span class="n">dash2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
++            <span class="n">d</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">day</span>
++    <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
++        <span class="k">if</span> <span class="n">m</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">m</span> <span class="o">&gt;</span> <span class="mi">12</span><span class="p">:</span>
++            <span class="k">return</span> <span class="n">fail</span><span class="p">(</span><span class="s2">&quot;month must be in 1..12&quot;</span><span class="p">)</span>
++    <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
++        <span class="k">try</span><span class="p">:</span>
++            <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
++        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
++            <span class="k">return</span> <span class="n">fail</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
++
++    <span class="k">return</span> <span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
++</pre></div>
++</div>
++<p>This works now works as expected:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">full_or_partial_date</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017-02&quot;</span><span class="p">)</span>
++<span class="go">(2017, 2, None)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">full_or_partial_date</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017-02-29&quot;</span><span class="p">)</span>
++<span class="go">ParseError: expected &#39;day is out of range for month&#39; at 0:10</span>
++</pre></div>
++</div>
++<p>We could of course use a custom object in the final line to return a more
++convenient data type, if wanted.</p>
++</section>
++<section id="alternatives-and-backtracking">
++<h2>Alternatives and backtracking<a class="headerlink" href="#alternatives-and-backtracking" title="Permalink to this heading"></a></h2>
++<p>Suppose we are using our date parser to scrape dates off articles on a web site.
++We then discover that for recently published articles, instead of printing a
++timestamp, they write “X days ago”.</p>
++<p>We want to parse this, and we’ll use a timedelta object to represent the value
++(to easily distinguish it from other values and consume it later). We can write
++a parser for this using tools we’ve seen already:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">days_ago</span> <span class="o">=</span> <span class="n">regex</span><span class="p">(</span><span class="s2">&quot;[0-9]+&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=-</span><span class="nb">int</span><span class="p">(</span><span class="n">d</span><span class="p">)))</span> <span class="o">&lt;&lt;</span> <span class="n">string</span><span class="p">(</span><span class="s2">&quot; days ago&quot;</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">days_ago</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;5 days ago&quot;</span><span class="p">)</span>
++<span class="go">datetime.timedelta(-5)</span>
++</pre></div>
++</div>
++<p>Now we need to combine it with our date parser, and allow either to succeed.
++This is done using the <a class="reference internal" href="ref/methods_and_combinators.html#parser-or"><span class="std std-ref">| operator</span></a>, as follows:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flexi_date</span> <span class="o">=</span> <span class="n">full_or_partial_date</span> <span class="o">|</span> <span class="n">days_ago</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">flexi_date</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2012-01-05&quot;</span><span class="p">)</span>
++<span class="go">(2012, 1, 5)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">flexi_date</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2 days ago&quot;</span><span class="p">)</span>
++<span class="go">datetime.timedelta(-2)</span>
++</pre></div>
++</div>
++<p>Notice that you still get good error messages from the appropriate parser,
++depending on which parser got furthest before returning a failure:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flexi_date</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2012-&quot;</span><span class="p">)</span>
++<span class="go">ParseError: expected &#39;2 digit month&#39; at 0:5</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">flexi_date</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2 years ago&quot;</span><span class="p">)</span>
++<span class="go">ParseError: expected &#39; days ago&#39; at 0:1</span>
++</pre></div>
++</div>
++<p>When using backtracking, you need to understand that backtracking to the other
++option only occurs if the first parser fails. So, for example:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">string</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">ab</span> <span class="o">=</span> <span class="n">string</span><span class="p">(</span><span class="s2">&quot;ab&quot;</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">string</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">a_or_ab_and_c</span> <span class="o">=</span> <span class="p">((</span><span class="n">a</span> <span class="o">|</span> <span class="n">ab</span><span class="p">)</span> <span class="o">+</span> <span class="n">c</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">a_or_ab_and_c</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;ac&quot;</span><span class="p">)</span>
++<span class="go">&#39;ac&#39;</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">a_or_ab_and_c</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;abc&quot;</span><span class="p">)</span>
++<span class="go">ParseError: expected &#39;c&#39; at 0:1</span>
++</pre></div>
++</div>
++<p>The parse fails because the <code class="docutils literal notranslate"><span class="pre">a</span></code> parser succeeds, and so the <code class="docutils literal notranslate"><span class="pre">ab</span></code> parser is
++never tried. This is different from most regular expression engines, where
++backtracking is done over the whole regex by default.</p>
++<p>In this case we can get the parse to succeed by switching the order:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">((</span><span class="n">ab</span> <span class="o">|</span> <span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;abc&quot;</span><span class="p">)</span>
++<span class="go">&#39;abc&#39;</span>
++
++<span class="gp">&gt;&gt;&gt; </span><span class="p">((</span><span class="n">ab</span> <span class="o">|</span> <span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;ac&quot;</span><span class="p">)</span>
++<span class="go">&#39;ac&#39;</span>
++</pre></div>
++</div>
++<p>We could also fix it like this:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">((</span><span class="n">a</span> <span class="o">+</span> <span class="n">c</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">ab</span> <span class="o">+</span> <span class="n">c</span><span class="p">))</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;abc&quot;</span><span class="p">)</span>
++<span class="go">&#39;abc&#39;</span>
++</pre></div>
++</div>
++</section>
++<section id="custom-data-structures">
++<h2>Custom data structures<a class="headerlink" href="#custom-data-structures" title="Permalink to this heading"></a></h2>
++<p>In the example shown so far, the result of parsing has been a native Python data
++type, such as a integer, string, datetime or tuple. In some cases that is
++enough, but very quickly you will find that for your parse result to be useful,
++you will need to use custom data structures (rather than ending up with nested
++lists etc.)</p>
++<p>For defining custom data structures, you can use any method you like (e.g.
++simple classes). We suggest <a class="reference external" href="https://docs.python.org/3/library/dataclasses.html">dataclasses</a> (stdlib), <a class="reference external" href="https://github.com/python-attrs/attrs">attrs</a> or <a class="reference external" href="https://github.com/samuelcolvin/pydantic/">pydantic</a>. You can also use <a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.namedtuple">namedtuple</a>
++for simple cases.</p>
++<p>For combining parsed data into these data structures, you can:</p>
++<ol class="arabic">
++<li><p>Use <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.map" title="parsy.Parser.map"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.map()</span></code></a>, <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.combine" title="parsy.Parser.combine"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.combine()</span></code></a> and <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.combine_dict" title="parsy.Parser.combine_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.combine_dict()</span></code></a>,
++often in conjunction with <a class="reference internal" href="ref/methods_and_combinators.html#parsy.seq" title="parsy.seq"><code class="xref py py-func docutils literal notranslate"><span class="pre">seq()</span></code></a>.</p>
++<p>See the <a class="reference internal" href="howto/other_examples.html"><span class="doc">SQL SELECT example</span></a> for an example of this approach.</p>
++</li>
++<li><p>Use the <code class="docutils literal notranslate"><span class="pre">&#64;generate</span></code> decorator as above, and manually call the data
++structure constructor with the pieces, as in <code class="docutils literal notranslate"><span class="pre">full_date</span></code> or
++<code class="docutils literal notranslate"><span class="pre">full_or_partial_date</span></code> above, but with your own data structure instead of a
++tuple or datetime in the final line.</p></li>
++</ol>
++</section>
++<section id="learn-more">
++<h2>Learn more<a class="headerlink" href="#learn-more" title="Permalink to this heading"></a></h2>
++<p>For further topics, see the <a class="reference internal" href="index.html"><span class="doc">table of contents</span></a> for the rest of
++the documentation that should enable you to build parsers for your needs.</p>
++</section>
++</section>
++
++
++           </div>
++          </div>
++          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
++        <a href="overview.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
++        <a href="ref/index.html" class="btn btn-neutral float-right" title="API reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
++    </div>
++
++  <hr/>
++
++  <div role="contentinfo">
++    <p>&#169; Copyright 2017, Jeanine Adkisson, Luke Plant.
++      <span class="commit">Revision <code>5be0cd30</code>.
++      </span></p>
++  </div>
++
++  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
++    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
++    provided by <a href="https://readthedocs.org">Read the Docs</a>.
++   
++
++</footer>
++        </div>
++      </div>
++    </section>
++  </div>
++  
++
++  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Versions">
++    <span class="rst-current-version" data-toggle="rst-current-version">
++      <span class="fa fa-book"> Read the Docs</span>
++      v: latest
++      <span class="fa fa-caret-down"></span>
++    </span>
++    <div class="rst-other-versions">
++      <dl>
++        <dt>Versions</dt>
++        
++          <dd><a href="/en/latest/">latest</a></dd>
++        
++          <dd><a href="/en/stable/">stable</a></dd>
++        
++          <dd><a href="/en/v2.1/">v2.1</a></dd>
++        
++          <dd><a href="/en/v2.0/">v2.0</a></dd>
++        
++          <dd><a href="/en/v1.4.0/">v1.4.0</a></dd>
++        
++          <dd><a href="/en/v1.3.0/">v1.3.0</a></dd>
++        
++          <dd><a href="/en/v1.2.0/">v1.2.0</a></dd>
++        
++          <dd><a href="/en/v1.1.0/">v1.1.0</a></dd>
++        
++          <dd><a href="/en/v1.0.0/">v1.0.0</a></dd>
++        
++      </dl>
++      <dl>
++        <dt>Downloads</dt>
++        
++      </dl>
++      <dl>
++        
++        <dt>On Read the Docs</dt>
++          <dd>
++            <a href="//readthedocs.org/projects/parsy/?fromdocs=parsy">Project Home</a>
++          </dd>
++          <dd>
++            <a href="//readthedocs.org/builds/parsy/?fromdocs=parsy">Builds</a>
++          </dd>
++      </dl>
++    </div>
++  </div>
++<script>
++      jQuery(function () {
++          SphinxRtdTheme.Navigation.enable(true);
++      });
++  </script> 
++
++</body>
++</html>
+\ No newline at end of file
+diff --git a/tutorial.html.1 b/tutorial.html.1
+new file mode 100644
+index 0000000..2219088
+--- /dev/null
++++ b/tutorial.html.1
+@@ -0,0 +1,549 @@
++<!DOCTYPE html>
++<html class="writer-html5" lang="en" >
++<head>
++  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
++
++  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++  <title>Tutorial &mdash; parsy 2.1 documentation</title>
++      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
++      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
++    <link rel="canonical" href="https://parsy.readthedocs.io/en/latest/tutorial.html" />
++  <!--[if lt IE 9]>
++    <script src="_static/js/html5shiv.min.js"></script>
++  <![endif]-->
++  
++        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
++        <script src="_static/doctools.js"></script>
++        <script src="_static/sphinx_highlight.js"></script>
++        <script async="async" src="/_/static/javascript/readthedocs-doc-embed.js"></script>
++    <script src="_static/js/theme.js"></script>
++    <link rel="index" title="Index" href="genindex.html" />
++    <link rel="search" title="Search" href="search.html" />
++    <link rel="next" title="API reference" href="ref/index.html" />
++    <link rel="prev" title="Overview" href="overview.html" /> 
++
++<!-- RTD Extra Head -->
++
++<link rel="stylesheet" href="/_/static/css/readthedocs-doc-embed.css" type="text/css" />
++
++<script type="application/json" id="READTHEDOCS_DATA">{"ad_free": false, "api_host": "https://readthedocs.org", "build_date": "2023-04-14T17:23:05Z", "builder": "sphinx", "canonical_url": null, "commit": "5be0cd30", "docroot": "/docs/", "features": {"docsearch_disabled": false}, "global_analytics_code": "UA-17997319-1", "language": "en", "page": "tutorial", "programming_language": "py", "project": "parsy", "proxied_api_host": "/_", "source_suffix": ".rst", "subprojects": {}, "theme": "sphinx_rtd_theme", "user_analytics_code": "", "version": "latest"}</script>
++
++<!--
++Using this variable directly instead of using `JSON.parse` is deprecated.
++The READTHEDOCS_DATA global variable will be removed in the future.
++-->
++<script type="text/javascript">
++READTHEDOCS_DATA = JSON.parse(document.getElementById('READTHEDOCS_DATA').innerHTML);
++</script>
++
++<script type="text/javascript" src="/_/static/javascript/readthedocs-analytics.js" async="async"></script>
++
++<!-- end RTD <extrahead> -->
++</head>
++
++<body class="wy-body-for-nav"> 
++  <div class="wy-grid-for-nav">
++    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
++      <div class="wy-side-scroll">
++        <div class="wy-side-nav-search" >
++
++          
++          
++          <a href="index.html" class="icon icon-home">
++            parsy
++          </a>
++              <div class="version">
++                latest
++              </div>
++<div role="search">
++  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
++    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
++    <input type="hidden" name="check_keywords" value="yes" />
++    <input type="hidden" name="area" value="default" />
++  </form>
++</div>
++        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
++              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
++<ul class="current">
++<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
++<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
++<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
++<li class="toctree-l2"><a class="reference internal" href="#building-an-iso-8601-parser">Building an ISO 8601 parser</a></li>
++<li class="toctree-l2"><a class="reference internal" href="#using-previously-parsed-values">Using previously parsed values</a></li>
++<li class="toctree-l2"><a class="reference internal" href="#alternatives-and-backtracking">Alternatives and backtracking</a></li>
++<li class="toctree-l2"><a class="reference internal" href="#custom-data-structures">Custom data structures</a></li>
++<li class="toctree-l2"><a class="reference internal" href="#learn-more">Learn more</a></li>
++</ul>
++</li>
++<li class="toctree-l1"><a class="reference internal" href="ref/index.html">API reference</a></li>
++<li class="toctree-l1"><a class="reference internal" href="howto/index.html">Howto’s, cookbooks and examples</a></li>
++<li class="toctree-l1"><a class="reference internal" href="history.html">History and release notes</a></li>
++<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to parsy</a></li>
++</ul>
++
++        </div>
++      </div>
++    </nav>
++
++    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
++          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
++          <a href="index.html">parsy</a>
++      </nav>
++
++      <div class="wy-nav-content">
++        <div class="rst-content">
++          <div role="navigation" aria-label="Page navigation">
++  <ul class="wy-breadcrumbs">
++      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
++      <li class="breadcrumb-item active">Tutorial</li>
++      <li class="wy-breadcrumbs-aside">
++              <a href="https://github.com/python-parsy/parsy/blob/master/docs/tutorial.rst" class="fa fa-github"> Edit on GitHub</a>
++      </li>
++  </ul>
++  <hr/>
++</div>
++          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
++           <div itemprop="articleBody">
++             
++  <section id="tutorial">
++<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this heading"></a></h1>
++<p>First <a class="reference internal" href="installation.html"><span class="doc">install parsy</span></a>, and check that the documentation you
++are reading matches the version you just installed.</p>
++<section id="building-an-iso-8601-parser">
++<h2>Building an ISO 8601 parser<a class="headerlink" href="#building-an-iso-8601-parser" title="Permalink to this heading"></a></h2>
++<p>In this tutorial, we are going to gradually build a parser for a subset of an
++ISO 8601 date. Specifically, we want to handle dates that look like this:
++<code class="docutils literal notranslate"><span class="pre">2017-09-25</span></code>.</p>
++<p>A problem of this size could admittedly be solved fairly easily with regexes.
++But very quickly regexes don’t scale, especially when it comes to getting the
++parsed data out, and for this tutorial we need to start with a simple example.</p>
++<p>With parsy, you start by breaking the problem down into the smallest components.
++So we need first to match the 4 digit year at the beginning.</p>
++<p>There are various ways we can do this, but a regex works nicely, and
++<a class="reference internal" href="ref/primitives.html#parsy.regex" title="parsy.regex"><code class="xref py py-func docutils literal notranslate"><span class="pre">regex()</span></code></a> is a built-in primitive of the parsy library:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">parsy</span> <span class="kn">import</span> <span class="n">regex</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">year</span> <span class="o">=</span> <span class="n">regex</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[0-9]</span><span class="si">{4}</span><span class="s2">&quot;</span><span class="p">)</span>
++</pre></div>
++</div>
++<p>(For those who don’t know regular expressions, the regex <code class="docutils literal notranslate"><span class="pre">[0-9]{4}</span></code> means
++“match any character from 0123456789 exactly 4 times”.)</p>
++<p>This has produced a <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser" title="parsy.Parser"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parser</span></code></a> object which has various methods. We can
++immediately check that it works using the <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.parse" title="parsy.Parser.parse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.parse()</span></code></a> method:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">year</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017&quot;</span><span class="p">)</span>
++<span class="go">&#39;2017&#39;</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">year</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;abc&quot;</span><span class="p">)</span>
++<span class="go">ParseError: expected &#39;[0-9]{4}&#39; at 0:0</span>
++</pre></div>
++</div>
++<p>Notice first of all that a parser consumes input (the value we pass to
++<code class="docutils literal notranslate"><span class="pre">parse</span></code>), and it produces an output. In the case of <code class="docutils literal notranslate"><span class="pre">regex</span></code>, the produced
++output is the string that was matched, but this doesn’t have to be the case for
++all parsers.</p>
++<p>If there is no match, it raises a <code class="docutils literal notranslate"><span class="pre">ParseError</span></code>.</p>
++<p>Notice as well that the <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.parse" title="parsy.Parser.parse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.parse()</span></code></a> method expects to consume all the
++input, so if there are extra characters at the end, even if it is just
++whitespace, parsing will fail with a message saying it expected EOF (End Of
++File/Data):</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">year</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017 &quot;</span><span class="p">)</span>
++<span class="go">ParseError: expected &#39;EOF&#39; at 0:4</span>
++</pre></div>
++</div>
++<p>You can use <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.parse_partial" title="parsy.Parser.parse_partial"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.parse_partial()</span></code></a> if you want to just keep parsing as far
++as possible and not throw an exception.</p>
++<p>To parse the data, we need to parse months, days, and the dash symbol, so we’ll
++add those:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">parsy</span> <span class="kn">import</span> <span class="n">string</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">month</span> <span class="o">=</span> <span class="n">regex</span><span class="p">(</span><span class="s2">&quot;[0-9]</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">day</span> <span class="o">=</span> <span class="n">regex</span><span class="p">(</span><span class="s2">&quot;[0-9]</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">dash</span> <span class="o">=</span> <span class="n">string</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
++</pre></div>
++</div>
++<p>We’ve added use of the <a class="reference internal" href="ref/primitives.html#parsy.string" title="parsy.string"><code class="xref py py-func docutils literal notranslate"><span class="pre">string()</span></code></a> primitive here, that matches just the
++string passed in, and returns that string.</p>
++<p>Next we need to combine these parsers into something that will parse the whole
++date. The simplest way is to use the <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.then" title="parsy.Parser.then"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.then()</span></code></a> method:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span> <span class="o">=</span> <span class="n">year</span><span class="o">.</span><span class="n">then</span><span class="p">(</span><span class="n">dash</span><span class="p">)</span><span class="o">.</span><span class="n">then</span><span class="p">(</span><span class="n">month</span><span class="p">)</span><span class="o">.</span><span class="n">then</span><span class="p">(</span><span class="n">dash</span><span class="p">)</span><span class="o">.</span><span class="n">then</span><span class="p">(</span><span class="n">day</span><span class="p">)</span>
++</pre></div>
++</div>
++<p>The <code class="docutils literal notranslate"><span class="pre">then</span></code> method returns a new parser that requires the first parser to
++succeed, followed by the second parser (the argument to the method).</p>
++<p>We could also write this using the <a class="reference internal" href="ref/methods_and_combinators.html#parser-rshift"><span class="std std-ref">&gt;&gt; operator</span></a> which
++does the same thing as <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.then" title="parsy.Parser.then"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.then()</span></code></a>:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span> <span class="o">=</span> <span class="n">year</span> <span class="o">&gt;&gt;</span> <span class="n">dash</span> <span class="o">&gt;&gt;</span> <span class="n">month</span> <span class="o">&gt;&gt;</span> <span class="n">dash</span> <span class="o">&gt;&gt;</span> <span class="n">day</span>
++</pre></div>
++</div>
++<p>This parser has some problems which we need to address, but it is already useful
++as a basic validator:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017-xx&quot;</span><span class="p">)</span>
++<span class="go">ParseError: expected &#39;[0-9]{2}&#39; at 0:5</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017-01&quot;</span><span class="p">)</span>
++<span class="go">ParseError: expected &#39;-&#39; at 0:7</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017-02-01&quot;</span><span class="p">)</span>
++<span class="go">&#39;01&#39;</span>
++</pre></div>
++</div>
++<p>If the parse doesn’t succeed, we’ll get <code class="docutils literal notranslate"><span class="pre">ParseError</span></code>, otherwise it is valid
++(at least as far as the basic syntax checks we’ve added).</p>
++<p>The first problem with this parser is that it doesn’t return a very useful
++value. Due to the way that <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.then" title="parsy.Parser.then"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.then()</span></code></a> works, when it combines two
++parsers to produce a larger one, the value from the first parser is discarded,
++and the value returned by the second parser is the overall return value. So, we
++end up getting only the ‘day’ component as the result of our parse. We really
++want the year, month and day packaged up nicely, and converted to integers.</p>
++<p>A second problem is that our error messages are not very friendly.</p>
++<p>Our first attempt at fixing these might be to use the <a class="reference internal" href="ref/methods_and_combinators.html#parser-plus"><span class="std std-ref">+ operator</span></a> instead
++of <code class="docutils literal notranslate"><span class="pre">then</span></code>. This operator is defined to combine the results of the two parsers
++using the normal plus operator, which will work fine on strings:</p>
++<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span> <span class="o">=</span> <span class="n">year</span> <span class="o">+</span> <span class="n">dash</span> <span class="o">+</span> <span class="n">month</span> <span class="o">+</span> <span class="n">dash</span> <span class="o">+</span> <span class="n">day</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017-02-01&quot;</span><span class="p">)</span>
++<span class="go">&#39;2017-02-01&#39;</span>
++</pre></div>
++</div>
++<p>However, it won’t help us if we want to split our data up into a set of
++integers.</p>
++<p>Our first step should actually be to work on the year, month and day components
++using <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.map" title="parsy.Parser.map"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.map()</span></code></a>, which allows us to convert the strings to other
++objects - in our case we want integers.</p>
++<p>We can also use the <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.desc" title="parsy.Parser.desc"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.desc()</span></code></a> method to give nicer error messages, so
++our components now look this this:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">year</span> <span class="o">=</span> <span class="n">regex</span><span class="p">(</span><span class="s2">&quot;[0-9]</span><span class="si">{4}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;4 digit year&quot;</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">month</span> <span class="o">=</span> <span class="n">regex</span><span class="p">(</span><span class="s2">&quot;[0-9]</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;2 digit month&quot;</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">day</span> <span class="o">=</span> <span class="n">regex</span><span class="p">(</span><span class="s2">&quot;[0-9]</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;2 digit day&quot;</span><span class="p">)</span>
++</pre></div>
++</div>
++<p>We get better error messages now:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">year</span><span class="o">.</span><span class="n">then</span><span class="p">(</span><span class="n">dash</span><span class="p">)</span><span class="o">.</span><span class="n">then</span><span class="p">(</span><span class="n">month</span><span class="p">)</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017-xx&quot;</span><span class="p">)</span>
++<span class="go">ParseError: expected &#39;2 digit month&#39; at 0:5</span>
++</pre></div>
++</div>
++<p>Notice that the <code class="docutils literal notranslate"><span class="pre">map</span></code> and <code class="docutils literal notranslate"><span class="pre">desc</span></code> methods, like all similar methods on
++<code class="docutils literal notranslate"><span class="pre">Parser</span></code>, return new parser objects - they do not modify the existing one.
++This allows us to build up parsers with a ‘fluent’ interface, and avoid problems
++caused by mutating objects.</p>
++<p>However, we still need a way to package up the year, month and day as separate
++values.</p>
++<p>The <a class="reference internal" href="ref/methods_and_combinators.html#parsy.seq" title="parsy.seq"><code class="xref py py-func docutils literal notranslate"><span class="pre">seq()</span></code></a> combinator provides one easy way to do that. It takes the
++sequence of parsers that are passed in as arguments, and returns a parser that
++runs each parser in order and combines their results into a list:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">parsy</span> <span class="kn">import</span> <span class="n">seq</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span> <span class="o">=</span> <span class="n">seq</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">dash</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">dash</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017-01-02&quot;</span><span class="p">)</span>
++<span class="go">[2017, &#39;-&#39;, 1, &#39;-&#39;, 2]</span>
++</pre></div>
++</div>
++<p>Now, we don’t need those dashes, so we can eliminate them using the <a class="reference internal" href="ref/methods_and_combinators.html#parser-rshift"><span class="std std-ref">&gt;&gt; operator</span></a> or <a class="reference internal" href="ref/methods_and_combinators.html#parser-lshift"><span class="std std-ref">&lt;&lt; operator</span></a>:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span> <span class="o">=</span> <span class="n">seq</span><span class="p">(</span><span class="n">year</span> <span class="o">&lt;&lt;</span> <span class="n">dash</span><span class="p">,</span> <span class="n">month</span> <span class="o">&lt;&lt;</span> <span class="n">dash</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017-01-02&quot;</span><span class="p">)</span>
++<span class="go">[2017, 1, 2]</span>
++</pre></div>
++</div>
++<p>At this point, we could also convert this to a date object if we wanted using
++<a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.combine" title="parsy.Parser.combine"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.combine()</span></code></a>, which passes the produced sequence to another function
++using <code class="docutils literal notranslate"><span class="pre">*args</span></code> syntax.</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span> <span class="o">=</span> <span class="n">seq</span><span class="p">(</span><span class="n">year</span> <span class="o">&lt;&lt;</span> <span class="n">dash</span><span class="p">,</span> <span class="n">month</span> <span class="o">&lt;&lt;</span> <span class="n">dash</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
++</pre></div>
++</div>
++<p>This works because the positional argument order of <code class="docutils literal notranslate"><span class="pre">date</span></code> matches the order
++of the values parsed i.e. (year, month, day).</p>
++<p>A slightly more readable and flexible version would use the keyword argument
++version of <a class="reference internal" href="ref/methods_and_combinators.html#parsy.seq" title="parsy.seq"><code class="xref py py-func docutils literal notranslate"><span class="pre">seq()</span></code></a>, followed by <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.combine_dict" title="parsy.Parser.combine_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.combine_dict()</span></code></a>. Putting
++everything together for our final solution:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
++<span class="kn">from</span> <span class="nn">parsy</span> <span class="kn">import</span> <span class="n">regex</span><span class="p">,</span> <span class="n">seq</span><span class="p">,</span> <span class="n">string</span>
++
++<span class="n">year</span> <span class="o">=</span> <span class="n">regex</span><span class="p">(</span><span class="s2">&quot;[0-9]</span><span class="si">{4}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;4 digit year&quot;</span><span class="p">)</span>
++<span class="n">month</span> <span class="o">=</span> <span class="n">regex</span><span class="p">(</span><span class="s2">&quot;[0-9]</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;2 digit month&quot;</span><span class="p">)</span>
++<span class="n">day</span> <span class="o">=</span> <span class="n">regex</span><span class="p">(</span><span class="s2">&quot;[0-9]</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;2 digit day&quot;</span><span class="p">)</span>
++<span class="n">dash</span> <span class="o">=</span> <span class="n">string</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
++
++<span class="n">fulldate</span> <span class="o">=</span> <span class="n">seq</span><span class="p">(</span>
++    <span class="n">year</span><span class="o">=</span><span class="n">year</span> <span class="o">&lt;&lt;</span> <span class="n">dash</span><span class="p">,</span>
++    <span class="n">month</span><span class="o">=</span><span class="n">month</span> <span class="o">&lt;&lt;</span> <span class="n">dash</span><span class="p">,</span>
++    <span class="n">day</span><span class="o">=</span><span class="n">day</span><span class="p">,</span>
++<span class="p">)</span><span class="o">.</span><span class="n">combine_dict</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
++</pre></div>
++</div>
++<p>Breaking that down:</p>
++<ul>
++<li><p>for clarity, and to allow us test separately, we have defined individual
++parsers for the YYYY, MM and DD components.</p></li>
++<li><p>the <code class="docutils literal notranslate"><span class="pre">seq</span></code> call produces a parser that parses the year, month and day
++components in order, discarding the dashes, to produce a dictionary like this:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
++  <span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="mi">2017</span><span class="p">,</span>
++  <span class="s2">&quot;month&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
++  <span class="s2">&quot;day&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
++<span class="p">}</span>
++</pre></div>
++</div>
++</li>
++<li><p>when we chain the <code class="docutils literal notranslate"><span class="pre">combine_dict</span></code> call, we have a parser that passes this
++dictionary to the <code class="docutils literal notranslate"><span class="pre">date</span></code> constructor using <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> syntax, so we end up
++calling <code class="docutils literal notranslate"><span class="pre">date(year=2017,</span> <span class="pre">month=1,</span> <span class="pre">day=2)</span></code></p></li>
++</ul>
++<p>So now it does exactly what we want:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fulldate</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017-02-01&quot;</span><span class="p">)</span>
++<span class="go">datetime.date(2017, 2, 1)</span>
++</pre></div>
++</div>
++</section>
++<section id="using-previously-parsed-values">
++<span id="using-previous-values"></span><h2>Using previously parsed values<a class="headerlink" href="#using-previously-parsed-values" title="Permalink to this heading"></a></h2>
++<p>Now, sometimes we might want to do more complex logic with the values that are
++collected as parse results, and do so while we are still parsing.</p>
++<p>To continue our example, the above parser has a problem that it will raise an
++exception if the day and month values are not valid. We’d like to be able to
++check this, and produce a parse error instead, which will make our parser play
++better with others if we want to use it to build something bigger.</p>
++<p>Also, in ISO8601, strictly speaking you can just write the year, or the year and
++the month, and leave off the other parts. We’d like to handle that by returning
++a tuple for the result, and <code class="docutils literal notranslate"><span class="pre">None</span></code> for the missing data.</p>
++<p>To do this, we need to allow the parse to continue if the later components (with
++their leading dashes) are missing - that is, we need to express optional
++components, and we need a way to be able to test earlier values while in the
++middle of parsing, to see if we should continue looking for another component.</p>
++<p>The <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.bind" title="parsy.Parser.bind"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.bind()</span></code></a> method provides one way to do it (yay monads!).
++Unfortunately, it gets ugly pretty fast, and in Python we don’t have Haskell’s
++<code class="docutils literal notranslate"><span class="pre">do</span></code> notation to tidy it up. But thankfully we can use generators and the
++<code class="docutils literal notranslate"><span class="pre">yield</span></code> keyword to great effect.</p>
++<p>We use a generator function and convert it into a parser by using the
++<a class="reference internal" href="ref/generating.html#parsy.generate" title="parsy.generate"><code class="xref py py-func docutils literal notranslate"><span class="pre">generate()</span></code></a> decorator. The idea is that you <code class="docutils literal notranslate"><span class="pre">yield</span></code> every parser that you
++want to run, and receive the result of that parser as the value of the yield
++expression. You can then put parsers together using any logic you like, and
++finally return the value.</p>
++<p>An equivalent parser to the one above can be written like this:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">parsy</span> <span class="kn">import</span> <span class="n">generate</span>
++
++<span class="nd">@generate</span>
++<span class="k">def</span> <span class="nf">fulldate</span><span class="p">():</span>
++    <span class="n">y</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">year</span>
++    <span class="k">yield</span> <span class="n">dash</span>  <span class="c1"># implicit skip, since we do nothing with the value</span>
++    <span class="n">m</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">month</span>
++    <span class="k">yield</span> <span class="n">dash</span>
++    <span class="n">d</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">day</span>
++    <span class="k">return</span> <span class="n">date</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
++</pre></div>
++</div>
++<p>Notice how this follows the previous definition of <code class="docutils literal notranslate"><span class="pre">fulldate</span></code> using <code class="docutils literal notranslate"><span class="pre">seq</span></code>
++with keyword arguments. It’s more verbose than before, but provides a good
++starting point for our next set of requirements.</p>
++<p>First of all, we need to express optional components - that is we need to be
++able to handle missing dashes, and return what we’ve got so far rather than
++failing the whole parse.</p>
++<p><a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser" title="parsy.Parser"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parser</span></code></a> has a set of methods that convert parsers into ones that allow
++multiples of the parser - including <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.many" title="parsy.Parser.many"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.many()</span></code></a>, <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.times" title="parsy.Parser.times"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.times()</span></code></a>,
++<a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.at_most" title="parsy.Parser.at_most"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.at_most()</span></code></a> and <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.at_least" title="parsy.Parser.at_least"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.at_least()</span></code></a>. There is also
++<a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.optional" title="parsy.Parser.optional"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.optional()</span></code></a> which allows matching zero times (in which case the
++parser will return the default value specified or <code class="docutils literal notranslate"><span class="pre">None</span></code> otherwise),
++or exactly once - just what we need in this case.</p>
++<p>We also need to do checking on the month and the day. We’ll take a shortcut and
++use the built-in <code class="docutils literal notranslate"><span class="pre">datetime.date</span></code> class to do the validation for us. However,
++rather than allow exceptions to be raised, we convert the exception into a
++parsing failure.</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">parsy</span> <span class="kn">import</span> <span class="n">fail</span><span class="p">,</span> <span class="n">generate</span>
++
++<span class="n">optional_dash</span> <span class="o">=</span> <span class="n">dash</span><span class="o">.</span><span class="n">optional</span><span class="p">()</span>
++
++<span class="nd">@generate</span>
++<span class="k">def</span> <span class="nf">full_or_partial_date</span><span class="p">():</span>
++    <span class="n">d</span> <span class="o">=</span> <span class="kc">None</span>
++    <span class="n">m</span> <span class="o">=</span> <span class="kc">None</span>
++    <span class="n">y</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">year</span>
++    <span class="n">dash1</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">optional_dash</span>
++    <span class="k">if</span> <span class="n">dash1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
++        <span class="n">m</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">month</span>
++        <span class="n">dash2</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">optional_dash</span>
++        <span class="k">if</span> <span class="n">dash2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
++            <span class="n">d</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">day</span>
++    <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
++        <span class="k">if</span> <span class="n">m</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">m</span> <span class="o">&gt;</span> <span class="mi">12</span><span class="p">:</span>
++            <span class="k">return</span> <span class="n">fail</span><span class="p">(</span><span class="s2">&quot;month must be in 1..12&quot;</span><span class="p">)</span>
++    <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
++        <span class="k">try</span><span class="p">:</span>
++            <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
++        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
++            <span class="k">return</span> <span class="n">fail</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
++
++    <span class="k">return</span> <span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
++</pre></div>
++</div>
++<p>This works now works as expected:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">full_or_partial_date</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017-02&quot;</span><span class="p">)</span>
++<span class="go">(2017, 2, None)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">full_or_partial_date</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2017-02-29&quot;</span><span class="p">)</span>
++<span class="go">ParseError: expected &#39;day is out of range for month&#39; at 0:10</span>
++</pre></div>
++</div>
++<p>We could of course use a custom object in the final line to return a more
++convenient data type, if wanted.</p>
++</section>
++<section id="alternatives-and-backtracking">
++<h2>Alternatives and backtracking<a class="headerlink" href="#alternatives-and-backtracking" title="Permalink to this heading"></a></h2>
++<p>Suppose we are using our date parser to scrape dates off articles on a web site.
++We then discover that for recently published articles, instead of printing a
++timestamp, they write “X days ago”.</p>
++<p>We want to parse this, and we’ll use a timedelta object to represent the value
++(to easily distinguish it from other values and consume it later). We can write
++a parser for this using tools we’ve seen already:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">days_ago</span> <span class="o">=</span> <span class="n">regex</span><span class="p">(</span><span class="s2">&quot;[0-9]+&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=-</span><span class="nb">int</span><span class="p">(</span><span class="n">d</span><span class="p">)))</span> <span class="o">&lt;&lt;</span> <span class="n">string</span><span class="p">(</span><span class="s2">&quot; days ago&quot;</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">days_ago</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;5 days ago&quot;</span><span class="p">)</span>
++<span class="go">datetime.timedelta(-5)</span>
++</pre></div>
++</div>
++<p>Now we need to combine it with our date parser, and allow either to succeed.
++This is done using the <a class="reference internal" href="ref/methods_and_combinators.html#parser-or"><span class="std std-ref">| operator</span></a>, as follows:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flexi_date</span> <span class="o">=</span> <span class="n">full_or_partial_date</span> <span class="o">|</span> <span class="n">days_ago</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">flexi_date</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2012-01-05&quot;</span><span class="p">)</span>
++<span class="go">(2012, 1, 5)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">flexi_date</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2 days ago&quot;</span><span class="p">)</span>
++<span class="go">datetime.timedelta(-2)</span>
++</pre></div>
++</div>
++<p>Notice that you still get good error messages from the appropriate parser,
++depending on which parser got furthest before returning a failure:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flexi_date</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2012-&quot;</span><span class="p">)</span>
++<span class="go">ParseError: expected &#39;2 digit month&#39; at 0:5</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">flexi_date</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2 years ago&quot;</span><span class="p">)</span>
++<span class="go">ParseError: expected &#39; days ago&#39; at 0:1</span>
++</pre></div>
++</div>
++<p>When using backtracking, you need to understand that backtracking to the other
++option only occurs if the first parser fails. So, for example:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">string</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">ab</span> <span class="o">=</span> <span class="n">string</span><span class="p">(</span><span class="s2">&quot;ab&quot;</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">string</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">a_or_ab_and_c</span> <span class="o">=</span> <span class="p">((</span><span class="n">a</span> <span class="o">|</span> <span class="n">ab</span><span class="p">)</span> <span class="o">+</span> <span class="n">c</span><span class="p">)</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">a_or_ab_and_c</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;ac&quot;</span><span class="p">)</span>
++<span class="go">&#39;ac&#39;</span>
++<span class="gp">&gt;&gt;&gt; </span><span class="n">a_or_ab_and_c</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;abc&quot;</span><span class="p">)</span>
++<span class="go">ParseError: expected &#39;c&#39; at 0:1</span>
++</pre></div>
++</div>
++<p>The parse fails because the <code class="docutils literal notranslate"><span class="pre">a</span></code> parser succeeds, and so the <code class="docutils literal notranslate"><span class="pre">ab</span></code> parser is
++never tried. This is different from most regular expression engines, where
++backtracking is done over the whole regex by default.</p>
++<p>In this case we can get the parse to succeed by switching the order:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">((</span><span class="n">ab</span> <span class="o">|</span> <span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;abc&quot;</span><span class="p">)</span>
++<span class="go">&#39;abc&#39;</span>
++
++<span class="gp">&gt;&gt;&gt; </span><span class="p">((</span><span class="n">ab</span> <span class="o">|</span> <span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;ac&quot;</span><span class="p">)</span>
++<span class="go">&#39;ac&#39;</span>
++</pre></div>
++</div>
++<p>We could also fix it like this:</p>
++<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">((</span><span class="n">a</span> <span class="o">+</span> <span class="n">c</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">ab</span> <span class="o">+</span> <span class="n">c</span><span class="p">))</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;abc&quot;</span><span class="p">)</span>
++<span class="go">&#39;abc&#39;</span>
++</pre></div>
++</div>
++</section>
++<section id="custom-data-structures">
++<h2>Custom data structures<a class="headerlink" href="#custom-data-structures" title="Permalink to this heading"></a></h2>
++<p>In the example shown so far, the result of parsing has been a native Python data
++type, such as a integer, string, datetime or tuple. In some cases that is
++enough, but very quickly you will find that for your parse result to be useful,
++you will need to use custom data structures (rather than ending up with nested
++lists etc.)</p>
++<p>For defining custom data structures, you can use any method you like (e.g.
++simple classes). We suggest <a class="reference external" href="https://docs.python.org/3/library/dataclasses.html">dataclasses</a> (stdlib), <a class="reference external" href="https://github.com/python-attrs/attrs">attrs</a> or <a class="reference external" href="https://github.com/samuelcolvin/pydantic/">pydantic</a>. You can also use <a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.namedtuple">namedtuple</a>
++for simple cases.</p>
++<p>For combining parsed data into these data structures, you can:</p>
++<ol class="arabic">
++<li><p>Use <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.map" title="parsy.Parser.map"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.map()</span></code></a>, <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.combine" title="parsy.Parser.combine"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.combine()</span></code></a> and <a class="reference internal" href="ref/methods_and_combinators.html#parsy.Parser.combine_dict" title="parsy.Parser.combine_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.combine_dict()</span></code></a>,
++often in conjunction with <a class="reference internal" href="ref/methods_and_combinators.html#parsy.seq" title="parsy.seq"><code class="xref py py-func docutils literal notranslate"><span class="pre">seq()</span></code></a>.</p>
++<p>See the <a class="reference internal" href="howto/other_examples.html"><span class="doc">SQL SELECT example</span></a> for an example of this approach.</p>
++</li>
++<li><p>Use the <code class="docutils literal notranslate"><span class="pre">&#64;generate</span></code> decorator as above, and manually call the data
++structure constructor with the pieces, as in <code class="docutils literal notranslate"><span class="pre">full_date</span></code> or
++<code class="docutils literal notranslate"><span class="pre">full_or_partial_date</span></code> above, but with your own data structure instead of a
++tuple or datetime in the final line.</p></li>
++</ol>
++</section>
++<section id="learn-more">
++<h2>Learn more<a class="headerlink" href="#learn-more" title="Permalink to this heading"></a></h2>
++<p>For further topics, see the <a class="reference internal" href="index.html"><span class="doc">table of contents</span></a> for the rest of
++the documentation that should enable you to build parsers for your needs.</p>
++</section>
++</section>
++
++
++           </div>
++          </div>
++          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
++        <a href="overview.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
++        <a href="ref/index.html" class="btn btn-neutral float-right" title="API reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
++    </div>
++
++  <hr/>
++
++  <div role="contentinfo">
++    <p>&#169; Copyright 2017, Jeanine Adkisson, Luke Plant.
++      <span class="commit">Revision <code>5be0cd30</code>.
++      </span></p>
++  </div>
++
++  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
++    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
++    provided by <a href="https://readthedocs.org">Read the Docs</a>.
++   
++
++</footer>
++        </div>
++      </div>
++    </section>
++  </div>
++  
++
++  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Versions">
++    <span class="rst-current-version" data-toggle="rst-current-version">
++      <span class="fa fa-book"> Read the Docs</span>
++      v: latest
++      <span class="fa fa-caret-down"></span>
++    </span>
++    <div class="rst-other-versions">
++      <dl>
++        <dt>Versions</dt>
++        
++          <dd><a href="/en/latest/">latest</a></dd>
++        
++          <dd><a href="/en/stable/">stable</a></dd>
++        
++          <dd><a href="/en/v2.1/">v2.1</a></dd>
++        
++          <dd><a href="/en/v2.0/">v2.0</a></dd>
++        
++          <dd><a href="/en/v1.4.0/">v1.4.0</a></dd>
++        
++          <dd><a href="/en/v1.3.0/">v1.3.0</a></dd>
++        
++          <dd><a href="/en/v1.2.0/">v1.2.0</a></dd>
++        
++          <dd><a href="/en/v1.1.0/">v1.1.0</a></dd>
++        
++          <dd><a href="/en/v1.0.0/">v1.0.0</a></dd>
++        
++      </dl>
++      <dl>
++        <dt>Downloads</dt>
++        
++      </dl>
++      <dl>
++        
++        <dt>On Read the Docs</dt>
++          <dd>
++            <a href="//readthedocs.org/projects/parsy/?fromdocs=parsy">Project Home</a>
++          </dd>
++          <dd>
++            <a href="//readthedocs.org/builds/parsy/?fromdocs=parsy">Builds</a>
++          </dd>
++      </dl>
++    </div>
++  </div>
++<script>
++      jQuery(function () {
++          SphinxRtdTheme.Navigation.enable(true);
++      });
++  </script> 
++
++</body>
++</html>
+\ No newline at end of file

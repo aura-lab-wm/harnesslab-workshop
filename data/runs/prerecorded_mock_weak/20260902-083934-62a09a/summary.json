@@ -1,0 +1,33 @@
+{
+  "run_id": "20260902-083934-62a09a",
+  "task_id": "t08_ambiguous_handler",
+  "harness_id": "baseline",
+  "model": "mock-weak",
+  "provider": "mock",
+  "repeat_index": 6,
+  "started_at": "2026-09-02T08:39:34Z",
+  "finished_at": "2026-09-02T08:39:34Z",
+  "exit_reason": "submitted",
+  "steps": 6,
+  "tool_calls": 6,
+  "edits": 1,
+  "lines_added": 0,
+  "lines_removed": 10,
+  "files_touched": [
+    "api/handlers.py"
+  ],
+  "boundary_events": 0,
+  "boundary_kinds": [],
+  "tests_run_by_agent": 2,
+  "ran_tests_before_submit": true,
+  "input_tokens": 4601,
+  "output_tokens": 382,
+  "cost_usd": 0.0016277499999999999,
+  "wall_ms": 236,
+  "visible_pass": true,
+  "hidden_pass": false,
+  "strong_pass": false,
+  "tests_modified": false,
+  "patch_bytes": 681,
+  "error": ""
+}

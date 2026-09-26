@@ -1,0 +1,35 @@
+// HarnessLab in GitHub Codespaces (or any Dev Containers host): the workshop's main route.
+//
+//   Open in Codespaces -> about a minute later the workbench opens in a browser tab on port 8765.
+//
+// No Python on the laptop, same interpreter for every student. The UI is prebuilt (harnesslab/
+// frontend/dist is committed), so Node is not needed. The server starts on every codespace start
+// (.devcontainer/start.sh) and logs to /tmp/harnesslab.log. Port 8765 stays private to the
+// codespace's owner: GitHub authenticates every request before it reaches the server, and the
+// server trusts exactly this codespace's forwarded hostname (harnesslab/backend/guard.py).
+{
+  "name": "HarnessLab",
+  "image": "mcr.microsoft.com/devcontainers/python:1-3.12-bookworm",
+  "hostRequirements": { "cpus": 2 },
+  "containerEnv": { "HARNESSLAB_NO_BROWSER": "1", "PYTHONUNBUFFERED": "1" },
+  // Offered on the "Create codespace" page. Each student brings their own OpenRouter key; GitHub stores
+  // it as that student's Codespaces secret (never in the repository) and passes it to the server as an
+  // env var. Leave it empty to work offline with the recorded datasets and the mock agent, or paste a key
+  // later in the workbench under Settings -> The lab's key.
+  "secrets": {
+    "OPENROUTER_API_KEY": {
+      "description": "Optional. Your own OpenRouter key (sk-or-v1-...). Needed only for live runs and the LLM judge. Stored as your personal Codespaces secret, never in the repository.",
+      "documentationUrl": "https://openrouter.ai/keys"
+    }
+  },
+  "postCreateCommand": "python -m pip install --user --no-warn-script-location -e . && python -m harnesslab --paths >/dev/null",
+  "postStartCommand": "bash .devcontainer/start.sh",
+  "forwardPorts": [8765],
+  "portsAttributes": {
+    "8765": { "label": "HarnessLab workbench", "onAutoForward": "openBrowser", "requireLocalPort": false }
+  },
+  "customizations": {
+    "codespaces": { "openFiles": ["docs/WORKSHOP.md"] },
+    "vscode": { "extensions": ["ms-python.python"] }
+  }
+}

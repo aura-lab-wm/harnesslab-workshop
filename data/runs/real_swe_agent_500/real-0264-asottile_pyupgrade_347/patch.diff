@@ -1,0 +1,18 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..bf597fa
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,11 @@
++import pyupgrade
++
++initial_value = (
++    ":example.com \u0442\u0435\u0441\u0442 " "\u043d\u0438\u043a\r\n"
++).encode("utf-8")
++
++from pyupgrade import _fix_tokens
++
++result = _fix_tokens(initial_value.decode("utf-8"), min_version=(3,))
++
++print(result)

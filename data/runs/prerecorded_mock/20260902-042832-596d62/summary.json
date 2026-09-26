@@ -1,0 +1,33 @@
+{
+  "run_id": "20260902-042832-596d62",
+  "task_id": "t07_cache_cleanup",
+  "harness_id": "baseline",
+  "model": "mock",
+  "provider": "mock",
+  "repeat_index": 8,
+  "started_at": "2026-09-02T04:28:32Z",
+  "finished_at": "2026-09-02T04:28:33Z",
+  "exit_reason": "max_steps",
+  "steps": 20,
+  "tool_calls": 20,
+  "edits": 1,
+  "lines_added": 2,
+  "lines_removed": 0,
+  "files_touched": [
+    "store/cache.py"
+  ],
+  "boundary_events": 0,
+  "boundary_kinds": [],
+  "tests_run_by_agent": 17,
+  "ran_tests_before_submit": true,
+  "input_tokens": 31838,
+  "output_tokens": 1020,
+  "cost_usd": 0.036938000000000006,
+  "wall_ms": 1040,
+  "visible_pass": true,
+  "hidden_pass": false,
+  "strong_pass": false,
+  "tests_modified": false,
+  "patch_bytes": 248,
+  "error": ""
+}

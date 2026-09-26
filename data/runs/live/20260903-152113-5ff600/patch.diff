@@ -1,0 +1,54 @@
+--- a/tinycsv/rows.py
++++ b/tinycsv/rows.py
+@@ -1,4 +1,49 @@
+ def split_row(line: str):
+     """Split one CSV line into fields. Fields may be double-quoted; inside a
+-    quoted field a comma is literal and a doubled quote is a literal quote."""
+-    return [f.strip('"') for f in line.split(",")]
++    quoted field a comma is literal and a doubled quote is a literal quote.
++
++    This implements a simple CSV parser (no use of the csv module). It treats
++    a double-quote at the start of a field as the opening of a quoted field.
++    Within a quoted field two consecutive double-quotes ("") represent a
++    literal quote character. Commas outside quoted fields split fields.
++    """
++    fields = []
++    field_chars = []
++    in_quotes = False
++    i = 0
++    n = len(line)
++
++    while i < n:
++        ch = line[i]
++        if ch == '"':
++            if in_quotes:
++                # If next is also a quote, it's an escaped quote -> append one
++                if i + 1 < n and line[i + 1] == '"':
++                    field_chars.append('"')
++                    i += 2
++                    continue
++                else:
++                    # closing quote
++                    in_quotes = False
++                    i += 1
++                    continue
++            else:
++                # opening quote (only meaningful if at start of field)
++                # If there are already characters in the field this is non-standard,
++                # but we'll treat it as starting a quoted section anyway.
++                in_quotes = True
++                i += 1
++                continue
++        if ch == ',' and not in_quotes:
++            fields.append(''.join(field_chars))
++            field_chars = []
++            i += 1
++            continue
++        # regular character
++        field_chars.append(ch)
++        i += 1
++
++    # append last field
++    fields.append(''.join(field_chars))
++    return fields
++

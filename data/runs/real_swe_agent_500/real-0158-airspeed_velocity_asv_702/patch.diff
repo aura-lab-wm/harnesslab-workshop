@@ -1,0 +1,30 @@
+
+diff --git a/asv/main.py b/asv/main.py
+index 5d7becd..12301e2 100644
+--- a/asv/main.py
++++ b/asv/main.py
+@@ -16,7 +16,7 @@ from .plugin_manager import plugin_manager
+ from . import util
+ 
+ 
+-def main():
++def main(args):
+     parser, subparsers = commands.make_argparser()
+ 
+     args = parser.parse_args()
+diff --git a/print_args.py b/print_args.py
+new file mode 100644
+index 0000000..daecc4e
+--- /dev/null
++++ b/print_args.py
+@@ -0,0 +1,10 @@
++from asv.main import main
++from argparse import Namespace
++
++# Create a dummy args object
++args = Namespace(config='asv.conf.json', verbose=False, func=main)
++
++# Call the main function
++main(args)
++
++print(args)

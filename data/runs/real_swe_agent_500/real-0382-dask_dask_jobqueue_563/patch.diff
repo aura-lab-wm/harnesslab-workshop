@@ -1,0 +1,46 @@
+
+diff --git a/dask_jobqueue/htcondor.py b/dask_jobqueue/htcondor.py
+index fb7b0be..ba1bb04 100644
+--- a/dask_jobqueue/htcondor.py
++++ b/dask_jobqueue/htcondor.py
+@@ -235,6 +235,40 @@ def quote_environment(env):
+ class HTCondorCluster(JobQueueCluster):
+     __doc__ = """ Launch Dask on an HTCondor cluster
+ 
++    Parameters
++    ----------
++    disk : str
++        Total amount of disk per job
++    job_extra : dict
++        Extra submit file attributes for the job
++    submit_command_extra : list of str
++        Extra arguments to pass to condor_submit
++    cancel_command_extra : list of str
++        Extra arguments to pass to condor_rm
++    env_extra : list
++        Environment variables to set in the worker's environment. 
++        Each variable should be in the form 'key=value'.
++    {job}
++    {cluster}
++
++    Examples
++    --------
++    >>> from dask_jobqueue.htcondor import HTCondorCluster
++    >>> cluster = HTCondorCluster(cores=24, memory="4GB", disk="4GB")
++    >>> cluster.scale(jobs=10)  # ask for 10 jobs
++
++    >>> from dask.distributed import Client
++    >>> client = Client(cluster)
++
++    This also works with adaptive clusters.  This automatically launches and kill workers based on load.
++
++    >>> cluster.adapt(maximum_jobs=20)
++    """.format(
++        job=job_parameters, cluster=cluster_parameters
++    )
++    job_cls = HTCondorJob
++    __doc__ = """ Launch Dask on an HTCondor cluster
++
+     Parameters
+     ----------
+     disk : str

@@ -1,0 +1,21 @@
+
+diff --git a/ulid/base32.py b/ulid/base32.py
+index 83f8a8a..4d00e7e 100644
+--- a/ulid/base32.py
++++ b/ulid/base32.py
+@@ -257,6 +257,15 @@ def decode_ulid(value: str) -> bytes:
+     except UnicodeEncodeError as ex:
+         raise ValueError('Expects value that can be encoded in ASCII charset: {}'.format(ex))
+ 
++    # Create a lookup table to map letters to numbers
++    letter_to_number = {
++        'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9,
++        'K': 10, 'L': 11, 'M': 12, 'N': 13, 'O': 14, 'P': 15, 'Q': 16, 'R': 17, 'S': 18,
++        'T': 19, 'U': 20, 'V': 21, 'W': 22, 'X': 23, 'Y': 24, 'Z': 25
++    }
++
++    # Replace non-Crockford's Base32 letters with the closest letter in the alphabet
++    value = value.upper().replace('L', '1').replace('I', '1').replace('O', '0').replace('Q', '0')
+     decoding = DECODING
+ 
+     return bytes((

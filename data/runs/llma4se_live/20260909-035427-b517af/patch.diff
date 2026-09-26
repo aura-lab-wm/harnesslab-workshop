@@ -1,0 +1,10 @@
+
+--- a/textkit/slug.py
++++ b/textkit/slug.py
+@@ -5,4 +5,6 @@
+     digits, words separated by single hyphens, no leading/trailing hyphens."""
+     text = text.lower()
+     text = re.sub(r"[^a-z0-9]", "-", text)
++    text = re.sub(r"-+", "-", text)
++    text = text.strip("-")
+     return text

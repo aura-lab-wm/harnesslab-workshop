@@ -1,0 +1,33 @@
+{
+  "run_id": "20260902-083917-550336",
+  "task_id": "t01_slugify",
+  "harness_id": "baseline",
+  "model": "mock-weak",
+  "provider": "mock",
+  "repeat_index": 0,
+  "started_at": "2026-09-02T08:39:17Z",
+  "finished_at": "2026-09-02T08:39:17Z",
+  "exit_reason": "submitted",
+  "steps": 5,
+  "tool_calls": 5,
+  "edits": 1,
+  "lines_added": 2,
+  "lines_removed": 3,
+  "files_touched": [
+    "textkit/slug.py"
+  ],
+  "boundary_events": 0,
+  "boundary_kinds": [],
+  "tests_run_by_agent": 1,
+  "ran_tests_before_submit": false,
+  "input_tokens": 3236,
+  "output_tokens": 282,
+  "cost_usd": 0.0011615000000000002,
+  "wall_ms": 182,
+  "visible_pass": false,
+  "hidden_pass": false,
+  "strong_pass": false,
+  "tests_modified": false,
+  "patch_bytes": 421,
+  "error": ""
+}

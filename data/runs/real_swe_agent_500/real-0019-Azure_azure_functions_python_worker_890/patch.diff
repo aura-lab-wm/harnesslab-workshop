@@ -1,0 +1,21 @@
+
+diff --git a/azure_functions_worker/dispatcher.py b/azure_functions_worker/dispatcher.py
+index e8a7b24..96f2d83 100644
+--- a/azure_functions_worker/dispatcher.py
++++ b/azure_functions_worker/dispatcher.py
+@@ -567,12 +567,10 @@ class Dispatcher(metaclass=DispatcherMeta):
+                                'integer')
+                 return False
+ 
+-            if int_value < PYTHON_THREADPOOL_THREAD_COUNT_MIN or (
+-                    int_value > PYTHON_THREADPOOL_THREAD_COUNT_MAX):
++            if int_value < PYTHON_THREADPOOL_THREAD_COUNT_MIN:
+                 logger.warning(f'{PYTHON_THREADPOOL_THREAD_COUNT} must be set '
+-                               f'to a value between '
+-                               f'{PYTHON_THREADPOOL_THREAD_COUNT_MIN} and '
+-                               f'{PYTHON_THREADPOOL_THREAD_COUNT_MAX}. '
++                               f'to a value greater than or equal to '
++                               f'{PYTHON_THREADPOOL_THREAD_COUNT_MIN}. '
+                                'Reverting to default value for max_workers')
+                 return False
+ 

@@ -1,0 +1,11 @@
+{
+  "id": "unverified_edit_streak",
+  "severity": "high",
+  "when": "edits_since_test >= 2 and steps_frac > 0.5",
+  "label": "Two or more edits since the last test run, past half the budget",
+  "reason": "The agent has stacked at least two file edits on top of each other without running the tests, and more than half of the step budget is already gone.",
+  "nudge": "You have changed the code twice since your last test run and you are past half your budget. Run the tests now and read the failure before editing again.",
+  "action_hint": "nudge",
+  "citation": "Fires earlier than the built-in submit_without_verify, which only sees the pending submit.",
+  "doc": "Example rule plugin. Fields: id, severity, when (safe expression over the prefix-feature dict plus the aliases steps_frac / tokens_frac / edits_since_test / max_steps / harness_policy), label, reason, nudge, action_hint. The expression is evaluated by an AST whitelist, never by eval()."
+}

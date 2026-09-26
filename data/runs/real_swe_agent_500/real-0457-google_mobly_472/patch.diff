@@ -1,0 +1,22 @@
+
+diff --git a/mobly/suite_runner.py b/mobly/suite_runner.py
+index 0ca7729..86465e0 100644
+--- a/mobly/suite_runner.py
++++ b/mobly/suite_runner.py
+@@ -30,6 +30,7 @@ individual test classes. For example:
+ import argparse
+ import collections
+ import logging
++logging.basicConfig(level=logging.DEBUG)
+ import sys
+ 
+ from mobly import base_test
+@@ -75,7 +76,7 @@ def run_suite(test_classes, argv=None):
+     args = parser.parse_args(argv)
+     # Load test config file.
+     test_configs = config_parser.load_test_config_file(args.config[0])
+-
++    logging.debug("Configuration data: %s", test_configs)
+     # Check the classes that were passed in
+     for test_class in test_classes:
+         if not issubclass(test_class, base_test.BaseTestClass):

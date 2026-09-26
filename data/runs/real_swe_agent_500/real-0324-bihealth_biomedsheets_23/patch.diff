@@ -1,0 +1,16 @@
+
+diff --git a/biomedsheets/io_tsv/cancer.py b/biomedsheets/io_tsv/cancer.py
+index c2b960e..30b0cd1 100644
+--- a/biomedsheets/io_tsv/cancer.py
++++ b/biomedsheets/io_tsv/cancer.py
+@@ -62,9 +62,7 @@ class CancerTSVReader(BaseTSVReader):
+     def check_tsv_line(self, mapping, lineno):
+         """Cancer sample sheet--specific valiation"""
+         # Check for hyphen in patient or sample name
+-        if '-' in mapping['patientName']:
+-            raise CancerTSVSheetException(
+-                'Hyphen not allowed in patientName column')  # pragma: no cover
++        # Check for hyphen in patient or sample name
+         if '-' in mapping['sampleName']:
+             raise CancerTSVSheetException(
+                 'Hyphen not allowed in sampleName column')  # pragma: no cover

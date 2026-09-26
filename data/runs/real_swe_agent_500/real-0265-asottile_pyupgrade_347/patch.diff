@@ -1,0 +1,46 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 8fe8d11..3ba91e3 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -617,7 +617,7 @@ def _fix_format_literal(tokens: List[Token], end: int) -> None:
+ 
+ 
+ def _fix_encode_to_binary(tokens: List[Token], i: int) -> None:
+-    # .encode()
++    #.encode()
+     if (
+             i + 2 < len(tokens) and
+             tokens[i + 1].src == '(' and
+@@ -625,7 +625,7 @@ def _fix_encode_to_binary(tokens: List[Token], i: int) -> None:
+     ):
+         victims = slice(i - 1, i + 3)
+         latin1_ok = False
+-    # .encode('encoding')
++    #.encode('encoding')
+     elif (
+             i + 3 < len(tokens) and
+             tokens[i + 1].src == '(' and
+@@ -643,6 +643,7 @@ def _fix_encode_to_binary(tokens: List[Token], i: int) -> None:
+             latin1_ok = True
+         else:
+             return
++
+     else:
+         return
+ 
+@@ -665,8 +666,12 @@ def _fix_encode_to_binary(tokens: List[Token], i: int) -> None:
+ 
+     for part in parts:
+         prefix, rest = parse_string_literal(tokens[part].src)
+-        prefix = 'b' + prefix.replace('u', '').replace('U', '')
+-        tokens[part] = tokens[part]._replace(src=prefix + rest)
++        if encoding == 'utf-8':
++            # Keep the string as is for utf-8 encoding
++            tokens[part] = tokens[part]._replace(src=prefix + rest)
++        else:
++            prefix = 'b' + prefix.replace('u', '').replace('U', '')
++            tokens[part] = tokens[part]._replace(src=prefix + rest)
+     del tokens[victims]
+ 
+ 

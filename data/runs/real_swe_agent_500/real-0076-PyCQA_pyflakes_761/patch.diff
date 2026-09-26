@@ -1,0 +1,57 @@
+
+diff --git a/fail.py b/fail.py
+new file mode 100644
+index 0000000..9e9e4c1
+--- /dev/null
++++ b/fail.py
+@@ -0,0 +1,5 @@
++class Foo:
++    bar = 0
++
++    def bar(self):
++        return 1
+diff --git a/ok.py b/ok.py
+new file mode 100644
+index 0000000..a6f3e2f
+--- /dev/null
++++ b/ok.py
+@@ -0,0 +1,6 @@
++class Foo:
++    def bar(self):
++        return 0
++
++    def bar(self):
++        return 1
+diff --git a/pyflakes/checker.py b/pyflakes/checker.py
+index e927715..a5b15e5 100644
+--- a/pyflakes/checker.py
++++ b/pyflakes/checker.py
+@@ -1124,7 +1124,9 @@ class Checker:
+         if not name:
+             return
+         # if the name hasn't already been defined in the current scope
+-        if isinstance(self.scope, FunctionScope) and name not in self.scope:
++        if name in self.scope and not self.scope[name].used:
++            self.report(messages.RedundantDefinition, node, name)
++        elif isinstance(self.scope, FunctionScope) and name not in self.scope:
+             # for each function or module scope above us
+             for scope in self.scopeStack[:-1]:
+                 if not isinstance(scope, (FunctionScope, ModuleScope)):
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..ccd007d
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,12 @@
++class Foo:
++    def bar(self):
++        return 0
++
++    def bar(self):
++        return 1
++
++class Foo:
++    bar = 0
++
++    def bar(self):
++        return 1

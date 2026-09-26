@@ -1,0 +1,58 @@
+/* views/buddy.jsx + views/casefile.jsx — dock panels. Classes: rg-bud-*, rg-case-*.
+   The pw-buddy-model-* rules restyle the app's own BuddyModelPicker inside the Rig (its classic
+   styles are scoped to .product-workspace and do not apply here). Colours: var(--rig-*) only. */
+.rg-bud{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1fr);min-height:100%}
+.rg-bud>div{padding:var(--rig-s4) var(--rig-s5);min-width:0}
+.rg-bud-h{margin-bottom:var(--rig-s2)}
+.rg-bud-sel{margin-bottom:var(--rig-s3)}
+.rg-bud-send{margin-top:var(--rig-s2);gap:var(--rig-s2)}
+.rg-bud>div+div{border-left:1px solid var(--rig-line)}
+@media (max-width:1100px){.rg-bud{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.rg-bud>div:last-child{grid-column:1/-1;border-left:0;border-top:1px solid var(--rig-line)}}
+@media (max-width:760px){.rg-bud{grid-template-columns:minmax(0,1fr)}.rg-bud>div+div{border-left:0;border-top:1px solid var(--rig-line)}.rg-bud>div:last-child{grid-column:auto}}
+.rg-bud-sugg{display:flex;flex-direction:column;gap:6px}
+.rg-bud-sugg button{text-align:left;border:1px solid var(--rig-line);background:var(--rig-panel);padding:8px 10px;font-size:12px;color:var(--rig-text);border-radius:5px;min-height:34px}
+.rg-bud-sugg button:hover{border-color:var(--rig-sel)}
+.rg-bud-log{display:flex;flex-direction:column;gap:8px;max-height:220px;overflow:auto;margin-bottom:8px;padding-right:4px}
+.rg-bud-msg{border:1px solid var(--rig-line);background:var(--rig-panel);padding:8px 10px;font-size:12.5px}
+.rg-bud-msg.user{background:var(--rig-panel2)}
+.rg-bud-msg strong{display:block;font:600 11.5px/1.2 var(--rig-sans);color:var(--rig-mute);margin-bottom:4px}
+.rg-bud-msg pre{white-space:pre-wrap;font:11.5px/1.5 var(--rig-mono);background:var(--rig-panel2);padding:6px 8px}
+.rg-bud-ev{list-style:none;margin:8px 0;padding:0;display:flex;flex-direction:column;gap:4px}
+.rg-bud-preview{margin-top:8px}
+.rg-bud-preview .rg-pre{max-height:180px}
+.rg-bud-picker{position:relative;min-width:0;flex:0 1 auto}
+.rig .pw-buddy-model-picker{position:relative;min-width:0}
+.rig .pw-buddy-model-trigger{display:flex;align-items:center;gap:6px;max-width:260px;min-height:30px;padding:0 10px;border:1px solid var(--rig-line2);border-radius:6px;background:var(--rig-panel);color:var(--rig-dim);font:500 12px/1 var(--rig-sans)}
+.rig .pw-buddy-model-trigger>span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.rig .pw-buddy-model-trigger:hover{border-color:var(--rig-sel);color:var(--rig-text)}
+.rig .pw-buddy-model-trigger svg{width:14px;height:14px;stroke:currentColor;fill:none;flex:none}
+.rig .pw-buddy-model-menu{position:absolute;z-index:70;left:0;bottom:36px;width:min(420px,calc(100vw - 32px));max-height:min(420px,60vh);display:flex;flex-direction:column;gap:8px;padding:12px;border:1px solid var(--rig-line2);border-radius:4px;background:var(--rig-panel);box-shadow:var(--rig-shadow);font-size:12px;overflow:auto;color:var(--rig-text)}
+.rig .pw-buddy-model-menu header{display:flex;flex-direction:column;gap:2px}
+.rig .pw-buddy-model-menu small,.rig .pw-buddy-model-menu footer,.rig .pw-buddy-model-menu p{color:var(--rig-mute);font-size:11px;line-height:1.45}
+.rig .pw-buddy-model-menu input{width:100%;height:32px;padding:0 10px;border:1px solid var(--rig-line2);border-radius:6px;background:var(--rig-bg);color:var(--rig-text);font:13px/1 var(--rig-sans)}
+.rig .pw-buddy-model-menu [role=listbox]{overflow:auto;min-height:0}
+.rig .pw-buddy-model-menu [role=option]{display:flex;align-items:center;justify-content:space-between;width:100%;text-align:left;padding:6px 8px;border:0;background:none;color:var(--rig-text);border-radius:5px}
+.rig .pw-buddy-model-menu [role=option]>span{display:flex;flex-direction:column;gap:2px;min-width:0;overflow-wrap:anywhere}
+.rig .pw-buddy-model-menu [role=option]:hover,.rig .pw-buddy-model-menu [role=option]:focus{background:var(--rig-panel2)}
+.rig .pw-buddy-model-menu [role=option][aria-selected=true]{background:var(--rig-sel-bg2);color:var(--rig-sel-t)}
+.rig .pw-buddy-model-menu button{color:var(--rig-text);background:none;border:1px solid var(--rig-line2);border-radius:6px;padding:4px 8px}
+.rig .pw-buddy-model-group-title{padding:6px 8px;color:var(--rig-mute);font:600 11.5px/1.2 var(--rig-sans)}
+.rig .pw-buddy-model-menu a{color:var(--rig-sel-t)}
+.rg-case{display:flex;flex-direction:column;min-height:100%}
+.rg-case-bar{display:flex;align-items:center;gap:var(--rig-s2) var(--rig-s3);flex-wrap:wrap;padding:var(--rig-s3) var(--rig-s5);border-bottom:1px solid var(--rig-line)}
+.rg-case-pad{padding:var(--rig-s4) var(--rig-s5);max-width:80ch}
+.rg-case-list{list-style:none;margin:0;padding:0}
+.rg-case-it{display:flex;align-items:flex-start;gap:var(--rig-s3);padding:var(--rig-s3) var(--rig-s5);border-bottom:1px solid var(--rig-line)}
+.rg-case-it input[type=checkbox]{accent-color:var(--rig-sel);width:16px;height:16px;margin-top:2px;flex:none}
+.rg-case-sp{width:16px;flex:none}
+.rg-case-open{font-weight:600;text-align:left;white-space:normal}
+.rg-case-note{margin-top:6px;width:100%;max-width:520px;height:28px}
+/* inside the right-hand panel the model menu fits the panel, not a fixed 420px */
+@container rgpanel (max-width:760px){.rig .pw-buddy-model-menu{width:calc(100cqw - 2 * var(--rig-s4))}}
+
+/* the case file toolbar: count + export, then compare / fork / clear, then one hint line */
+.rg-case-bar{flex-direction:column;align-items:stretch;flex-wrap:nowrap;gap:var(--rig-s2)}
+.rg-case-row{display:flex;align-items:center;gap:var(--rig-s2);flex-wrap:wrap;min-width:0}
+.rg-case-hint{margin:0;font-size:12.5px;color:var(--rig-mute)}
+.rg-case-bar .rg-why{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.rg-bud-sel+.rg-note{margin-top:var(--rig-s3)}

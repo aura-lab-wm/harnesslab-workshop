@@ -1,0 +1,40 @@
+
+diff --git a/reproduce.sas b/reproduce.sas
+new file mode 100644
+index 0000000..c4d0b53
+--- /dev/null
++++ b/reproduce.sas
+@@ -0,0 +1,3 @@
++data test / view=testvew;
++    set test;
++run;
+diff --git a/sasdocs/objects.py b/sasdocs/objects.py
+index 0ec2506..cd8f800 100644
+--- a/sasdocs/objects.py
++++ b/sasdocs/objects.py
+@@ -793,7 +793,7 @@ dataLine = dataObj.sep_by(spc)
+ 
+ datastep = ps.seq(
+     outputs = (ps.regex(r'data', flags=re.IGNORECASE) + spc) >> dataLine << col,
+-    header = (ps.regex(r'(?:(?!run).)*(?=set|merge)', flags=reFlags)).optional(),
++    header = ((opspc + ps.regex(r'(\/|\/\*)', flags=reFlags)) >> ps.regex(r'[^;]*?')),  # handle options
+     inputs = ((opspc + ps.regex(r'set|merge',flags=re.IGNORECASE) + opspc) >> dataLine << col).optional(),
+     body = ps.regex(r'.*?(?=run)', flags=reFlags),
+     _run = run + opspc + col
+@@ -807,11 +807,11 @@ datastep = ps.seq(
+ 
+ proc = ps.seq(
+     type = (ps.regex(r'proc', flags=re.IGNORECASE) + spc) >> wrd << spc,
+-    _h1 = ps.regex(r'.*?(?=data)', flags=reFlags),
+-    inputs = (ps.regex(r'data', flags=re.IGNORECASE) + opspc + eq + opspc) >> dataObj,
+-    _h2 = ps.regex(r'.*?(?=out\s*=)', flags=reFlags).optional(),
+-    outputs = ((ps.regex(r'out', flags=re.IGNORECASE) + opspc + eq + opspc) >> dataObj).optional(),
+-    _h3 = ps.regex(r'.*?(?=run|quit)', flags=reFlags),
++    _h1 = (opspc + ps.regex(r'(\/|\/\*)', flags=reFlags)) >> ps.regex(r'[^;]*?'),  # handle options
++    inputs = (ps.regex(r'data', flags=re.IGNORECASE) + opspc + eq + opspc) >> dataObj,
++    _h2 = (opspc + ps.regex(r'(\/|\/\*)', flags=reFlags)) >> ps.regex(r'[^;]*?').optional(),  # handle options
++    outputs = ((ps.regex(r'out', flags=re.IGNORECASE) + opspc + eq + opspc) >> dataObj).optional(),
++    _h3 = (opspc + ps.regex(r'(\/|\/\*)', flags=reFlags)) >> ps.regex(r'[^;]*?'),  # handle options
+     _run = (run|qt) + opspc + col
+ ).combine_dict(procedure)
+ 

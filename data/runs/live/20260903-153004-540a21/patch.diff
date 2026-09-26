@@ -1,0 +1,50 @@
+--- a/cfg/loader.py
++++ b/cfg/loader.py
+@@ -1,5 +1,46 @@
+ def load_config(defaults: dict, env: dict) -> dict:
+     """Return a copy of `defaults` where any env var APP_<KEY> overrides the
+-    value for key <key> (lowercased), coerced to the type of the default."""
++    value for key <key> (lowercased), coerced to the type of the default.
++
++    Only keys present in `defaults` are overridden. Supported types for
++    coercion are int, float, bool and str. Boolean values accept common
++    string forms (true/false, 1/0, yes/no).
++    """
+     cfg = dict(defaults)
++
++    def _to_bool(val: str) -> bool:
++        v = val.strip().lower()
++        if v in ("true", "1", "yes", "y", "t"):
++            return True
++        if v in ("false", "0", "no", "n", "f"):
++            return False
++        # Fallback: use Python truthiness of the string
++        return bool(v)
++
++    for k, v in env.items():
++        if not k.startswith("APP_"):
++            continue
++        key = k[4:].lower()
++        if key not in defaults:
++            continue
++        default_val = defaults[key]
++        # Only handle basic types
++        target_type = type(default_val)
++        try:
++            if target_type is int:
++                coerced = int(v)
++            elif target_type is float:
++                coerced = float(v)
++            elif target_type is bool:
++                coerced = _to_bool(v)
++            elif target_type is str:
++                coerced = str(v)
++            else:
++                # Unsupported type: skip override
++                continue
++        except Exception:
++            # If coercion fails, skip override and keep default
++            continue
++        cfg[key] = coerced
++
+     return cfg

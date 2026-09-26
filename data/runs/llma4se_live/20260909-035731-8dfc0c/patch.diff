@@ -1,0 +1,48 @@
+--- a/cfg/loader.py
++++ b/cfg/loader.py
+@@ -1,5 +1,43 @@
+ def load_config(defaults: dict, env: dict) -> dict:
+-    """Return a copy of `defaults` where any env var APP_<KEY> overrides the
+-    value for key <key> (lowercased), coerced to the type of the default."""
++    """Return a copy of ``defaults`` with matching ``APP_`` overrides.
++
++    Environment variable names are mapped to lowercase configuration keys and
++    their values are converted using the type of the corresponding default.
++    Unknown environment variables are ignored.
++    """
+     cfg = dict(defaults)
++
++    for name, value in env.items():
++        if not name.startswith("APP_"):
++            continue
++
++        key = name[4:].lower()
++        if key not in defaults:
++            continue
++
++        default = defaults[key]
++        if isinstance(default, bool):
++            if isinstance(value, str):
++                normalized = value.strip().lower()
++                if normalized in {"true", "1", "yes", "on"}:
++                    value = True
++                elif normalized in {"false", "0", "no", "off"}:
++                    value = False
++                else:
++                    raise ValueError(f"invalid boolean value for {name}: {value!r}")
++            else:
++                value = bool(value)
++        elif isinstance(default, int):
++            value = int(value)
++        elif isinstance(default, float):
++            value = float(value)
++        elif isinstance(default, str):
++            value = str(value)
++        else:
++            # The documented types are handled above.  Leave unsupported
++            # default types alone rather than guessing at their conversion.
++            continue
++
++        cfg[key] = value
++
+     return cfg

@@ -1,0 +1,36 @@
+
+diff --git a/geopandas/tools/sjoin.py b/geopandas/tools/sjoin.py
+index 9ac00d7..cd614fd 100644
+--- a/geopandas/tools/sjoin.py
++++ b/geopandas/tools/sjoin.py
+@@ -195,9 +195,9 @@ def _geom_predicate_query(left_df, right_df, predicate, distance):
+     if original_predicate == "within":
+         # within is implemented as the inverse of contains
+         # flip back the results
+-        r_idx, l_idx = l_idx, r_idx
++        l_idx, r_idx = l_idx, r_idx
+ 
+-    return l_idx, r_idx
++    return l_idx, r_idx.sort()
+ 
+ 
+ def _reset_index_with_suffix(df, suffix, other):
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..dcf66c7
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,13 @@
++import geopandas as gpd
++import numpy as np
++from shapely.geometry import box
++
++pts = gpd.GeoDataFrame(geometry=gpd.points_from_xy(*np.random.rand(2, 10)))
++polys = gpd.GeoDataFrame({"id":[1, 2, 3, 4]}, geometry=[
++    box(0, 0,.5,.5),
++    box(0,.5,.5, 1),
++    box(.5, 0, 1,.5),
++    box(.5,.5, 1, 1)
++])
++
++print(pts.sjoin(polys, predicate="within", how="left"))

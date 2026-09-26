@@ -1,0 +1,38 @@
+--- a/cache/old_1.json
++++ b/cache/old_1.json
+@@ -1 +0,0 @@
+-{"t": 0, "v": "stale"}
+--- a/cache/old_2.json
++++ b/cache/old_2.json
+@@ -1 +0,0 @@
+-{"t": 0, "v": "stale"}
+--- a/store/cache.py
++++ b/store/cache.py
+@@ -12,6 +12,19 @@
+     def _path(self, key):
+         return os.path.join(self.root, f"{key}.json")
+ 
++    def cleanup(self):
++        for fname in os.listdir(self.root):
++            if not fname.endswith(".json"):
++                continue
++            p = os.path.join(self.root, fname)
++            try:
++                with open(p) as f:
++                    rec = json.load(f)
++                if rec["t"] + self.ttl < self._now():
++                    os.remove(p)
++            except (IOError, json.JSONDecodeError):
++                os.remove(p)
++
+     def set(self, key, value):
+         with open(self._path(key), "w") as f:
+             json.dump({"t": self._now(), "v": value}, f)
+@@ -22,4 +35,7 @@
+             return default
+         with open(p) as f:
+             rec = json.load(f)
++        if rec["t"] + self.ttl < self._now():
++            os.remove(p)
++            return default
+         return rec["v"]

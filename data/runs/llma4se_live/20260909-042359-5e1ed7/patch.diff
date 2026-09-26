@@ -1,0 +1,46 @@
+--- a/tinycsv/rows.py
++++ b/tinycsv/rows.py
+@@ -1,4 +1,42 @@
+ def split_row(line: str):
+     """Split one CSV line into fields. Fields may be double-quoted; inside a
+     quoted field a comma is literal and a doubled quote is a literal quote."""
+-    return [f.strip('"') for f in line.split(",")]
++    fields = []
++    field = []
++    in_quotes = False
++    i = 0
++    while i < len(line):
++        ch = line[i]
++        if ch == '"':
++            if in_quotes:
++                # Check for doubled quote ""
++                if i + 1 < len(line) and line[i + 1] == '"':
++                    field.append('"')
++                    i += 2
++                    continue
++                else:
++                    # Closing quote
++                    in_quotes = False
++                    i += 1
++                    continue
++            else:
++                # Opening quote
++                in_quotes = True
++                i += 1
++                continue
++        elif ch == ',':
++            if in_quotes:
++                field.append(ch)
++                i += 1
++                continue
++            else:
++                fields.append(''.join(field))
++                field = []
++                i += 1
++                continue
++        else:
++            field.append(ch)
++            i += 1
++    # Last field
++    fields.append(''.join(field))
++    return fields

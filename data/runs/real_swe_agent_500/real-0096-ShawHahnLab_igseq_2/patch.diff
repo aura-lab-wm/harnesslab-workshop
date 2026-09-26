@@ -1,0 +1,74 @@
+
+diff --git a/igseq/vdj.py b/igseq/vdj.py
+index e6ac153..d844e33 100644
+--- a/igseq/vdj.py
++++ b/igseq/vdj.py
+@@ -32,10 +32,13 @@ def parse_vdj_paths(ref_paths):
+     if isinstance(ref_paths, (str, PathLike)):
+         ref_paths = [ref_paths]
+     attrs_list = []
++    # Use a set to store processed paths
++    processed_paths = set()
+     for entry in ref_paths:
++        if entry in processed_paths:
++            continue
+         internal_matches = get_internal_vdj(entry)
+         path = Path(entry)
+-        # first priority: actual file name
+         if path.is_file():
+             attrs = parse_vdj_filename(path)
+             attrs["input"] = str(entry)
+@@ -43,7 +46,6 @@ def parse_vdj_paths(ref_paths):
+             if "segment" not in attrs:
+                 raise ValueError("couldn't determine segment for file: %s" % path)
+             attrs_list.append(attrs)
+-        # second priority: actual directory name
+         elif path.is_dir():
+             for path2 in sorted(path.glob("*")):
+                 attrs = parse_vdj_filename(path2)
+@@ -53,9 +55,10 @@ def parse_vdj_paths(ref_paths):
+                         raise ValueError("couldn't determine segment for file: %s" % path)
+                     attrs["type"] = "dir"
+                     attrs_list.append(attrs)
+-        # third priority: internal reference
+         elif internal_matches:
+             for fasta in internal_matches:
++                if fasta in processed_paths:
++                    continue
+                 fasta_rel = fasta.relative_to(util.DATA / "germ")
+                 attrs = parse_vdj_filename(fasta_rel)
+                 attrs["input"] = str(entry)
+@@ -65,8 +68,12 @@ def parse_vdj_paths(ref_paths):
+                 attrs["species"] = parents[-1]
+                 attrs["ref"] = parents[-2]
+                 attrs_list.append(attrs)
++                processed_paths.add(fasta)
+         else:
+             raise util.IgSeqError("ref path not recognized: %s" % entry)
++        processed_paths.add(entry)
++    return attrs_list
++    return attrs_list
+     return attrs_list
+ 
+ def get_internal_vdj(name):
+diff --git a/test_parse_vdj_paths.py b/test_parse_vdj_paths.py
+new file mode 100644
+index 0000000..5c124d1
+--- /dev/null
++++ b/test_parse_vdj_paths.py
+@@ -0,0 +1,15 @@
++from igseq.vdj import parse_vdj_paths
++from pathlib import Path
++
++def test_parse_vdj_paths():
++    paths = [
++        "sonarramesh/IGH",
++        "sonarramesh/IGH/IGHD",
++        "sonarramesh/IGH/IGHD",  # Duplicate
++        "sonarramesh/IGK",
++    ]
++    result = parse_vdj_paths(paths)
++    # Check that there are no duplicates in the paths list
++    assert len(set(paths)) == len(result)
++
++test_parse_vdj_paths()

@@ -1,0 +1,33 @@
+{
+  "run_id": "20260902-042950-8169a8",
+  "task_id": "t02_intervals",
+  "harness_id": "terse_prompt",
+  "model": "mock",
+  "provider": "mock",
+  "repeat_index": 5,
+  "started_at": "2026-09-02T04:29:50Z",
+  "finished_at": "2026-09-02T04:29:50Z",
+  "exit_reason": "submitted",
+  "steps": 6,
+  "tool_calls": 6,
+  "edits": 1,
+  "lines_added": 4,
+  "lines_removed": 3,
+  "files_touched": [
+    "ranges/merge.py"
+  ],
+  "boundary_events": 0,
+  "boundary_kinds": [],
+  "tests_run_by_agent": 2,
+  "ran_tests_before_submit": true,
+  "input_tokens": 4367,
+  "output_tokens": 420,
+  "cost_usd": 0.0064670000000000005,
+  "wall_ms": 229,
+  "visible_pass": true,
+  "hidden_pass": true,
+  "strong_pass": true,
+  "tests_modified": false,
+  "patch_bytes": 577,
+  "error": ""
+}

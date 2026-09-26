@@ -1,0 +1,29 @@
+
+diff --git a/reproduce.sas b/reproduce.sas
+new file mode 100644
+index 0000000..c4d0b53
+--- /dev/null
++++ b/reproduce.sas
+@@ -0,0 +1,3 @@
++data test / view=testvew;
++    set test;
++run;
+diff --git a/sasdocs/objects.py b/sasdocs/objects.py
+index 0ec2506..8cac9ab 100644
+--- a/sasdocs/objects.py
++++ b/sasdocs/objects.py
+@@ -302,10 +302,10 @@ class dataArg(baseSASObject):
+ 
+     Attributes
+     ----------
+-    option : str
+-        Inline data argument being set
+-    settings : str
+-        Value passed to the inline data argument
++    option : str
++        Inline data argument being set
++    settings : str
++        Value passed to the inline data argument, can include spaces and special characters
+     """
+     option = attr.ib()
+     setting = attr.ib(default=None, repr=True)

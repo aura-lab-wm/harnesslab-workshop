@@ -1,0 +1,54 @@
+
+diff --git a/new_config.json b/new_config.json
+new file mode 100644
+index 0000000..4e84e21
+--- /dev/null
++++ b/new_config.json
+@@ -0,0 +1,46 @@
++{
++    "current": {
++        "client-1": {
++            "tenant": "sd2e",
++            "user": "admin",
++            "oauth_client": "1234567890"
++        }
++    },
++    "sessions": {
++        "sd2e": {
++            "admin": {
++                "client-1": {
++                    "tenant": "sd2e",
++                    "user": "admin",
++                    "oauth_client": "1234567890"
++                },
++                "client-2": {
++                    "tenant": "sd2e",
++                    "user": "user1",
++                    "oauth_client": "1234567890"
++                }
++            },
++            "user1": {
++                "client-1": {
++                    "tenant": "sd2e",
++                    "user": "admin",
++                    "oauth_client": "1234567890"
++                },
++                "client-2": {
++                    "tenant": "sd2e",
++                    "user": "user1",
++                    "oauth_client": "1234567890"
++                }
++            }
++        },
++        "tacc": {
++            "admin": {
++                "client-1": {
++                    "tenant": "sd2e",
++                    "user": "admin",
++                    "oauth_client": "1234567890"
++                }
++            }
++        }
++    }
++}
+\ No newline at end of file

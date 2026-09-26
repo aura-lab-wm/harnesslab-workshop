@@ -1,0 +1,101 @@
+
+diff --git a/fairlearn/metrics/_metric_frame.py b/fairlearn/metrics/_metric_frame.py
+index 9826c3d..fe58a16 100644
+--- a/fairlearn/metrics/_metric_frame.py
++++ b/fairlearn/metrics/_metric_frame.py
+@@ -391,10 +391,17 @@ class MetricFrame:
+         if not self.control_levels:
+             result = pd.Series(index=self._by_group.columns, dtype='object')
+             for m in result.index:
+-                max_val = self._by_group[m].max()
+-                result[m] = max_val
++                try:
++                    max_val = self._by_group[m].max()
++                    result[m] = max_val
++                except Exception as e:
++                    result[m] = np.NaN
+         else:
+-            result = self._by_group.groupby(level=self.control_levels).max()
++            try:
++                result = self._by_group.groupby(level=self.control_levels).max()
++            except Exception as e:
++                result = pd.DataFrame(index=self._by_group.index, columns=self._by_group.columns)
++                result.fillna(np.NaN, inplace=True)
+ 
+         if self._user_supplied_callable:
+             if self.control_levels:
+@@ -416,17 +423,24 @@ class MetricFrame:
+ 
+         Returns
+         -------
+-        typing.Any pandas.Series or pandas.DataFrame
++        typing.Any or pandas.Series or pandas.DataFrame
+             The minimum value over sensitive features. The exact type
+             follows the table in :attr:`.MetricFrame.overall`.
+         """
+         if not self.control_levels:
+             result = pd.Series(index=self._by_group.columns, dtype='object')
+             for m in result.index:
+-                min_val = self._by_group[m].min()
+-                result[m] = min_val
++                try:
++                    min_val = self._by_group[m].min()
++                    result[m] = min_val
++                except Exception as e:
++                    result[m] = np.NaN
+         else:
+-            result = self._by_group.groupby(level=self.control_levels).min()
++            try:
++                result = self._by_group.groupby(level=self.control_levels).min()
++            except Exception as e:
++                result = pd.DataFrame(index=self._by_group.index, columns=self._by_group.columns)
++                result.fillna(np.NaN, inplace=True)
+ 
+         if self._user_supplied_callable:
+             if self.control_levels:
+@@ -435,6 +449,13 @@ class MetricFrame:
+                 return result.iloc[0]
+         else:
+             return result
++        if self._user_supplied_callable:
++            if self.control_levels:
++                return result.iloc[:, 0]
++            else:
++                return result.iloc[0]
++        else:
++            return result
+ 
+     def difference(self,
+                    method: str = 'between_groups') -> Union[Any, pd.Series, pd.DataFrame]:
+diff --git a/test_group_ops.py b/test_group_ops.py
+new file mode 100644
+index 0000000..63f4d29
+--- /dev/null
++++ b/test_group_ops.py
+@@ -0,0 +1,26 @@
++from fairlearn.metrics import MetricFrame
++from sklearn.metrics import accuracy_score, confusion_matrix
++from sklearn.datasets import make_classification
++from sklearn.model_selection import train_test_split
++
++# Create a classification dataset
++X, y = make_classification(n_samples=100, n_features=5, n_classes=2, random_state=42)
++train_X, test_X, train_y, test_y = train_test_split(X, y, test_size=0.2, random_state=42)
++
++# Define scalar and non-scalar metrics
++scalar_metric = accuracy_score
++non_scalar_metric = confusion_matrix
++
++# Create a MetricFrame with both scalar and non-scalar metrics
++mf = MetricFrame(
++    metrics={"accuracy": scalar_metric, "confusion": non_scalar_metric},
++    y_true=train_y,
++    y_pred=train_X[:, 0] > 0.5,  # A simple predictor based on the first feature
++    sensitive_features=train_X[:, 1],  # Use the second feature as a sensitive feature
++)
++
++# Test the group_max and group_min methods
++print("Testing group_max and group_min methods:")
++print("Group max:", mf.group_max())
++print("Group min:", mf.group_min())
++print("Script completed successfully, no errors.")

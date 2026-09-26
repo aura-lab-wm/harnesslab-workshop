@@ -1,0 +1,47 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 2a55816..6dcd373 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -489,7 +489,7 @@ def _fix_escape_sequences(token):
+         if matched[1] in valid_escapes:
+             return matched
+         else:
+-            return r'\{}'.format(matched)
++            return '\\\\{}'.format(matched)
+ 
+     if has_invalid_escapes and (has_valid_escapes or 'u' in actual_prefix):
+         return token._replace(src=prefix + ESCAPE_RE.sub(cb, rest))
+diff --git a/test_fix.py b/test_fix.py
+new file mode 100644
+index 0000000..7401f2b
+--- /dev/null
++++ b/test_fix.py
+@@ -0,0 +1,10 @@
++import pyupgrade
++
++def test_fix():
++    string = 'hello\\Nworld'
++    expected = 'hello\\Nworld'
++    result = pyupgrade.fix_escape_sequences(string)
++    assert result == expected, f"Fix failed: {result} != {expected}"
++
++test_fix()
++print("Test passed!")
+diff --git a/test_fix2.py b/test_fix2.py
+new file mode 100644
+index 0000000..775ad08
+--- /dev/null
++++ b/test_fix2.py
+@@ -0,0 +1,11 @@
++from pyupgrade import _fix_escape_sequences
++from tokenize_rt import Token
++
++def test_fix():
++    token = Token('STRING', 'hello\\Nworld')
++    expected = 'hello\\\\Nworld'
++    result = _fix_escape_sequences(token)
++    assert result.src == expected, f"Fix failed: {result.src} != {expected}"
++
++test_fix()
++print("Test passed!")

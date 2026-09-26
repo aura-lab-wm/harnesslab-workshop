@@ -1,0 +1,70 @@
+
+diff --git a/delphin/tdl.py b/delphin/tdl.py
+index ec330f4..532a9f0 100644
+--- a/delphin/tdl.py
++++ b/delphin/tdl.py
+@@ -68,8 +68,7 @@ class Term:
+         self.docstring = docstring
+ 
+     def __repr__(self):
+-        return "<{} object at {}>".format(
+-            type(self).__name__, id(self))
++        return f"<{type(self).__name__} object at {id(self)}: {self.docstring}>"
+ 
+     def __and__(self, other):
+         if isinstance(other, Term):
+@@ -1359,14 +1358,12 @@ def format(obj, indent=0):
+         non-mod-lex-item := lex-item &
+           [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
+     """
+-    if isinstance(obj, TypeDefinition):
++    if isinstance(obj, str):
++        obj = Term(obj)
++        print("Converted string to Term:", obj)
+         return _format_typedef(obj, indent)
+-    elif isinstance(obj, Conjunction):
+-        return _format_conjunction(obj, indent)
+     elif isinstance(obj, Term):
+         return _format_term(obj, indent)
+-    elif isinstance(obj, _MorphSet):
+-        return _format_morphset(obj, indent)
+     elif isinstance(obj, _Environment):
+         return _format_environment(obj, indent)
+     elif isinstance(obj, FileInclude):
+@@ -1382,7 +1379,8 @@ def _format_term(term, indent):
+         Regex: _format_regex,
+         Coreference: _format_coref,
+         AVM: _format_avm,
+-        ConsList: _format_conslist,
++        "LineComment": _format_linecomment,
++        "BlockComment": _format_blockcomment,
+         DiffList: _format_difflist,
+     }.get(term.__class__, None)
+ 
+@@ -1397,7 +1395,11 @@ def _format_term(term, indent):
+             fmt(term, indent))
+     else:
+         return fmt(term, indent)
++def _format_linecomment(term, indent):
++    return str(term)
+ 
++def _format_blockcomment(term, indent):
++    return str(term)
+ 
+ def _format_id(term, indent):
+     return str(term)
+diff --git a/test_format.py b/test_format.py
+new file mode 100644
+index 0000000..475d8fb
+--- /dev/null
++++ b/test_format.py
+@@ -0,0 +1,9 @@
++from delphin.tdl import format
++
++# Test data
++line_comment = "LineComment"
++block_comment = "BlockComment"
++
++# Format and print
++print(format(line_comment))
++print(format(block_comment))

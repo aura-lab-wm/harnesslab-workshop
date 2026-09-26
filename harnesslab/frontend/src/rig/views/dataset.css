@@ -1,0 +1,29 @@
+/* views/dataset.jsx — dataset tab. Classes: rg-ds-*. Colours: var(--rig-*) only.
+   Rhythm: questions and the condition overview are two sections (s7 apart); inside the
+   condition overview every block sits s5 apart. Only the failure-mode comparison is 2-up. */
+.rg-ds-questions{margin-top:var(--rig-s5)}
+.rg-ds-sh{margin-bottom:var(--rig-s4);align-items:baseline}
+.rg-ds-sh h2{font-size:16px}
+.rg-ds-cond{display:flex;flex-direction:column;gap:var(--rig-s5);margin-top:var(--rig-s7);padding-top:var(--rig-s6);border-top:1px solid var(--rig-line)}
+.rg-ds-cond>.rg-dh{margin-bottom:0}
+.rg-ds-cond>.rg-dh h2{font-size:20px}
+.rg-ds-kpis{grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr))}
+@container rgdoc (max-width:1000px){.rg-ds-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.rg-ds-kpis .rg-stat{border-bottom:1px solid var(--rig-line)}}
+.rg-ds-nextlist{display:flex;flex-direction:column}
+@container rgdoc (min-width:900px){.rg-ds-nextlist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.rg-ds-nextlist>.rg-ds-next:nth-child(odd){border-right:1px solid var(--rig-line)}.rg-ds-nextlist>.rg-ds-next:nth-last-child(2):nth-child(odd){border-bottom:0}}
+.rg-ds-next{display:flex;align-items:center;gap:var(--rig-s3);width:100%;padding:var(--rig-s3) var(--rig-s5);border:0;border-bottom:1px solid var(--rig-line);background:none;text-align:left;color:var(--rig-text)}
+.rg-ds-nextlist>.rg-ds-next:last-child{border-bottom:0}
+.rg-ds-next:hover{background:var(--rig-panel2)}
+.rg-ds-next:focus-visible{outline:2px solid var(--rig-sel);outline-offset:-2px}
+.rg-ds-seg{border:0;border-left:1px solid var(--rig-line2);background:none;padding:0 10px;min-height:28px;font:500 12px/1 var(--rig-sans);color:var(--rig-dim);white-space:nowrap}
+.rg-ds-seg:hover{color:var(--rig-text);background:var(--rig-panel2)}
+.rg-ds-disc{margin:0;max-width:72ch}
+@container rgdoc (max-width:640px){.rg-ds-next{padding:var(--rig-s3) var(--rig-s4)}.rg-ds-cond{margin-top:var(--rig-s6);padding-top:var(--rig-s5)}}
+.rg-ds-kpis .rg-stat>span{overflow-wrap:anywhere;min-width:0}
+
+@container rgdoc (min-width:1800px){
+  .rg-ds-cond{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:var(--rig-s5);align-items:start}
+  .rg-ds-cond>.rg-dh,.rg-ds-cond>.rg-ds-kpis,.rg-ds-cond>[data-el="failure-mode-summary"],.rg-ds-cond>.rg-ds-disc{grid-column:1/-1}
+  .rg-ds-cond>[data-el="model-performance-table"]{grid-column:1}
+  .rg-ds-cond>[data-el="where-to-look-next"]{grid-column:2}
+}

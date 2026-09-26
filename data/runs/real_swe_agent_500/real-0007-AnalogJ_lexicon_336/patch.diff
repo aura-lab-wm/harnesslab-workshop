@@ -1,0 +1,23 @@
+
+diff --git a/lexicon/cli.py b/lexicon/cli.py
+index dbef1ae2..e41ea105 100644
+--- a/lexicon/cli.py
++++ b/lexicon/cli.py
+@@ -71,10 +71,13 @@ def handle_output(results, output_type):
+                 print(table)
+         else:
+             try:
+-                _ = (entry for entry in results)
+-                json_str = json.dumps(results)
+-                if json_str:
+-                    print(json_str)
++                if isinstance(results, str):
++                    print(results)
++                else:
++                    _ = (entry for entry in results)
++                    json_str = json.dumps(results)
++                    if json_str:
++                        print(json_str)
+             except TypeError:
+                 logger.debug('Output is not a JSON, and then cannot '
+                              'be printed with --output=JSON parameter.')

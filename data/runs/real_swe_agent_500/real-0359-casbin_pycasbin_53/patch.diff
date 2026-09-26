@@ -1,0 +1,18 @@
+
+diff --git a/monitor_script.sh b/monitor_script.sh
+new file mode 100755
+index 0000000..a7fd0ac
+--- /dev/null
++++ b/monitor_script.sh
+@@ -0,0 +1,11 @@
++#!/bin/bash
++
++watch -d -n 60 "cat examples/rbac_model.conf examples/rbac_policy.csv" >/dev/null 2>&1
++
++if [ $? -eq 0 ]; then
++    echo "No changes detected."
++else
++    echo "Changes detected! Please investigate."
++    exit 1
++fi
++

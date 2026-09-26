@@ -1,0 +1,51 @@
+
+diff --git a/attempt_parse.py b/attempt_parse.py
+new file mode 100644
+index 0000000..a6d4d09
+--- /dev/null
++++ b/attempt_parse.py
+@@ -0,0 +1,9 @@
++from delphin.tdl import format
++
++tdl_str = "[ SYNSEM.LOCAL.CAT.HEAD.MOD < > ]"
++
++# Attempt to format the TDL string, which might parse it
++formatted_tdl = format(tdl_str)
++
++# Print the formatted TDL
++print(formatted_tdl)
+diff --git a/delphin/tdl.py b/delphin/tdl.py
+index ec330f4..1bd98c2 100644
+--- a/delphin/tdl.py
++++ b/delphin/tdl.py
+@@ -1397,7 +1397,11 @@ def _format_term(term, indent):
+             fmt(term, indent))
+     else:
+         return fmt(term, indent)
++def _format_linecomment(comment, indent):
++    return '{}{}'.format(' ' * indent, comment)
+ 
++def _format_blockcomment(comment, indent):
++    return '{}{}'.format(' ' * indent, comment)
+ 
+ def _format_id(term, indent):
+     return str(term)
+diff --git a/test_comment_formatting.py b/test_comment_formatting.py
+new file mode 100644
+index 0000000..816b26b
+--- /dev/null
++++ b/test_comment_formatting.py
+@@ -0,0 +1,13 @@
++import delphin.tdl as tdl
++
++# Create a simple TDL object with a comment
++tdl_obj = "// This is a line comment\n[ SYNSEM.LOCAL.CAT.HEAD.MOD < > ]"
++
++# Parse the TDL string
++tdl_obj = tdl.parse(tdl_obj)
++
++# Format the TDL object
++formatted_tdl = tdl.format(tdl_obj)
++
++# Print the formatted TDL
++print(formatted_tdl)

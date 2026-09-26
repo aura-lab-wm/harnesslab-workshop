@@ -1,0 +1,13 @@
+--- a/textkit/slug.py
++++ b/textkit/slug.py
+@@ -1,8 +1,7 @@
+ import re
+ 
+ def slugify(text: str) -> str:
+-    """Turn arbitrary text into a URL slug: lowercase, ASCII letters and
+-    digits, words separated by single hyphens, no leading/trailing hyphens."""
++    """Turn arbitrary text into a URL slug."""
+     text = text.lower()
+     text = re.sub(r"[^a-z0-9]", "-", text)
+-    return text
++    return text.strip("-")

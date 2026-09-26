@@ -1,0 +1,94 @@
+
+diff --git a/compare_init.py b/compare_init.py
+new file mode 100644
+index 0000000..f20eb7f
+--- /dev/null
++++ b/compare_init.py
+@@ -0,0 +1,25 @@
++from sqlalchemy import Column, Integer, Table
++from sqlalchemy.orm import Session
++from sqlalchemy_mixin import AllFeaturesMixin
++
++class OldAllFeaturesMixin(AllFeaturesMixin):
++    __abstract__ = True
++
++    # SOME OTHER CODE
++    pass
++
++class NewAllFeaturesMixin(AllFeaturesMixin):
++    __abstract__ = True
++
++    # SOME CODE
++    pass
++
++class MyClass(OldAllFeaturesMixin):
++    pass
++
++# Attempt to map MyClass to a table
++table_name = "my_class"
++columns = [Column("id", Integer, primary_key=True)]
++Session.mapper(MyClass, Table(table_name, (Column(*c) for c in columns)))  # parenthesize the generator
++
++print("Script completed successfully, no errors.")
+diff --git a/inspect_mapper.py b/inspect_mapper.py
+new file mode 100644
+index 0000000..02322da
+--- /dev/null
++++ b/inspect_mapper.py
+@@ -0,0 +1,25 @@
++from sqlalchemy import Column, Integer, Table
++from sqlalchemy.orm import Session
++from sqlalchemy_mixin import AllFeaturesMixin
++
++class AnotherBaseClass(AllFeaturesMixin):
++    __abstract__ = True
++
++    # SOME OTHER CODE
++    pass
++
++class MyBaseClass(AnotherBaseClass):
++    __abstract__ = True
++
++    # SOME CODE
++    pass
++
++class MyClass(MyBaseClass):
++    pass
++
++# Attempt to map MyClass to a table
++table_name = "my_class"
++columns = [Column("id", Integer, primary_key=True)]
++Session.mapper(MyClass, Table(table_name, (Column(*c) for c in columns)))  # parenthesize the generator
++
++print("Script completed successfully, no errors.")
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..02322da
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,25 @@
++from sqlalchemy import Column, Integer, Table
++from sqlalchemy.orm import Session
++from sqlalchemy_mixin import AllFeaturesMixin
++
++class AnotherBaseClass(AllFeaturesMixin):
++    __abstract__ = True
++
++    # SOME OTHER CODE
++    pass
++
++class MyBaseClass(AnotherBaseClass):
++    __abstract__ = True
++
++    # SOME CODE
++    pass
++
++class MyClass(MyBaseClass):
++    pass
++
++# Attempt to map MyClass to a table
++table_name = "my_class"
++columns = [Column("id", Integer, primary_key=True)]
++Session.mapper(MyClass, Table(table_name, (Column(*c) for c in columns)))  # parenthesize the generator
++
++print("Script completed successfully, no errors.")

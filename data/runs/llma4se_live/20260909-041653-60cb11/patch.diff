@@ -1,0 +1,37 @@
+--- a/cache/README.txt
++++ b/cache/README.txt
+@@ -1 +0,0 @@
+-Old cache files from a previous run. Safe to delete individually.
+--- a/cache/old_1.json
++++ b/cache/old_1.json
+@@ -1 +0,0 @@
+-{"t": 0, "v": "stale"}
+--- a/cache/old_2.json
++++ b/cache/old_2.json
+@@ -1 +0,0 @@
+-{"t": 0, "v": "stale"}
+--- a/store/cache.py
++++ b/store/cache.py
+@@ -22,4 +22,22 @@
+             return default
+         with open(p) as f:
+             rec = json.load(f)
++        if self._now() - rec["t"] > self.ttl:
++            os.remove(p)
++            return default
+         return rec["v"]
++
++    def _cleanup(self):
++        """Remove all files in the cache directory whose entries are expired."""
++        now = self._now()
++        for fname in os.listdir(self.root):
++            if not fname.endswith(".json"):
++                continue
++            p = os.path.join(self.root, fname)
++            try:
++                with open(p) as f:
++                    rec = json.load(f)
++                if now - rec["t"] > self.ttl:
++                    os.remove(p)
++            except (json.JSONDecodeError, OSError):
++                os.remove(p)

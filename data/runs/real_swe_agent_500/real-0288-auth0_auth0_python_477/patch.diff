@@ -1,0 +1,16 @@
+
+diff --git a/auth0/management/branding.py b/auth0/management/branding.py
+index 38084a9..c66f47d 100644
+--- a/auth0/management/branding.py
++++ b/auth0/management/branding.py
+@@ -93,3 +93,10 @@ class Branding:
+             self._url("templates", "universal-login"),
+             body={"template": body},
+         )
++
++    def get_branding_theme(self, theme_name):
++        """ Retrieves a specific branding theme. Requires "read:branding" scope.
++
++        See: https://auth0.com/docs/api/management/v2#!/Branding/get_branding_theme
++        """
++        return self.client.get(self._url("themes", theme_name))

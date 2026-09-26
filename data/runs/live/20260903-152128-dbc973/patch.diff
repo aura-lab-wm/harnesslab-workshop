@@ -1,0 +1,44 @@
+--- a/cfg/loader.py
++++ b/cfg/loader.py
+@@ -2,4 +2,41 @@
+     """Return a copy of `defaults` where any env var APP_<KEY> overrides the
+     value for key <key> (lowercased), coerced to the type of the default."""
+     cfg = dict(defaults)
++    for k, v in env.items():
++        if not k.startswith("APP_"):
++            continue
++        key = k[len("APP_"):].lower()
++        if key not in defaults:
++            continue
++        default_val = defaults[key]
++        target_type = type(default_val)
++        # coerce v (which may be non-str) to target_type
++        try:
++            if target_type is bool:
++                # accept several truthy/falsey strings
++                if isinstance(v, str):
++                    vl = v.strip().lower()
++                    if vl in ("1", "true", "yes", "y", "t"): 
++                        coerced = True
++                    elif vl in ("0", "false", "no", "n", "f"): 
++                        coerced = False
++                    else:
++                        # fallback: truthiness of string
++                        coerced = bool(vl)
++                else:
++                    coerced = bool(v)
++            elif target_type is int:
++                coerced = int(v)
++            elif target_type is float:
++                coerced = float(v)
++            elif target_type is str:
++                coerced = str(v)
++            else:
++                # unknown type: attempt to call the type on the value
++                coerced = target_type(v)
++        except Exception:
++            # if coercion fails, skip override
++            continue
++        cfg[key] = coerced
+     return cfg
++

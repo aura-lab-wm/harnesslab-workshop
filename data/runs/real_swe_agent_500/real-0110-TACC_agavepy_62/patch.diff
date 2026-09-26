@@ -1,0 +1,61 @@
+
+diff --git a/convert_config.py b/convert_config.py
+new file mode 100644
+index 0000000..1e1506d
+--- /dev/null
++++ b/convert_config.py
+@@ -0,0 +1,35 @@
++import json
++
++# Read the old configuration file
++with open("config.json", "r") as f:
++    old_config = json.load(f)
++
++# Convert the configuration to the new format
++new_config = {
++    "current": {
++        "client-1": old_config["current"]
++    },
++    "sessions": {
++        "sd2e": {
++            "admin": {
++                "client-1": old_config["sessions"]["sd2e"]["admin"],
++                "client-2": old_config["sessions"]["sd2e"]["admin"]
++            },
++            "user1": {
++                "client-1": old_config["sessions"]["sd2e"]["user1"],
++                "client-2": old_config["sessions"]["sd2e"]["user1"]
++            }
++        },
++        "tacc": {
++            "admin": {
++                "client-1": old_config["sessions"]["tacc"]["admin"]
++            }
++        }
++    }
++}
++
++# Write the new configuration file
++with open("config.json", "w") as f:
++    json.dump(new_config, f, indent=4)
++
++print("Configuration converted successfully.")
+diff --git a/test_save_config.py b/test_save_config.py
+new file mode 100644
+index 0000000..bc8ed9a
+--- /dev/null
++++ b/test_save_config.py
+@@ -0,0 +1,13 @@
++from agavepy.utils import save_config
++
++# Create a minimal configuration context
++current_context = {
++    "tenantid": "sd2e",
++    "username": "user1",
++    "access_token": "some-token"
++}
++
++# Call the save_config function
++save_config("~/.agave", current_context)
++
++print("Test completed successfully, no errors.")

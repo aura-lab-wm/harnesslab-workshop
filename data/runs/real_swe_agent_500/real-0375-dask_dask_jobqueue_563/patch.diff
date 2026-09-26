@@ -1,0 +1,21 @@
+
+diff --git a/dask_jobqueue/htcondor.py b/dask_jobqueue/htcondor.py
+index fb7b0be..64c67ff 100644
+--- a/dask_jobqueue/htcondor.py
++++ b/dask_jobqueue/htcondor.py
+@@ -120,7 +120,14 @@ Queue
+ 
+     def env_lines_to_dict(self, env_lines):
+         """Convert an array of export statements (what we get from env-extra
+-        in the config) into a dict"""
++        in the config) into a dict
++        
++        Notes
++        -----
++        Each entry in env_lines should be a string of the form 'key=value' 
++        where key is an environment variable name and value is its value. 
++        These will be inserted into dask-worker's environment.
++        """
+         env_dict = {}
+         for env_line in env_lines:
+             split_env_line = shlex.split(env_line)

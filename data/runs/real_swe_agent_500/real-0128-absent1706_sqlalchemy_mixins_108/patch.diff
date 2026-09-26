@@ -1,0 +1,75 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..7896561
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,68 @@
++from sqlalchemy import Column, Integer
++from sqlalchemy_mixins import AllFeaturesMixin
++from sqlalchemy.orm import Session
++
++class BaseClass(AllFeaturesMixin):
++    __tablename__ = 'base_class'
++
++    id = Column(Integer, primary_key=True)
++
++class MyBaseClass(BaseClass):
++    __abstract__ = True
++
++
++class MyClass(MyBaseClass):
++    pass
++import sqlite3
++import os
++import sqlite3
++import os
++
++import sqlite3
++import os
++
++import sqlite3
++import os
++
++import sqlite3
++import os
++
++import sqlite3
++import os
++
++import sqlite3
++import os
++
++import sqlite3
++import os
++
++import sqlite3
++import os
++
++import sqlite3
++import os
++
++import sqlite3
++import os
++
++import sqlite3
++import os
++
++import sqlite3
++import os
++
++import sqlite3
++import os
++
++connection_string = 'sqlite:///test.db'
++connection = sqlite3.connect(connection_string)
++try:
++    if not os.path.exists('test.db'):
++        cursor = connection.cursor()
++        cursor.execute('CREATE TABLE base_class (id INTEGER PRIMARY KEY)')
++        connection.commit()
++        print("Database file created successfully.")
++    else:
++        print("Database file already exists.")
++except sqlite3.OperationalError as e:
++    print(f"Error: {e}")

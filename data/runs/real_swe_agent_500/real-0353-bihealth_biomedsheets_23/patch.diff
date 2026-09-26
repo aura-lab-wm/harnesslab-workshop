@@ -1,0 +1,19 @@
+
+diff --git a/biomedsheets/io_tsv/germline.py b/biomedsheets/io_tsv/germline.py
+index 2214d46..87da52d 100644
+--- a/biomedsheets/io_tsv/germline.py
++++ b/biomedsheets/io_tsv/germline.py
+@@ -110,11 +110,9 @@ class GermlineTSVReader(BaseTSVReader):
+             raise GermlineTSVSheetException(
+                 'Hyphen not allowed in patientName column')  # pragma: no cover
+         if mapping['fatherName'] and '-' in mapping['fatherName']:
+-            raise GermlineTSVSheetException(
+-                'Hyphen not allowed in fatherName column')  # pragma: no cover
++            raise GermlineTSVSheetException('Hyphen not allowed in fatherName column')
+         if mapping['motherName'] and '-' in mapping['motherName']:
+-            raise GermlineTSVSheetException(
+-                'Hyphen not allowed in motherName column')  # pragma: no cover
++            raise GermlineTSVSheetException('Hyphen not allowed in motherName column')
+         # Check "libraryType" field
+         if mapping['libraryType'] and (
+                 mapping['libraryType'] not in LIBRARY_TYPES):

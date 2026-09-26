@@ -1,0 +1,40 @@
+
+diff --git a/igseq/vdj.py b/igseq/vdj.py
+index e6ac153..7f14425 100644
+--- a/igseq/vdj.py
++++ b/igseq/vdj.py
+@@ -42,6 +42,9 @@ def parse_vdj_paths(ref_paths):
+             attrs["type"] = "file"
+             if "segment" not in attrs:
+                 raise ValueError("couldn't determine segment for file: %s" % path)
++            # Check if the path has already been processed
++            if any(attrs["path"] == x["path"] for x in attrs_list):
++                continue
+             attrs_list.append(attrs)
+         # second priority: actual directory name
+         elif path.is_dir():
+@@ -52,6 +55,9 @@ def parse_vdj_paths(ref_paths):
+                     if "segment" not in attrs:
+                         raise ValueError("couldn't determine segment for file: %s" % path)
+                     attrs["type"] = "dir"
++                    # Check if the path has already been processed
++                    if any(attrs["path"] == x["path"] for x in attrs_list):
++                        continue
+                     attrs_list.append(attrs)
+         # third priority: internal reference
+         elif internal_matches:
+@@ -64,10 +70,14 @@ def parse_vdj_paths(ref_paths):
+                 parents = [parent.name for parent in fasta_rel.parents if parent.name]
+                 attrs["species"] = parents[-1]
+                 attrs["ref"] = parents[-2]
++                # Check if the path has already been processed
++                if any(attrs["path"] == x["path"] for x in attrs_list):
++                    continue
+                 attrs_list.append(attrs)
+         else:
+             raise util.IgSeqError("ref path not recognized: %s" % entry)
+     return attrs_list
++    return attrs_list
+ 
+ def get_internal_vdj(name):
+     """Get list of builtin germline FASTA files matching a path fragment."""

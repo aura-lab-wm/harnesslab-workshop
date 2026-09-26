@@ -1,0 +1,89 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..e600394
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,10 @@
++import ulid
++
++# Example ULID with non-Crockford's Base32 letters
++ulid_str = '01BX73KC0TNH409RTFD1JXKmO0'
++
++# Parse the ULID
++u = ulid.from_str(ulid_str)
++
++# Print the parsed ULID
++print(u.str)
+diff --git a/ulid/base32.py b/ulid/base32.py
+index 83f8a8a..72aa215 100644
+--- a/ulid/base32.py
++++ b/ulid/base32.py
+@@ -252,13 +252,62 @@ def decode_ulid(value: str) -> bytes:
+     if length != 26:
+         raise ValueError('Expects 26 characters for timestamp + randomness; got {}'.format(length))
+ 
+-    try:
+-        encoded = value.encode('ascii')
+-    except UnicodeEncodeError as ex:
+-        raise ValueError('Expects value that can be encoded in ASCII charset: {}'.format(ex))
+-
++    # Convert the string to ASCII bytes
++    encoded = value.encode('ascii')
++
++    # Perform the necessary conversions
++    for i in range(len(encoded)):
++        if encoded[i] in b'lL':
++            encoded[i] = b'1'
++        elif encoded[i] in b'oO':
++            encoded[i] = b'0'
++        elif encoded[i] in b'iI':
++            encoded[i] = b'1'
++        else:
++            encoded[i] = chr(encoded[i]).upper()
++
++    # Decode the converted bytes
+     decoding = DECODING
++    return bytes((
++        ((decoding[encoded[0]] << 5) | decoding[encoded[1]]) & 0xFF,
++        ((decoding[encoded[2]] << 3) | (decoding[encoded[3]] >> 2)) & 0xFF,
++        ((decoding[encoded[3]] << 6) | (decoding[encoded[4]] << 1) | (decoding[encoded[5]] >> 4)) & 0xFF,
++        ((decoding[encoded[5]] << 4) | (decoding[encoded[6]] >> 1)) & 0xFF,
++        ((decoding[encoded[6]] << 7) | (decoding[encoded[7]] << 2) | (decoding[encoded[8]] >> 3)) & 0xFF,
++        ((decoding[encoded[8]] << 5) | (decoding[encoded[9]])) & 0xFF,
++        ((decoding[encoded[10]] << 3) | (decoding[encoded[11]] >> 2)) & 0xFF,
++        ((decoding[encoded[11]] << 6) | (decoding[encoded[12]] << 1) | (decoding[encoded[13]] >> 4)) & 0xFF,
++        ((decoding[encoded[13]] << 4) | (decoding[encoded[14]] >> 1)) & 0xFF,
++        ((decoding[encoded[14]] << 7) | (decoding[encoded[15]] << 2) | (decoding[encoded[16]] >> 3)) & 0xFF,
++        ((decoding[encoded[16]] << 5) | (decoding[encoded[17]])) & 0xFF,
++        ((decoding[encoded[18]] << 3) | (decoding[encoded[19]] >> 2)) & 0xFF,
++        ((decoding[encoded[19]] << 6) | (decoding[encoded[20]] << 1) | (decoding[encoded[21]] >> 4)) & 0xFF,
++        ((decoding[encoded[21]] << 4) | (decoding[encoded[22]] >> 1)) & 0xFF,
++        ((decoding[encoded[22]] << 7) | (decoding[encoded[23]] << 2) | (decoding[encoded[24]] >> 3)) & 0xFF,
++        ((decoding[encoded[24]] << 5) | (decoding[encoded[25]])) & 0xFF
++    ))
+ 
++    # Decode the converted bytes
++    decoding = DECODING
++    return bytes((
++        ((decoding[encoded[0]] << 5) | decoding[encoded[1]]) & 0xFF,
++        ((decoding[encoded[2]] << 3) | (decoding[encoded[3]] >> 2)) & 0xFF,
++        ((decoding[encoded[3]] << 6) | (decoding[encoded[4]] << 1) | (decoding[encoded[5]] >> 4)) & 0xFF,
++        ((decoding[encoded[5]] << 4) | (decoding[encoded[6]] >> 1)) & 0xFF,
++        ((decoding[encoded[6]] << 7) | (decoding[encoded[7]] << 2) | (decoding[encoded[8]] >> 3)) & 0xFF,
++        ((decoding[encoded[8]] << 5) | (decoding[encoded[9]])) & 0xFF,
++        ((decoding[encoded[10]] << 3) | (decoding[encoded[11]] >> 2)) & 0xFF,
++        ((decoding[encoded[11]] << 6) | (decoding[encoded[12]] << 1) | (decoding[encoded[13]] >> 4)) & 0xFF,
++        ((decoding[encoded[13]] << 4) | (decoding[encoded[14]] >> 1)) & 0xFF,
++        ((decoding[encoded[14]] << 7) | (decoding[encoded[15]] << 2) | (decoding[encoded[16]] >> 3)) & 0xFF,
++        ((decoding[encoded[16]] << 5) | (decoding[encoded[17]])) & 0xFF,
++        ((decoding[encoded[18]] << 3) | (decoding[encoded[19]] >> 2)) & 0xFF,
++        ((decoding[encoded[19]] << 6) | (decoding[encoded[20]] << 1) | (decoding[encoded[21]] >> 4)) & 0xFF,
++        ((decoding[encoded[21]] << 4) | (decoding[encoded[22]] >> 1)) & 0xFF,
++        ((decoding[encoded[22]] << 7) | (decoding[encoded[23]] << 2) | (decoding[encoded[24]] >> 3)) & 0xFF,
++        ((decoding[encoded[24]] << 5) | (decoding[encoded[25]])) & 0xFF
++    ))
++    decoding = DECODING
+     return bytes((
+         ((decoding[encoded[0]] << 5) | decoding[encoded[1]]) & 0xFF,
+         ((decoding[encoded[2]] << 3) | (decoding[encoded[3]] >> 2)) & 0xFF,

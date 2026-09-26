@@ -1,0 +1,108 @@
+[
+ {
+  "role": "system",
+  "content": "You are an autonomous software engineer working inside a small Python repository.\nYou are given a GitHub issue. Resolve it by editing files with the tools provided.\nWork step by step: inspect the relevant code, make a minimal change, verify it, then call `submit`.\nDo not modify the tests. Do not run commands unrelated to the task."
+ },
+ {
+  "role": "user",
+  "content": "Task id: t02_intervals\n\n# Issue #7: touching intervals are not merged\n\n`merge_intervals([(1, 3), (3, 5)])` returns `[(1, 3), (3, 5)]` but the documented\nbehaviour is that closed intervals sharing an endpoint merge into `[(1, 5)]`.\nUnsorted input must also be handled. Fix `ranges/merge.py`.\n\n\nRepository files:\nranges/__init__.py\nranges/merge.py\ntests/test_merge.py"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "chatcmpl-tool-8c9e7cca2a008ca4",
+    "name": "read_file",
+    "arguments": {
+     "path": "ranges/merge.py"
+    }
+   },
+   {
+    "id": "chatcmpl-tool-ac947cee8aed04d9",
+    "name": "read_file",
+    "arguments": {
+     "path": "tests/test_merge.py"
+    }
+   },
+   {
+    "id": "chatcmpl-tool-93946b3c671f0409",
+    "name": "read_file",
+    "arguments": {
+     "path": "ranges/__init__.py"
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "chatcmpl-tool-8c9e7cca2a008ca4",
+  "content": "   1| def merge_intervals(intervals):\n   2|     \"\"\"Merge a list of closed integer intervals (start, end).\n   3|     Touching intervals, e.g. (1,3) and (3,5), merge into (1,5).\n   4|     Input may be unsorted. Returns a sorted list of tuples.\"\"\"\n   5|     if not intervals:\n   6|         return []\n   7|     merged = [tuple(intervals[0])]\n   8|     for start, end in intervals[1:]:\n   9|         last_start, last_end = merged[-1]\n  10|         if start < last_end:\n  11|             merged[-1] = (last_start, max(last_end, end))\n  12|         else:\n  13|             merged.append((start, end))\n  14|     return merged"
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "chatcmpl-tool-ac947cee8aed04d9",
+  "content": "   1| import unittest\n   2| from ranges import merge_intervals\n   3| \n   4| class TestMerge(unittest.TestCase):\n   5|     def test_overlap(self):\n   6|         self.assertEqual(merge_intervals([(1, 4), (2, 6)]), [(1, 6)])\n   7|     def test_touching(self):\n   8|         self.assertEqual(merge_intervals([(1, 3), (3, 5)]), [(1, 5)])\n   9| \n  10| if __name__ == \"__main__\":\n  11|     unittest.main()"
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "chatcmpl-tool-93946b3c671f0409",
+  "content": "   1| from .merge import merge_intervals"
+ },
+ {
+  "role": "assistant",
+  "content": "\n\nThe bug is clear: the merge condition uses `start < last_end` (strict overlap only), so touching intervals aren't merged, and the input is never sorted. Fixing both:\n\n",
+  "tool_calls": [
+   {
+    "id": "chatcmpl-tool-8354bd1f2eadd932",
+    "name": "edit_file",
+    "arguments": {
+     "path": "ranges/merge.py",
+     "old": "    if not intervals:\n        return []\n    merged = [tuple(intervals[0])]\n    for start, end in intervals[1:]:\n        last_start, last_end = merged[-1]\n        if start < last_end:",
+     "new": "    if not intervals:\n        return []\n    sorted_intervals = sorted(intervals)\n    merged = [tuple(sorted_intervals[0])]\n    for start, end in sorted_intervals[1:]:\n        last_start, last_end = merged[-1]\n        if start <= last_end:"
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "chatcmpl-tool-8354bd1f2eadd932",
+  "content": "edited ranges/merge.py"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "chatcmpl-tool-adc1d248ec3bf754",
+    "name": "read_file",
+    "arguments": {
+     "path": "ranges/merge.py"
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "chatcmpl-tool-adc1d248ec3bf754",
+  "content": "   1| def merge_intervals(intervals):\n   2|     \"\"\"Merge a list of closed integer intervals (start, end).\n   3|     Touching intervals, e.g. (1,3) and (3,5), merge into (1,5).\n   4|     Input may be unsorted. Returns a sorted list of tuples.\"\"\"\n   5|     if not intervals:\n   6|         return []\n   7|     sorted_intervals = sorted(intervals)\n   8|     merged = [tuple(sorted_intervals[0])]\n   9|     for start, end in sorted_intervals[1:]:\n  10|         last_start, last_end = merged[-1]\n  11|         if start <= last_end:\n  12|             merged[-1] = (last_start, max(last_end, end))\n  13|         else:\n  14|             merged.append((start, end))\n  15|     return merged"
+ },
+ {
+  "role": "assistant",
+  "content": "\n\nThe fix is verified by inspection:\n\n- **Touching intervals**: `start <= last_end` (was `start < last_end`) now merges `(1,3)` and `(3,5)` into `(1,5)`.\n- **Unsorted input**: `sorted(intervals)` ensures the sweep works regardless of input order, and the result is returned sorted.\n- **Existing behavior preserved**: overlapping intervals still merge (e.g., `(1,4),(2,6)` → `(1,6)`), nested intervals are absorbed via `max(last_end, end)`, and empty input returns `[]`.\n\n",
+  "tool_calls": [
+   {
+    "id": "chatcmpl-tool-b6075173174661bb",
+    "name": "submit",
+    "arguments": {
+     "summary": "Fixed ranges/merge.py: changed the merge condition from `start < last_end` to `start <= last_end` so closed intervals sharing an endpoint (e.g., (1,3) and (3,5)) merge into (1,5), and added `sorted(intervals)` before the sweep so unsorted input is handled and the result is returned sorted."
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "chatcmpl-tool-b6075173174661bb",
+  "content": "submitted"
+ }
+]

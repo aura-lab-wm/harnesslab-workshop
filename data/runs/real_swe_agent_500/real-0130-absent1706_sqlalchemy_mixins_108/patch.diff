@@ -1,0 +1,21 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..5e75482
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,14 @@
++class AllFeaturesMixin:
++    pass
++
++class Base:
++    pass
++
++class AnotherBaseClass(Base, AllFeaturesMixin):
++    __abstract__ = True
++
++class MyBaseClass(AnotherBaseClass):
++    __abstract__ = True
++
++class MyClass(MyBaseClass):
++    print("Script completed successfully, no errors.")

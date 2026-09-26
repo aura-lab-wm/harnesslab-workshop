@@ -1,0 +1,42 @@
+
+diff --git a/delphin/tdl.py b/delphin/tdl.py
+index ec330f4..635086f 100644
+--- a/delphin/tdl.py
++++ b/delphin/tdl.py
+@@ -1359,6 +1359,8 @@ def format(obj, indent=0):
+         non-mod-lex-item := lex-item &
+           [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
+     """
++    LINE_COMMENT = "LineComment"
++    BLOCK_COMMENT = "BlockComment"
+     if isinstance(obj, TypeDefinition):
+         return _format_typedef(obj, indent)
+     elif isinstance(obj, Conjunction):
+@@ -1369,8 +1371,10 @@ def format(obj, indent=0):
+         return _format_morphset(obj, indent)
+     elif isinstance(obj, _Environment):
+         return _format_environment(obj, indent)
+-    elif isinstance(obj, FileInclude):
+-        return _format_include(obj, indent)
++    elif isinstance(obj, LINE_COMMENT):
++        return _format_comment(obj, indent)
++    elif isinstance(obj, BLOCK_COMMENT):
++        return _format_comment(obj, indent)
+     else:
+         raise ValueError(f'cannot format object as TDL: {obj!r}')
+ 
+@@ -1414,7 +1418,13 @@ def _format_regex(term, indent):
+ def _format_coref(term, indent):
+     return f'#{term!s}'
+ 
+-
++def _format_comment(event, indent):
++    if event.type == 'LineComment':
++        return f'// {event.text}'
++    elif event.type == 'BlockComment':
++        return f'/* {event.text} */'
++    else:
++        raise ValueError(f'unknown comment type: {event.type}')
+ def _format_avm(avm, indent):
+     lines = []
+     for feat, val in avm.features():

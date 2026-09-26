@@ -1,0 +1,48 @@
+--- a/cfg/loader.py
++++ b/cfg/loader.py
+@@ -1,5 +1,45 @@
++def _coerce_to_type(value: str, target_type):
++    """Coerce the string `value` to target_type (one of int, float, bool, str).
++    If coercion fails, raise ValueError.
++    """
++    if target_type is bool:
++        v = value.strip().lower()
++        if v in ("1", "true", "t", "yes", "y", "on"):
++            return True
++        if v in ("0", "false", "f", "no", "n", "off"):
++            return False
++        raise ValueError(f"Cannot coerce {value!r} to bool")
++    if target_type is int:
++        return int(value)
++    if target_type is float:
++        return float(value)
++    if target_type is str:
++        return value
++    # Fallback: try to call target_type on value
++    return target_type(value)
++
++
+ def load_config(defaults: dict, env: dict) -> dict:
+     """Return a copy of `defaults` where any env var APP_<KEY> overrides the
+     value for key <key> (lowercased), coerced to the type of the default."""
+     cfg = dict(defaults)
++
++    prefix = "APP_"
++    for k, v in env.items():
++        if not k.startswith(prefix):
++            continue
++        key = k[len(prefix):].lower()
++        if key not in cfg:
++            # ignore env keys that don't match a default
++            continue
++        default_value = cfg[key]
++        # Determine target type from default value
++        target_type = type(default_value)
++        try:
++            new_value = _coerce_to_type(v, target_type)
++        except Exception:
++            # If coercion fails, skip the override and keep existing value
++            continue
++        cfg[key] = new_value
++
+     return cfg

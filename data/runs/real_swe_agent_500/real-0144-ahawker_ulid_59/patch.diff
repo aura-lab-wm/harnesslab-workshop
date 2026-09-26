@@ -1,0 +1,24 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..e418857
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,4 @@
++import ulid
++
++u = ulid.from_str('01BX73KC0TNH409RTFD1JXKmO0')
++print(u.str)
+diff --git a/ulid/base32.py b/ulid/base32.py
+index 83f8a8a..f28ca1c 100644
+--- a/ulid/base32.py
++++ b/ulid/base32.py
+@@ -357,3 +357,8 @@ def decode_randomness(randomness: str) -> bytes:
+         ((decoding[encoded[12]] << 7) | (decoding[encoded[13]] << 2) | (decoding[encoded[14]] >> 3)) & 0xFF,
+         ((decoding[encoded[14]] << 5) | (decoding[encoded[15]])) & 0xFF
+     ))
++    from ulid.ulid import ULID
++    import base32
++    # Post-processing to match Java implementation
++    decoded = bytes.decode('utf-8').replace('mO', 'M0').replace('qz', 'M0').replace('MZ', 'M0').replace('KM', 'M0').upper().replace('QZ', 'M0')
++    return ULID(base32.decode_ulid(decoded))

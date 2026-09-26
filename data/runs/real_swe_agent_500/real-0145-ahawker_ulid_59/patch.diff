@@ -1,0 +1,23 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..e418857
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,4 @@
++import ulid
++
++u = ulid.from_str('01BX73KC0TNH409RTFD1JXKmO0')
++print(u.str)
+diff --git a/ulid/base32.py b/ulid/base32.py
+index 83f8a8a..10ad419 100644
+--- a/ulid/base32.py
++++ b/ulid/base32.py
+@@ -259,6 +259,7 @@ def decode_ulid(value: str) -> bytes:
+ 
+     decoding = DECODING
+ 
++    encoded = encoded.replace(b'I', b'1').replace(b'L', b'1').replace(b'O', b'0').replace(b'U', b'0')
+     return bytes((
+         ((decoding[encoded[0]] << 5) | decoding[encoded[1]]) & 0xFF,
+         ((decoding[encoded[2]] << 3) | (decoding[encoded[3]] >> 2)) & 0xFF,

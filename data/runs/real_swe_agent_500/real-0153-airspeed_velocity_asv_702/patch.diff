@@ -1,0 +1,56 @@
+
+diff --git a/asv/commands/profiling.py b/asv/commands/profiling.py
+index afabf6c..28ccc6c 100644
+--- a/asv/commands/profiling.py
++++ b/asv/commands/profiling.py
+@@ -153,31 +153,28 @@ class Profile(Command):
+                 log.error("No environments selected")
+                 return
+ 
+-            if revision is not None:
++            if revision is not None and env_spec!= "existing":
+                 for env in environments:
+                     if not env.can_install_project():
+                         raise util.UserError(
+                             "An explicit revision may not be specified when "
+                             "using an existing environment.")
+-
++            elif env_spec == "existing":
++                env = environments[0]
++                environments = [env]
+             env = environments[0]
+-
+-            if env.python != "{0}.{1}".format(*sys.version_info[:2]):
++            if env.python!= "{0}.{1}".format(*sys.version_info[:2]):
+                 raise util.UserError(
+                     "Profiles must be run in the same version of Python as the "
+                     "asv master process")
+-
+             benchmarks = Benchmarks.discover(conf, repo, environments,
+                                              [commit_hash],
+                                              regex='^{0}$'.format(benchmark))
+-
+             if len(benchmarks) == 0:
+                 raise util.UserError("'{0}' benchmark not found".format(benchmark))
+             elif len(benchmarks) > 1:
+                 raise util.UserError("'{0}' matches more than one benchmark".format(benchmark))
+-
+             benchmark_name, = benchmarks.keys()
+-
+             if not force:
+                 log.info(
+                     "Profile data does not already exist. "
+@@ -185,13 +182,9 @@ class Profile(Command):
+             else:
+                 log.info("Running profiler")
+             with log.indent():
+-                env.install_project(conf, repo, commit_hash)
+-
+                 results = run_benchmarks(
+                     benchmarks, env, show_stderr=True, quick=False, profile=True)
+-
+                 profile_data = results.get_profile(benchmark_name)
+-
+         if gui is not None:
+             log.debug("Opening gui {0}".format(gui))
+             with temp_profile(profile_data) as profile_path:

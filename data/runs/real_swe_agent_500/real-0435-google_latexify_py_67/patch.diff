@@ -1,0 +1,28 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..e93db77
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,8 @@
++import math
++import latexify
++
++@latexify.with_latex
++def solve(a):
++    return a[0]
++
++print(solve)
+diff --git a/src/latexify/frontend.py b/src/latexify/frontend.py
+index 5894b82..71ecb35 100644
+--- a/src/latexify/frontend.py
++++ b/src/latexify/frontend.py
+@@ -91,6 +91,8 @@ class LatexifiedFunction:
+         return self._fn(*args)
+ 
+     def __str__(self):
++        if isinstance(self._str, ast.Subscript):
++            return r"$$ \displaystyle " + self._str.arg.__str__() + "_" + self._str.slice.__str__() + " $$"
+         return self._str
+ 
+     def _repr_latex_(self):

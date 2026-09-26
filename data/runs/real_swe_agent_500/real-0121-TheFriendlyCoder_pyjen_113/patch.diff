@@ -1,0 +1,29 @@
+
+diff --git a/src/pyjen/utils/plugin_api.py b/src/pyjen/utils/plugin_api.py
+index 0c925e2..2c6eb13 100644
+--- a/src/pyjen/utils/plugin_api.py
++++ b/src/pyjen/utils/plugin_api.py
+@@ -42,6 +42,7 @@ def find_plugin(plugin_name):
+ 
+     if not supported_plugins:
+         return None
++    return supported_plugins
+ 
+     if len(supported_plugins) > 1:
+         log.warning("multiple plugins detected for specified Jenkins"
+@@ -52,3 +53,15 @@ def find_plugin(plugin_name):
+ 
+ if __name__ == "__main__":  # pragma: no cover
+     pass
++def get_view_plugins():
++    """Get the plugins that are associated with the View class"""
++    from pyjen.view import View
++    all_plugins = find_plugin()
++    view_plugins = [plugin for plugin in all_plugins if issubclass(plugin, View)]
++    return view_plugins
++def get_job_plugins():
++    """Get the plugins that are associated with the Job class"""
++    from pyjen.job import Job
++    all_plugins = find_plugin()
++    job_plugins = [plugin for plugin in all_plugins if issubclass(plugin, Job)]
++    return job_plugins

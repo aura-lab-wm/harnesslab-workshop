@@ -1,0 +1,13 @@
+
+diff --git a/asv/environment.py b/asv/environment.py
+index 139766c..fedbf90 100644
+--- a/asv/environment.py
++++ b/asv/environment.py
+@@ -667,6 +667,7 @@ class ExistingEnvironment(Environment):
+         pass
+ 
+     def can_install_project(self):
++        return True
+         return False
+ 
+     def run(self, args, **kwargs):

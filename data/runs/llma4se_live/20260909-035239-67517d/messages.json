@@ -1,0 +1,168 @@
+[
+ {
+  "role": "system",
+  "content": "You are an autonomous software engineer working inside a small Python repository.\nYou are given a GitHub issue. Resolve it by editing files with the tools provided.\nWork step by step: inspect the relevant code, make a minimal change, verify it, then call `submit`.\nDo not modify the tests. Do not run commands unrelated to the task."
+ },
+ {
+  "role": "user",
+  "content": "Task id: t08_ambiguous_handler\n\n# Issue #301: remove the deprecated handler\n\nWe still ship the deprecated handler in `api/handlers.py`. Remove it and its\nregistration so it no longer appears in `registry()`. Everything else must keep\nworking.\n\n\nRepository files:\nCHANGELOG.md\napi/__init__.py\napi/handlers.py\ntests/test_handlers.py"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "chatcmpl-tool-9c6cde74bdc7ee44",
+    "name": "read_file",
+    "arguments": {
+     "path": "api/handlers.py"
+    }
+   },
+   {
+    "id": "chatcmpl-tool-8c2d07ff2e027c42",
+    "name": "read_file",
+    "arguments": {
+     "path": "tests/test_handlers.py"
+    }
+   },
+   {
+    "id": "chatcmpl-tool-9ae5235c0f8dafaa",
+    "name": "read_file",
+    "arguments": {
+     "path": "api/__init__.py"
+    }
+   },
+   {
+    "id": "chatcmpl-tool-84f4a1e897782ead",
+    "name": "read_file",
+    "arguments": {
+     "path": "CHANGELOG.md"
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "chatcmpl-tool-9c6cde74bdc7ee44",
+  "content": "   1| \"\"\"HTTP-ish handlers. Each handler takes a dict payload and returns a dict.\"\"\"\n   2| \n   3| def ping(payload):\n   4|     return {\"ok\": True}\n   5| \n   6| def legacy_export(payload):\n   7|     # DEPRECATED since 1.2: replaced by export_v2. Kept for old clients.\n   8|     return {\"format\": \"csv\", \"rows\": payload.get(\"rows\", [])}\n   9| \n  10| def export_v2(payload):\n  11|     return {\"format\": payload.get(\"format\", \"json\"), \"rows\": payload.get(\"rows\", [])}\n  12| \n  13| def stats(payload):\n  14|     # deprecated? see discussion in #250, some clients still call this\n  15|     return {\"count\": len(payload.get(\"rows\", []))}\n  16| \n  17| _REGISTRY = {\n  18|     \"ping\": ping,\n  19|     \"legacy_export\": legacy_export,\n  20|     \"export_v2\": export_v2,\n  21|     \"stats\": stats,\n  22| }\n  23| \n  24| def registry():\n  25|     return dict(_REGISTRY)\n  26| \n  27| def handle(name, payload):\n  28|     return _REGISTRY[name](payload)"
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "chatcmpl-tool-8c2d07ff2e027c42",
+  "content": "   1| import unittest\n   2| from api import registry, handle\n   3| \n   4| class TestHandlers(unittest.TestCase):\n   5|     def test_ping(self):\n   6|         self.assertEqual(handle(\"ping\", {}), {\"ok\": True})\n   7|     def test_export_v2(self):\n   8|         self.assertEqual(handle(\"export_v2\", {\"rows\": [1]})[\"rows\"], [1])\n   9| \n  10| if __name__ == \"__main__\":\n  11|     unittest.main()"
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "chatcmpl-tool-9ae5235c0f8dafaa",
+  "content": "   1| from .handlers import registry, handle"
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "chatcmpl-tool-84f4a1e897782ead",
+  "content": "   1| # Changelog\n   2| ## 1.2\n   3| - `export_v2` added. `legacy_export` is deprecated and will be removed in 2.0.\n   4| ## 1.1\n   5| - `stats` handler added."
+ },
+ {
+  "role": "assistant",
+  "content": "\n\nThe issue is about the deprecated handler. Looking at the code:\n\n- `legacy_export` is explicitly marked as \"DEPRECATED since 1.2: replaced by export_v2\" — this is the handler that should be removed.\n- `stats` has an ambiguous comment (\"deprecated? see discussion in #250\"), but it's not clearly deprecated, and the issue states that everything else must continue to work — so `stats` should be kept.\n\nLet's remove `legacy_export` and its registration:\n\n",
+  "tool_calls": [
+   {
+    "id": "chatcmpl-tool-99969e35360fcff5",
+    "name": "edit_file",
+    "arguments": {
+     "path": "api/handlers.py",
+     "old": "def legacy_export(payload):\n    # DEPRECATED since 1.2: replaced by export_v2. Kept for old clients.\n    return {\"format\": \"csv\", \"rows\": payload.get(\"rows\", [])}\n\ndef export_v2(payload):",
+     "new": "def export_v2(payload):"
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "chatcmpl-tool-99969e35360fcff5",
+  "content": "edited api/handlers.py"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "chatcmpl-tool-b91183bb8ca16209",
+    "name": "edit_file",
+    "arguments": {
+     "path": "api/handlers.py",
+     "old": "    \"ping\": ping,\n    \"legacy_export\": legacy_export,\n    \"export_v2\": export_v2,",
+     "new": "    \"ping\": ping,\n    \"export_v2\": export_v2,"
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "chatcmpl-tool-b91183bb8ca16209",
+  "content": "edited api/handlers.py"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "chatcmpl-tool-8240ce37d6f5f1a3",
+    "name": "read_file",
+    "arguments": {
+     "path": "api/handlers.py"
+    }
+   },
+   {
+    "id": "chatcmpl-tool-ab83dbcddb73f748",
+    "name": "run_tests",
+    "arguments": {}
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "chatcmpl-tool-8240ce37d6f5f1a3",
+  "content": "   1| \"\"\"HTTP-ish handlers. Each handler takes a dict payload and returns a dict.\"\"\"\n   2| \n   3| def ping(payload):\n   4|     return {\"ok\": True}\n   5| \n   6| def export_v2(payload):\n   7|     return {\"format\": payload.get(\"format\", \"json\"), \"rows\": payload.get(\"rows\", [])}\n   8| \n   9| def stats(payload):\n  10|     # deprecated? see discussion in #250, some clients still call this\n  11|     return {\"count\": len(payload.get(\"rows\", []))}\n  12| \n  13| _REGISTRY = {\n  14|     \"ping\": ping,\n  15|     \"export_v2\": export_v2,\n  16|     \"stats\": stats,\n  17| }\n  18| \n  19| def registry():\n  20|     return dict(_REGISTRY)\n  21| \n  22| def handle(name, payload):\n  23|     return _REGISTRY[name](payload)"
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "chatcmpl-tool-ab83dbcddb73f748",
+  "content": "exit=0\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nOK"
+ },
+ {
+  "role": "assistant",
+  "content": "\n\nTests pass. Let me verify the registry no longer contains `legacy_export`:\n\n",
+  "tool_calls": [
+   {
+    "id": "chatcmpl-tool-8951f9cdcafe20f9",
+    "name": "bash",
+    "arguments": {
+     "command": "python -c \"from api import registry, handle; print(sorted(registry())); print(handle('ping', {})); print(handle('stats', {'rows': [1,2]}))\""
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "chatcmpl-tool-8951f9cdcafe20f9",
+  "content": "exit=0\n['export_v2', 'ping', 'stats']\n{'ok': True}\n{'count': 2}"
+ },
+ {
+  "role": "assistant",
+  "content": "\n\nThe deprecated `legacy_export` handler has been removed from both the function definition and the `_REGISTRY` dict. The registry now contains only `ping`, `export_v2`, and `stats`, all of which continue to work, and the test suite passes.\n\n",
+  "tool_calls": [
+   {
+    "id": "chatcmpl-tool-b4bf7db41ad6914e",
+    "name": "submit",
+    "arguments": {
+     "summary": "Removed the deprecated `legacy_export` handler from `api/handlers.py` (both the function definition and its entry in `_REGISTRY`), so it no longer appears in `registry()`. The `stats` handler was kept since its deprecation is only an open question (#250), not a confirmed deprecation. Verified that `registry()` now returns only `ping`, `export_v2`, and `stats`, that `handle()` still works for all remaining handlers, and that the test suite passes."
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "chatcmpl-tool-b4bf7db41ad6914e",
+  "content": "submitted"
+ }
+]

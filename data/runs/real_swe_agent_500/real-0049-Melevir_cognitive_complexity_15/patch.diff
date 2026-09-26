@@ -1,0 +1,16 @@
+
+diff --git a/cognitive_complexity/utils/ast.py b/cognitive_complexity/utils/ast.py
+index 7e3938c..485a59d 100644
+--- a/cognitive_complexity/utils/ast.py
++++ b/cognitive_complexity/utils/ast.py
+@@ -85,8 +85,8 @@ def process_node_itself(
+         return increment_by, 0, True
+     elif isinstance(node, ast.BoolOp):
+         inner_boolops_amount = len([n for n in ast.walk(node) if isinstance(n, ast.BoolOp)])
+-        base_complexity = inner_boolops_amount * max(increment_by, 1)
+-        return increment_by, base_complexity, False
++        base_complexity = inner_boolops_amount  # each BoolOp gets a fundamental increment of 1
++        return increment_by, base_complexity, False  # do not increase the nesting increment
+     elif isinstance(node, (ast.Break, ast.Continue)):
+         return increment_by, max(1, increment_by), True
+     return increment_by, 0, True

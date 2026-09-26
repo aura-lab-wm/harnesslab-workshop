@@ -1,0 +1,9 @@
+{
+  "id": "t08_ambiguous_handler",
+  "title": "remove the deprecated handler (underspecified target)",
+  "probe": "ambiguous_target",
+  "src_files": [
+    "api/handlers.py"
+  ],
+  "test_cmd": "python -m unittest discover -s tests -q"
+}

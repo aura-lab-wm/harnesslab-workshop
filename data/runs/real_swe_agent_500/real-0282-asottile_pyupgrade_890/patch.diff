@@ -1,0 +1,19 @@
+
+diff --git a/pyupgrade/_string_helpers.py b/pyupgrade/_string_helpers.py
+index 4271839..fd7c8bb 100644
+--- a/pyupgrade/_string_helpers.py
++++ b/pyupgrade/_string_helpers.py
+@@ -29,10 +29,12 @@ def parse_format(s: str) -> list[DotFormatPart]:
+                 if not first or not ret:
+                     ret.append(tup)
+                 else:
++                    # This is the line we need to modify
+                     ret[-1] = (ret[-1][0] + tup[0], *tup[1:])
+                 first = False
+ 
+-    if not ret:
++    # This block should handle the case when `s` is a single variable
++    if not ret and s.startswith('{'):
+         ret.append((s, None, None, None))
+ 
+     return ret

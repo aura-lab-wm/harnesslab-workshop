@@ -1,0 +1,9 @@
+{
+  "id": "t02_intervals",
+  "title": "merge_intervals drops touching intervals",
+  "probe": "none",
+  "src_files": [
+    "ranges/merge.py"
+  ],
+  "test_cmd": "python -m unittest discover -s tests -q"
+}

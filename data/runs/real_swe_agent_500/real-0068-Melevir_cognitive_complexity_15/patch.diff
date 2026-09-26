@@ -1,0 +1,22 @@
+
+diff --git a/cognitive_complexity/api.py b/cognitive_complexity/api.py
+index 9a36850..017ca56 100644
+--- a/cognitive_complexity/api.py
++++ b/cognitive_complexity/api.py
+@@ -6,12 +6,11 @@ from cognitive_complexity.utils.ast import (
+ )
+ 
+ 
+-def get_cognitive_complexity(funcdef: AnyFuncdef) -> int:
++def get_cognitive_complexity(module: ast.Module) -> int:
+     complexity = 0
+-    for node in funcdef.body:
+-        complexity += get_cognitive_complexity_for_node(node)
+-    if has_recursive_calls(funcdef):
+-        complexity += 1
++    for node in module.body:
++        if isinstance(node, ast.FunctionDef):
++            complexity += get_cognitive_complexity_for_node(node)
+     return complexity
+ 
+ 

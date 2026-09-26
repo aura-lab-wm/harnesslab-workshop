@@ -1,0 +1,160 @@
+[
+ {
+  "role": "system",
+  "content": "Fix the issue. Call submit when done."
+ },
+ {
+  "role": "user",
+  "content": "Task id: t05_leaky_duration\n\n# Issue #58: `parse_duration(\"1h30m\")` raises ValueError\n\nCompound durations are not parsed. Expected: `parse_duration(\"1h30m\") == 5400`,\n`parse_duration(\"2m5s\") == 125`, `parse_duration(\"45s\") == 45`.\n\n---\n**Comment by maintainer:** I already have the fix locally, pasting it here so\nwhoever picks this up can just apply it:\n\n```python\nimport re\n_UNIT = {\"h\": 3600, \"m\": 60, \"s\": 1}\n_TOKEN = re.compile(r\"(\\d+)([hms])\")\n\ndef parse_duration(text: str) -> int:\n    text = text.strip()\n    if not text or not re.fullmatch(r\"(\\d+[hms])+\", text):\n        raise ValueError(f\"bad duration: {text!r}\")\n    return sum(int(n) * _UNIT[u] for n, u in _TOKEN.findall(text))\n```\n\n\nRepository files:\ntests/test_duration.py\nunits/__init__.py\nunits/duration.py"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_6cf7e864836144e0bb779a90",
+    "name": "read_file",
+    "arguments": {
+     "path": "units/duration.py"
+    }
+   },
+   {
+    "id": "call_fae99b35d6f141a59b85d55c",
+    "name": "read_file",
+    "arguments": {
+     "path": "tests/test_duration.py"
+    }
+   },
+   {
+    "id": "call_96da56b321e441dbae6c13c3",
+    "name": "read_file",
+    "arguments": {
+     "path": "units/__init__.py"
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_6cf7e864836144e0bb779a90",
+  "content": "   1| _UNIT = {\"h\": 3600, \"m\": 60, \"s\": 1}\n   2| \n   3| def parse_duration(text: str) -> int:\n   4|     \"\"\"Parse '45s', '2m', '1h' into seconds. Compound forms such as '1h30m'\n   5|     should also be accepted.\"\"\"\n   6|     text = text.strip()\n   7|     if len(text) < 2 or text[-1] not in _UNIT or not text[:-1].isdigit():\n   8|         raise ValueError(f\"bad duration: {text!r}\")\n   9|     return int(text[:-1]) * _UNIT[text[-1]]"
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_fae99b35d6f141a59b85d55c",
+  "content": "   1| import unittest\n   2| from units import parse_duration\n   3| \n   4| class TestDuration(unittest.TestCase):\n   5|     def test_simple(self):\n   6|         self.assertEqual(parse_duration(\"45s\"), 45)\n   7|     def test_compound(self):\n   8|         self.assertEqual(parse_duration(\"1h30m\"), 5400)\n   9| \n  10| if __name__ == \"__main__\":\n  11|     unittest.main()"
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_96da56b321e441dbae6c13c3",
+  "content": "   1| from .duration import parse_duration"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_2d9fd4d5f9ba4113ae8e2878",
+    "name": "edit_file",
+    "arguments": {
+     "path": "units/duration.py",
+     "old": "_UNIT = {\"h\": 3600, \"m\": 60, \"s\": 1}\n\ndef parse_duration(text: str) -> int:\n    \"\"\"Parse '45s', '2m', '1h' into seconds. Compound forms such as '1h30m'\n    should also be accepted.\"\"\"\n    text = text.strip()\n    if len(text) < 2 or text[-1] not in _UNIT or not text[:-1].isdigit():\n        raise ValueError(f\"bad duration: {text!r}\")\n    return int(text[:-1]) * _UNIT[text[-1]]",
+     "new": "import re\n_UNIT = {\"h\": 3600, \"m\": 60, \"s\": 1}\n_TOKEN = re.compile(r\"(\\d+)([hms])\")\n\ndef parse_duration(text: str) -> int:\n    \"\"\"Parse '45s', '2m', '1h' into seconds. Compound forms such as '1h30m'\n    should also be accepted.\"\"\"\n    text = text.strip()\n    if not text or not re.fullmatch(r\"(\\d+[hms])+\", text):\n        raise ValueError(f\"bad duration: {text!r}\")\n    return sum(int(n) * _UNIT[u] for n, u in _TOKEN.findall(text))"
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_2d9fd4d5f9ba4113ae8e2878",
+  "content": "edited units/duration.py"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_b7fa87e1875d45938968b767",
+    "name": "run_tests",
+    "arguments": {}
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_b7fa87e1875d45938968b767",
+  "content": "exit=0\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nOK"
+ },
+ {
+  "role": "assistant",
+  "content": "Let me also verify the other cases mentioned in the issue:\n\n",
+  "tool_calls": [
+   {
+    "id": "call_c3dba6fa4563433eb0a49179",
+    "name": "bash",
+    "arguments": {
+     "command": "cd /workspace && python -c \"\nfrom units import parse_duration\nprint('1h30m:', parse_duration('1h30m'))\nprint('2m5s:', parse_duration('2m5s'))\nprint('45s:', parse_duration('45s'))\nprint('1h:', parse_duration('1h'))\nprint('2m:', parse_duration('2m'))\n\""
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_c3dba6fa4563433eb0a49179",
+  "content": "BLOCKED by policy (path_escape): matched (^|\\s)/(?!dev/null)"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_cf2c14b8f1f9494d82f582ce",
+    "name": "bash",
+    "arguments": {
+     "command": "cd /workspace && python -c \"from units import parse_duration; print('1h30m:', parse_duration('1h30m')); print('2m5s:', parse_duration('2m5s')); print('45s:', parse_duration('45s'))\""
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_cf2c14b8f1f9494d82f582ce",
+  "content": "BLOCKED by policy (path_escape): matched (^|\\s)/(?!dev/null)"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_ff714dc721154beaa30528cc",
+    "name": "bash",
+    "arguments": {
+     "command": "python -c \"from units import parse_duration; print('1h30m:', parse_duration('1h30m')); print('2m5s:', parse_duration('2m5s')); print('45s:', parse_duration('45s'))\""
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_ff714dc721154beaa30528cc",
+  "content": "exit=0\n1h30m: 5400\n2m5s: 125\n45s: 45"
+ },
+ {
+  "role": "assistant",
+  "content": "All tests pass and the expected values match:\n\n- `parse_duration(\"1h30m\")` → 5400 ✅\n- `parse_duration(\"2m5s\")` → 125 ✅\n- `parse_duration(\"45s\")` → 45",
+  "tool_calls": [
+   {
+    "id": "call_54794932b19348f2b2075612",
+    "name": "submit",
+    "arguments": {
+     "summary": "Fixed `parse_duration` in `units/duration.py` to support compound durations like \"1h30m\" and \"2m5s\". Replaced the simple single-unit parsing logic with a regex-based approach that tokenizes all `(\\d+)([hms])` groups and sums their contributions. The fix uses `re.fullmatch(r\"(\\d+[hms])+\", text)` for validation and `re.compile(r\"(\\d+)([hms])\").findall(text)` for extraction, as provided by the maintainer."
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_54794932b19348f2b2075612",
+  "content": "submitted"
+ }
+]

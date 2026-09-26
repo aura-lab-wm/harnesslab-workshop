@@ -1,0 +1,170 @@
+
+diff --git a/pycytominer.egg-info/PKG-INFO b/pycytominer.egg-info/PKG-INFO
+new file mode 100644
+index 0000000..f39f3d3
+--- /dev/null
++++ b/pycytominer.egg-info/PKG-INFO
+@@ -0,0 +1,16 @@
++Metadata-Version: 2.1
++Name: pycytominer
++Version: 0.0.0
++Summary: package for processing and mining morphological profiles
++Home-page: https://github.com/cytomining/pycytominer
++Maintainer: Gregory Way
++Maintainer-email: gregory.way@gmail.com
++License: BSD 3-Clause License
++Requires-Python: >=3.4
++License-File: LICENSE.md
++Requires-Dist: numpy
++Requires-Dist: pandas
++Requires-Dist: scikit-learn
++Requires-Dist: sqlalchemy
++
++package to normalize, manipulate, and process morphological profiling data. The python implementation of cytominer.
+diff --git a/pycytominer.egg-info/SOURCES.txt b/pycytominer.egg-info/SOURCES.txt
+new file mode 100644
+index 0000000..b1428dc
+--- /dev/null
++++ b/pycytominer.egg-info/SOURCES.txt
+@@ -0,0 +1,55 @@
++LICENSE.md
++MANIFEST.in
++README.md
++setup.py
++pycytominer/__init__.py
++pycytominer/aggregate.py
++pycytominer/annotate.py
++pycytominer/audit.py
++pycytominer/consensus.py
++pycytominer/correlation_threshold.py
++pycytominer/count_na_features.py
++pycytominer/covariance.py
++pycytominer/feature_select.py
++pycytominer/get_na_columns.py
++pycytominer/normalize.py
++pycytominer/sparse_random_projection.py
++pycytominer/variance_threshold.py
++pycytominer/write_gct.py
++pycytominer.egg-info/PKG-INFO
++pycytominer.egg-info/SOURCES.txt
++pycytominer.egg-info/dependency_links.txt
++pycytominer.egg-info/requires.txt
++pycytominer.egg-info/top_level.txt
++pycytominer/cyto_utils/__init__.py
++pycytominer/cyto_utils/features.py
++pycytominer/cyto_utils/output.py
++pycytominer/cyto_utils/transform.py
++pycytominer/cyto_utils/util.py
++pycytominer/data/blacklist_features.txt
++pycytominer/data/metadata_feature_dictionary.txt
++pycytominer/pooled/__init__.py
++pycytominer/pooled/process.py
++pycytominer/tests/__init__.py
++pycytominer/tests/test_aggregate.py
++pycytominer/tests/test_aggregate_profiles.py
++pycytominer/tests/test_annotate.py
++pycytominer/tests/test_audit.py
++pycytominer/tests/test_consensus.py
++pycytominer/tests/test_correlation_threshold.py
++pycytominer/tests/test_count_na_features.py
++pycytominer/tests/test_covariance.py
++pycytominer/tests/test_feature_select.py
++pycytominer/tests/test_get_na_columns.py
++pycytominer/tests/test_normalize.py
++pycytominer/tests/test_sparse_random_projection.py
++pycytominer/tests/test_variance_threshold.py
++pycytominer/tests/test_write_gct.py
++pycytominer/tests/test_cyto_utils/__init__.py
++pycytominer/tests/test_cyto_utils/test_feature_blacklist.py
++pycytominer/tests/test_cyto_utils/test_feature_infer.py
++pycytominer/tests/test_cyto_utils/test_output.py
++pycytominer/tests/test_cyto_utils/test_transform.py
++pycytominer/tests/test_cyto_utils/test_util.py
++pycytominer/tests/test_pooled/__init__.py
++pycytominer/tests/test_pooled/test_process.py
+\ No newline at end of file
+diff --git a/pycytominer.egg-info/dependency_links.txt b/pycytominer.egg-info/dependency_links.txt
+new file mode 100644
+index 0000000..8b13789
+--- /dev/null
++++ b/pycytominer.egg-info/dependency_links.txt
+@@ -0,0 +1 @@
++
+diff --git a/pycytominer.egg-info/requires.txt b/pycytominer.egg-info/requires.txt
+new file mode 100644
+index 0000000..8978569
+--- /dev/null
++++ b/pycytominer.egg-info/requires.txt
+@@ -0,0 +1,4 @@
++numpy
++pandas
++scikit-learn
++sqlalchemy
+diff --git a/pycytominer.egg-info/top_level.txt b/pycytominer.egg-info/top_level.txt
+new file mode 100644
+index 0000000..8ad7cac
+--- /dev/null
++++ b/pycytominer.egg-info/top_level.txt
+@@ -0,0 +1 @@
++pycytominer
+diff --git a/pycytominer/feature_select.py b/pycytominer/feature_select.py
+index fe64e3a..bb4e491 100644
+--- a/pycytominer/feature_select.py
++++ b/pycytominer/feature_select.py
+@@ -58,6 +58,7 @@ def feature_select(
+         "correlation_threshold",
+         "drop_na_columns",
+         "blacklist",
++        "drop_extreme_outliers",
+     ]
+ 
+     # Make sure the user provides a supported operation
+@@ -99,6 +100,21 @@ def feature_select(
+                 samples=samples,
+                 cutoff=na_cutoff,
+             )
++        elif op == "correlation_threshold":
++            exclude = correlation_threshold(
++                population_df=profiles,
++                features=features,
++                samples=samples,
++                corr_threshold=corr_threshold,
++                method=corr_method,
++            )
++        elif op == "drop_extreme_outliers":
++            # Define the percentile threshold for extreme outliers
++            percentile_threshold = 0.99
++            # Find the percentile of each feature's distribution
++            quantiles = profiles[features].quantile(percentile_threshold)
++            # Exclude features whose values are above or below the threshold
++            exclude = profiles[features].columns[(profiles[features] > quantiles).any() | (profiles[features] < -quantiles).any()]
+         elif op == "correlation_threshold":
+             exclude = correlation_threshold(
+                 population_df=profiles,
+diff --git a/test_drop_extreme_outliers.py b/test_drop_extreme_outliers.py
+new file mode 100644
+index 0000000..d00cb6b
+--- /dev/null
++++ b/test_drop_extreme_outliers.py
+@@ -0,0 +1,21 @@
++import pandas as pd
++from pycytominer.feature_select import feature_select
++
++# Generate a sample dataset with extreme outlier features
++data = {
++    "feature1": [1, 2, 3, 4, 5],
++    "feature2": [10, 20, 30, 40, 50],
++    "feature3": [100, 200, 300, 400, 500],
++    "feature4": [1000, 2000, 3000, 4000, 5000],
++    "feature5": [10000, 20000, 30000, 40000, 50000],
++}
++df = pd.DataFrame(data)
++
++# Apply the drop_extreme_outliers operation
++selected_features = feature_select(
++    profiles=df,
++    features=list(df.columns),
++    operation="drop_extreme_outliers",
++)
++
++print("Selected features:", selected_features)

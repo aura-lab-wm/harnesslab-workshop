@@ -1,0 +1,19 @@
+
+diff --git a/dask_jobqueue/htcondor.py b/dask_jobqueue/htcondor.py
+index fb7b0be..0497649 100644
+--- a/dask_jobqueue/htcondor.py
++++ b/dask_jobqueue/htcondor.py
+@@ -241,10 +241,11 @@ class HTCondorCluster(JobQueueCluster):
+         Total amount of disk per job
+     job_extra : dict
+         Extra submit file attributes for the job
+-    submit_command_extra : list of str
+-        Extra arguments to pass to condor_submit
+     cancel_command_extra : list of str
+         Extra arguments to pass to condor_rm
++    env_extra : list of str
++        Extra environment variables to set for the job. Each item in the list should be of the form ``key=value``.
++        Extra arguments to pass to condor_rm
+     {job}
+     {cluster}
+ 

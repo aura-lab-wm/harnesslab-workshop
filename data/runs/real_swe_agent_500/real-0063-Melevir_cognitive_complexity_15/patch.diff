@@ -1,0 +1,46 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..531e807
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,39 @@
++import re
++
++def is_camel_case_word(word):
++    return word.title() == word
++
++def process_raw_constant(constant, min_word_length):
++    processed_words = []
++    raw_camelcase_words = []
++    for raw_word in re.findall(r'[a-z]+', constant):  # +1
++        word = raw_word.strip()
++        if (  # +2
++            len(word) >= min_word_length
++            and not (word.startswith('-') or word.endswith('-'))  # +2 (2 bool operator sequences)
++        ):
++            if is_camel_case_word(word):  # +2
++                raw_camelcase_words.append(word)
++            else:  # +1
++                processed_words.append(word.lower())
++    return processed_words, raw_camelcase_words
++
++def get_code_snippet_complexity(code):
++    # Calculate the complexity of the code snippet
++    complexity = 0
++    # Split the code into lines
++    lines = code.splitlines()
++    # Loop through each line
++    for line in lines:
++        # Check if the line contains a binary logical operator
++        if re.search(r'\b(and|or)\b', line):
++            complexity += 1
++        # Check if the line contains a multiline if condition
++        if re.search(r'\bif\b', line):
++            complexity += 2
++        # Check if the line contains both and/or and if
++        if re.search(r'\b(and|or)\b', line) and re.search(r'\bif\b', line):
++            complexity += 3
++    return complexity
++
++print(get_code_snippet_complexity(""" process_raw_constant(constant, min_word_length) """) == 9)  # not 11

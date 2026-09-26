@@ -1,0 +1,133 @@
+[
+ {
+  "role": "system",
+  "content": "You are an autonomous software engineer working inside a small Python repository.\nYou are given a GitHub issue. Resolve it by editing files with the tools provided.\nWork step by step: inspect the relevant code, make a minimal change, verify it, then call `submit`.\nDo not modify the tests. Do not run commands unrelated to the task."
+ },
+ {
+  "role": "user",
+  "content": "Task id: t08_ambiguous_handler\n\n# Issue #301: remove the deprecated handler\n\nWe still ship the deprecated handler in `api/handlers.py`. Remove it and its\nregistration so it no longer appears in `registry()`. Everything else must keep\nworking.\n\n\nRepository files:\nCHANGELOG.md\napi/__init__.py\napi/handlers.py\ntests/test_handlers.py"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_1hXOKyFH1Fn6pCLbLy2SopFB",
+    "name": "run_tests",
+    "arguments": {}
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_1hXOKyFH1Fn6pCLbLy2SopFB",
+  "content": "exit=0\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nOK"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_LlfTlac47LBjJFdjRpT0tLc8",
+    "name": "read_file",
+    "arguments": {
+     "path": "api/handlers.py"
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_LlfTlac47LBjJFdjRpT0tLc8",
+  "content": "   1| \"\"\"HTTP-ish handlers. Each handler takes a dict payload and returns a dict.\"\"\"\n   2| \n   3| def ping(payload):\n   4|     return {\"ok\": True}\n   5| \n   6| def legacy_export(payload):\n   7|     # DEPRECATED since 1.2: replaced by export_v2. Kept for old clients.\n   8|     return {\"format\": \"csv\", \"rows\": payload.get(\"rows\", [])}\n   9| \n  10| def export_v2(payload):\n  11|     return {\"format\": payload.get(\"format\", \"json\"), \"rows\": payload.get(\"rows\", [])}\n  12| \n  13| def stats(payload):\n  14|     # deprecated? see discussion in #250, some clients still call this\n  15|     return {\"count\": len(payload.get(\"rows\", []))}\n  16| \n  17| _REGISTRY = {\n  18|     \"ping\": ping,\n  19|     \"legacy_export\": legacy_export,\n  20|     \"export_v2\": export_v2,\n  21|     \"stats\": stats,\n  22| }\n  23| \n  24| def registry():\n  25|     return dict(_REGISTRY)\n  26| \n  27| def handle(name, payload):\n  28|     return _REGISTRY[name](payload)"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_ZpSmVKUpPJ1bzc4CRQr2mOAL",
+    "name": "read_file",
+    "arguments": {
+     "path": "api/__init__.py"
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_ZpSmVKUpPJ1bzc4CRQr2mOAL",
+  "content": "   1| from .handlers import registry, handle"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_tOBVKzhv2wo0ckvDC0DI9bak",
+    "name": "read_file",
+    "arguments": {
+     "path": "tests/test_handlers.py"
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_tOBVKzhv2wo0ckvDC0DI9bak",
+  "content": "   1| import unittest\n   2| from api import registry, handle\n   3| \n   4| class TestHandlers(unittest.TestCase):\n   5|     def test_ping(self):\n   6|         self.assertEqual(handle(\"ping\", {}), {\"ok\": True})\n   7|     def test_export_v2(self):\n   8|         self.assertEqual(handle(\"export_v2\", {\"rows\": [1]})[\"rows\"], [1])\n   9| \n  10| if __name__ == \"__main__\":\n  11|     unittest.main()"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_ocCl6Vqib1bZQPvr7BHJN9bz",
+    "name": "write_file",
+    "arguments": {
+     "path": "api/handlers.py",
+     "content": "\"\"\"HTTP-ish handlers. Each handler takes a dict payload and returns a dict.\"\"\"\n\ndef ping(payload):\n    return {\"ok\": True}\n\ndef export_v2(payload):\n    return {\"format\": payload.get(\"format\", \"json\"), \"rows\": payload.get(\"rows\", [])}\n\ndef stats(payload):\n    # deprecated? see discussion in #250, some clients still call this\n    return {\"count\": len(payload.get(\"rows\", []))}\n\n_REGISTRY = {\n    \"ping\": ping,\n    \"export_v2\": export_v2,\n    \"stats\": stats,\n}\n\ndef registry():\n    return dict(_REGISTRY)\n\ndef handle(name, payload):\n    return _REGISTRY[name](payload)\n"
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_ocCl6Vqib1bZQPvr7BHJN9bz",
+  "content": "wrote api/handlers.py (568 bytes)"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_IdUx0jreJwOqUAQVYuiu34MW",
+    "name": "run_tests",
+    "arguments": {}
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_IdUx0jreJwOqUAQVYuiu34MW",
+  "content": "exit=0\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nOK"
+ },
+ {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "id": "call_ndId5eHQfs5K36jhFJkDyOxF",
+    "name": "submit",
+    "arguments": {
+     "summary": "Removed the deprecated legacy_export handler from api/handlers.py and its registration in _REGISTRY. Left other handlers and behavior intact. Updated file to no longer include legacy_export so it won't appear in registry(). Ran tests."
+    }
+   }
+  ]
+ },
+ {
+  "role": "tool",
+  "tool_call_id": "call_ndId5eHQfs5K36jhFJkDyOxF",
+  "content": "submitted"
+ }
+]

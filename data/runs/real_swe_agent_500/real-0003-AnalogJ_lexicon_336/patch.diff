@@ -1,0 +1,31 @@
+
+diff --git a/lexicon/cli.py b/lexicon/cli.py
+index dbef1ae2..81c391e4 100644
+--- a/lexicon/cli.py
++++ b/lexicon/cli.py
+@@ -23,12 +23,19 @@ def generate_table_result(lexicon_logger, output=None, without_header=None):
+                              'be printed with --quiet parameter not enabled.')
+         return None
+ 
+-    array = [[
+-        row.get('id', ''),
+-        row.get('type', ''),
+-        row.get('name', ''),
+-        row.get('content', ''),
+-        row.get('ttl', '')] for row in output]
++    if isinstance(output, str):
++        logger.debug('Output is a string, cannot be used to generate a table.')
++        return []
++    array = [
++        [
++            row.get('id', ''),
++            row.get('type', ''),
++            row.get('name', ''),
++            row.get('content', ''),
++            row.get('ttl', ''),
++        ]
++        for row in output
++    ]
+ 
+     # Insert header (insert before calculating the max width of each column
+     # to take headers size into account)

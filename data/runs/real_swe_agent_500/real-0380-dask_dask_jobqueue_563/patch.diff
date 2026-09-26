@@ -1,0 +1,25 @@
+
+diff --git a/dask_jobqueue/htcondor.py b/dask_jobqueue/htcondor.py
+index fb7b0be..0ad166e 100644
+--- a/dask_jobqueue/htcondor.py
++++ b/dask_jobqueue/htcondor.py
+@@ -62,6 +62,7 @@ Queue
+         else:
+             self.job_extra = job_extra
+ 
++        # Environment variables to be set for the job, specified as key=value pairs
+         env_extra = base_class_kwargs.get("env_extra", None)
+         if env_extra is None:
+             env_extra = dask.config.get(
+diff --git a/docs/source/api.rst b/docs/source/api.rst
+index 2d96305..d5a0db7 100644
+--- a/docs/source/api.rst
++++ b/docs/source/api.rst
+@@ -16,3 +16,7 @@ API
+    PBSCluster
+    SGECluster
+    SLURMCluster
++        # Environment variables to be set for the job, specified as key=value pairs
++        env_extra = base_class_kwargs.get("env_extra", None)
++        if env_extra is None:
++            env_extra = dask.config.get(

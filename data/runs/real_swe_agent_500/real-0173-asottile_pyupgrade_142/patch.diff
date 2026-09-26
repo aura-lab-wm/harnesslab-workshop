@@ -1,0 +1,15 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 2a55816..1120f09 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -41,8 +41,7 @@ def unparse_parsed_string(parsed):
+ 
+     def _convert_tup(tup):
+         ret, field_name, format_spec, conversion = tup
+-        ret = ret.replace(stype('{'), stype('{{'))
+-        ret = ret.replace(stype('}'), stype('}}'))
++        ret = ret.replace(stype('{'), stype('{{')).replace(stype('}'), stype('}}'))  # escape { and } characters
+         if field_name is not None:
+             ret += stype('{') + field_name
+             if conversion:

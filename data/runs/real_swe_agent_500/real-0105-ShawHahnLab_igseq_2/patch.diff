@@ -1,0 +1,75 @@
+
+diff --git a/igseq/vdj.py b/igseq/vdj.py
+index e6ac153..8b2ded6 100644
+--- a/igseq/vdj.py
++++ b/igseq/vdj.py
+@@ -32,30 +32,30 @@ def parse_vdj_paths(ref_paths):
+     if isinstance(ref_paths, (str, PathLike)):
+         ref_paths = [ref_paths]
+     attrs_list = []
++    # Set to store processed paths
++    processed_paths = set()
+     for entry in ref_paths:
+-        internal_matches = get_internal_vdj(entry)
+-        path = Path(entry)
+-        # first priority: actual file name
+-        if path.is_file():
+-            attrs = parse_vdj_filename(path)
++        if entry in processed_paths:
++            continue
++        processed_paths.add(entry)  # Add the path to the set immediately
++        if Path(entry).is_file():
++            attrs = parse_vdj_filename(Path(entry))
+             attrs["input"] = str(entry)
+             attrs["type"] = "file"
+             if "segment" not in attrs:
+-                raise ValueError("couldn't determine segment for file: %s" % path)
++                raise ValueError("couldn't determine segment for file: %s" % entry)
+             attrs_list.append(attrs)
+-        # second priority: actual directory name
+-        elif path.is_dir():
+-            for path2 in sorted(path.glob("*")):
++        elif Path(entry).is_dir():
++            for path2 in sorted(Path(entry).glob("*")):
+                 attrs = parse_vdj_filename(path2)
+                 attrs["input"] = str(entry)
+                 if attrs["fasta"]:
+                     if "segment" not in attrs:
+-                        raise ValueError("couldn't determine segment for file: %s" % path)
++                        raise ValueError("couldn't determine segment for file: %s" % entry)
+                     attrs["type"] = "dir"
+                     attrs_list.append(attrs)
+-        # third priority: internal reference
+-        elif internal_matches:
+-            for fasta in internal_matches:
++        elif get_internal_vdj(entry):
++            for fasta in get_internal_vdj(entry):
+                 fasta_rel = fasta.relative_to(util.DATA / "germ")
+                 attrs = parse_vdj_filename(fasta_rel)
+                 attrs["input"] = str(entry)
+diff --git a/test_vdj_gather.py b/test_vdj_gather.py
+new file mode 100644
+index 0000000..64b58bf
+--- /dev/null
++++ b/test_vdj_gather.py
+@@ -0,0 +1,20 @@
++from igseq.vdj_gather import vdj_gather
++from igseq.vdj import parse_vdj_paths
++
++# Test paths, including duplicates
++test_paths = [
++    "sonarramesh/IGH",
++    "sonarramesh/IGH/IGHD",
++    "sonarramesh/IGK",
++    "sonarramesh/IGH/IGHD"  # Duplicate
++]
++
++# Call vdj_gather with the test paths
++result = vdj_gather(test_paths, "/tmp/test_output")
++
++# Print the results
++print("Result:", result)
++
++# Check for duplicates in the processed paths
++processed_paths = [attrs["input"] for attrs in parse_vdj_paths(test_paths)]
++print("Processed paths:", processed_paths)

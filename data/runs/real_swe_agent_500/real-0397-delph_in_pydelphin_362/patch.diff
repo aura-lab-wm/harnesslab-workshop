@@ -1,0 +1,64 @@
+
+diff --git a/delphin/tdl.py b/delphin/tdl.py
+index ec330f4..1f71885 100644
+--- a/delphin/tdl.py
++++ b/delphin/tdl.py
+@@ -47,7 +47,19 @@ class TDLWarning(PyDelphinWarning):
+ 
+ 
+ # Classes for TDL entities
++class LineComment:
++    def __init__(self, text):
++        self.text = text
+ 
++class BlockComment:
++    def __init__(self, text):
++        self.text = text
++
++def _format_linecomment(line_comment, indent):
++    return f'{line_comment.text}\n'
++
++def _format_blockcomment(block_comment, indent):
++    return f'{block_comment.text}\n'
+ class Term:
+     """
+     Base class for the terms of a TDL conjunction.
+@@ -1371,6 +1383,10 @@ def format(obj, indent=0):
+         return _format_environment(obj, indent)
+     elif isinstance(obj, FileInclude):
+         return _format_include(obj, indent)
++    elif isinstance(obj, LineComment):
++        return _format_linecomment(obj, indent)
++    elif isinstance(obj, BlockComment):
++        return _format_blockcomment(obj, indent)
+     else:
+         raise ValueError(f'cannot format object as TDL: {obj!r}')
+ 
+@@ -1384,6 +1400,8 @@ def _format_term(term, indent):
+         AVM: _format_avm,
+         ConsList: _format_conslist,
+         DiffList: _format_difflist,
++        LineComment: _format_linecomment,
++        BlockComment: _format_blockcomment
+     }.get(term.__class__, None)
+ 
+     if fmt is None:
+diff --git a/newfile.py b/newfile.py
+new file mode 100644
+index 0000000..44e7719
+--- /dev/null
++++ b/newfile.py
+@@ -0,0 +1,13 @@
++class LineComment:
++    def __init__(self, text):
++        self.text = text
++
++class BlockComment:
++    def __init__(self, text):
++        self.text = text
++
++def _format_linecomment(line_comment, indent):
++    return f'{line_comment.text}\n'
++
++def _format_blockcomment(block_comment, indent):
++    return f'{block_comment.text}\n'

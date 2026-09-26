@@ -1,0 +1,33 @@
+
+diff --git a/test_format.py b/test_format.py
+new file mode 100644
+index 0000000..7c6f00b
+--- /dev/null
++++ b/test_format.py
+@@ -0,0 +1,26 @@
++import os
++import tempfile
++from delphin.tdl import iterparse
++
++# Test data
++test_data = '''
++TypeDefinition := [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
++;; This is a line comment
++(* This is a block comment *)
++'''
++
++# Create a temporary file
++with tempfile.TemporaryDirectory() as dir:
++    path = os.path.join(dir, 'tmp.tdl')
++    with open(path, 'w') as fh:
++        print(test_data, file=fh)
++
++    # Parse the test data
++    events = list(iterparse(path))
++
++    # Check the format method for each event
++    for event in events:
++        try:
++            print(event[0], event[1], event[2], event[1].format())
++        except AttributeError as e:
++            print(f'Error: {e}')

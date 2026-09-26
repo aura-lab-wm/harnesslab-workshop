@@ -1,0 +1,44 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..9d84a80
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,37 @@
++import os
++import sys
++
++# Command to run pyupgrade
++pyupgrade_cmd = "% pyupgrade --py3-only --keep-percent-format src/_pytest/fixtures.py"
++
++# Run the command and capture the output
++result = os.popen(pyupgrade_cmd).read()
++
++# Print the output
++print(result)
++
++# Define a function to replicate the issue
++def replicate_issue():
++    # Simulate the pyupgrade behavior
++    tmpl = 'raise {args[1]}.with_traceback({args[2]})'
++    arg_strs = ['*err']
++    rest = ''
++
++    # Check if the list index is valid
++    if len(arg_strs) < 3:
++        print("List index out of range")
++        return
++
++    # Format the string
++    try:
++        src = tmpl.format(args=arg_strs, rest=rest)
++    except IndexError:
++        print("IndexError: list index out of range")
++        return
++
++    # Print the variables
++    print(repr(tmpl), repr(arg_strs), repr(rest))
++    print(src)
++
++# Call the function
++replicate_issue()

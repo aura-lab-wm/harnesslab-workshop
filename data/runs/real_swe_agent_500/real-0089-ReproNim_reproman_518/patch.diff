@@ -1,0 +1,55 @@
+
+diff --git a/job_script.sh b/job_script.sh
+new file mode 100755
+index 0000000..debc2e3
+--- /dev/null
++++ b/job_script.sh
+@@ -0,0 +1,3 @@
++#!/bin/bash
++sleep 2
++echo 'Job completed'
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..4e8df40
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,39 @@
++import subprocess
++import threading
++import time
++
++# Simulate job submission and fetch operations
++with open("job_script.sh", "w") as f:
++    f.write("#!/bin/bash\n")
++    f.write("sleep 2\n")
++    f.write("echo 'Job completed'\n")
++
++# Make the script executable
++subprocess.run(["chmod", "+x", "job_script.sh"])
++
++# Submit the job by running the script in a separate thread
++def run_job():
++    try:
++        print("Running job...")
++        result = subprocess.run(
++            ["./job_script.sh"], check=True, text=True, capture_output=True
++        )
++        print("Job completed successfully.")
++    except subprocess.CalledProcessError as e:
++        print("Job failed with exit code:", e.returncode)
++        print("Job stdout:", e.stdout)
++        print("Job stderr:", e.stderr)
++        return e.returncode
++    return result.returncode
++
++thread = threading.Thread(target=run_job)
++thread.start()
++
++# Wait for the job to complete
++time.sleep(3)
++
++# Fetch the job output
++exit_code = thread.join()
++print("Job output fetched successfully.")
++print("Script completed successfully, no errors.")
++exit(exit_code)

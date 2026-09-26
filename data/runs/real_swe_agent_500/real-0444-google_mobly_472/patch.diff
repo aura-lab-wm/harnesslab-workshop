@@ -1,0 +1,22 @@
+
+diff --git a/mobly/config_parser.py b/mobly/config_parser.py
+index aa43c03..c0a282d 100644
+--- a/mobly/config_parser.py
++++ b/mobly/config_parser.py
+@@ -1,4 +1,4 @@
+-# Copyright 2016 Google Inc.
++from mobly import logger
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+@@ -152,9 +152,9 @@ def _load_config_file(path):
+     """
+     with io.open(utils.abs_path(path), 'r', encoding='utf-8') as f:
+         conf = yaml.load(f)
++        logger.debug("Configuration file loaded: %s", conf)
+         return conf
+ 
+-
+ class TestRunConfig(object):
+     """The data class that holds all the information needed for a test run.
+ 

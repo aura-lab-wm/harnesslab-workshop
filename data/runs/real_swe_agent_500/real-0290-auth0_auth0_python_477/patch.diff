@@ -1,0 +1,19 @@
+
+diff --git a/auth0/management/branding.py b/auth0/management/branding.py
+index 38084a9..5fbe57c 100644
+--- a/auth0/management/branding.py
++++ b/auth0/management/branding.py
+@@ -45,7 +45,12 @@ class Branding:
+                 url = f"{url}/{p}"
+         return url
+ 
+-    def get(self, aud=None):
++    def get_default_branding_theme(self):
++        """Get the default branding theme. Requires "read:branding" scope.
++
++        See: https://auth0.com/docs/api/management/v2#!/Branding/get_default_branding_theme
++        """
++        return self.client.get(self._url("themes", "default"))
+         """Retrieve branding settings. Requires "read:branding" scope.
+ 
+         See: https://auth0.com/docs/api/management/v2#!/Branding/get_branding

@@ -1,0 +1,21 @@
+--- a/limiter/bucket.py
++++ b/limiter/bucket.py
+@@ -1,8 +1,7 @@
+ import time
+ 
+ class TokenBucket:
+-    """Classic token bucket. `rate` tokens are added per second up to `capacity`.
+-    `allow()` consumes one token and returns True, or returns False if empty."""
++    """Classic token bucket."""
+ 
+     def __init__(self, capacity: int, rate: float, now=time.monotonic):
+         self.capacity = capacity
+@@ -14,7 +13,7 @@
+     def _refill(self):
+         t = self._now()
+         if self._last:
+-            self._tokens += (t - self._last) * self.rate
++            self._tokens = min(float(self.capacity), self._tokens + (t - self._last) * self.rate)
+         self._last = t
+ 
+     def allow(self) -> bool:

@@ -1,0 +1,30 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..8b13789
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1 @@
++
+diff --git a/tests/pyupgrade_test.py b/tests/pyupgrade_test.py
+index fa8edc4..e65d8ab 100644
+--- a/tests/pyupgrade_test.py
++++ b/tests/pyupgrade_test.py
+@@ -1409,7 +1409,7 @@ def test_main_changes_a_file(tmpdir, capsys):
+     f.write('x = set((1, 2, 3))\n')
+     assert main((f.strpath,)) == 1
+     out, _ = capsys.readouterr()
+-    assert out == 'Rewriting {}\n'.format(f.strpath)
++    assert out == f'Rewriting {f.strpath}\n'
+     assert f.read() == 'x = {1, 2, 3}\n'
+ 
+ 
+@@ -1431,7 +1431,7 @@ def test_main_non_utf8_bytes(tmpdir, capsys):
+     f.write_binary('# -*- coding: cp1252 -*-\nx = €\n'.encode('cp1252'))
+     assert main((f.strpath,)) == 1
+     out, _ = capsys.readouterr()
+-    assert out == '{} is non-utf-8 (not supported)\n'.format(f.strpath)
++    assert out == f'{f.strpath} is non-utf-8 (not supported)\n'
+ 
+ 
+ def test_keep_percent_format(tmpdir):

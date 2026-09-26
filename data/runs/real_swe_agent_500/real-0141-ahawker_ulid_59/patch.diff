@@ -1,0 +1,18 @@
+
+diff --git a/ulid/base32.py b/ulid/base32.py
+index 83f8a8a..bb1b961 100644
+--- a/ulid/base32.py
++++ b/ulid/base32.py
+@@ -257,6 +257,12 @@ def decode_ulid(value: str) -> bytes:
+     except UnicodeEncodeError as ex:
+         raise ValueError('Expects value that can be encoded in ASCII charset: {}'.format(ex))
+ 
++    # Custom decoding rules to follow Crockford's Base32 specification
++    encoded = encoded.replace(b'l', b'1')
++    encoded = encoded.replace(b'i', b'1')
++    encoded = encoded.replace(b'o', b'0')
++    encoded = encoded.upper()
++
+     decoding = DECODING
+ 
+     return bytes((

@@ -1,0 +1,34 @@
+
+diff --git a/pypistats/__init__.py b/pypistats/__init__.py
+index 7b097d5..04a29bb 100644
+--- a/pypistats/__init__.py
++++ b/pypistats/__init__.py
+@@ -336,11 +336,13 @@ def python_major(package, version=None, **kwargs):
+     return pypi_stats_api(endpoint, params, **kwargs)
+ 
+ 
+-def python_minor(package, version=None, **kwargs):
++def python_minor(package, version=None, month=None, **kwargs):
+     """Retrieve the aggregate daily download time series by Python minor version
+     number"""
+     endpoint = f"packages/{package}/python_minor"
+     params = _paramify("version", version)
++    if month:
++        params += "&month=" + month
+     return pypi_stats_api(endpoint, params, **kwargs)
+ 
+ 
+diff --git a/pypistats/cli.py b/pypistats/cli.py
+index 092f9b7..7af3319 100644
+--- a/pypistats/cli.py
++++ b/pypistats/cli.py
+@@ -242,6 +242,9 @@ def system(args):  # pragma: no cover
+ def _month(yyyy_mm):
+     """Helper to return start_date and end_date of a month as yyyy-mm-dd"""
+     year, month = map(int, yyyy_mm.split("-"))
++    # Validate month number
++    if month not in range(1, 13):
++        raise ValueError("month must be in 1..12")
+     first = date(year, month, 1)
+     last = date(year, month + 1, 1) - relativedelta(days=1)
+     return str(first), str(last)

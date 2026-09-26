@@ -1,0 +1,33 @@
+--- a/cfg/loader.py
++++ b/cfg/loader.py
+@@ -1,5 +1,28 @@
+ def load_config(defaults: dict, env: dict) -> dict:
+-    """Return a copy of `defaults` where any env var APP_<KEY> overrides the
+-    value for key <key> (lowercased), coerced to the type of the default."""
+     cfg = dict(defaults)
++    for key, value in env.items():
++        if key.startswith("APP_"):
++            config_key = key[4:].lower()
++            if config_key in defaults:
++                default_value = defaults[config_key]
++                if isinstance(default_value, bool):
++                    if isinstance(value, str):
++                        if value.lower() in ["true", "1"]:
++                            cfg[config_key] = True
++                        elif value.lower() in ["false", "0"]:
++                            cfg[config_key] = False
++                    elif isinstance(value, (int, float)):
++                        cfg[config_key] = bool(value)
++                elif isinstance(default_value, int):
++                    try:
++                        cfg[config_key] = int(value)
++                    except (ValueError, TypeError):
++                        pass
++                elif isinstance(default_value, float):
++                    try:
++                        cfg[config_key] = float(value)
++                    except (ValueError, TypeError):
++                        pass
++                elif isinstance(default_value, str):
++                    cfg[config_key] = str(value)
+     return cfg

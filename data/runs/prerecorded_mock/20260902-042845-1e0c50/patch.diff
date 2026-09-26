@@ -1,0 +1,21 @@
+--- a/store/cache.py
++++ b/store/cache.py
+@@ -20,6 +20,16 @@
+         p = self._path(key)
+         if not os.path.exists(p):
+             return default
+-        with open(p) as f:
+-            rec = json.load(f)
++        try:
++            with open(p) as f:
++                rec = json.load(f)
++            stale = self._now() - rec["t"] > self.ttl
++        except (ValueError, KeyError, TypeError):
++            stale = True
++        if stale:
++            try:
++                os.remove(p)
++            except OSError:
++                pass
++            return default
+         return rec["v"]

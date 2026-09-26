@@ -1,0 +1,123 @@
+
+diff --git a/.rpdk-config b/.rpdk-config
+new file mode 100644
+index 0000000..e411460
+--- /dev/null
++++ b/.rpdk-config
+@@ -0,0 +1,21 @@
++{
++    "artifact_type": "HOOK",
++    "typeName": "XXX::XXX::XXX",
++    "language": "python37",
++    "runtime": "python3.7",
++    "entrypoint": "xxx.handlers.hook",
++    "testEntrypoint": "xxx.handlers.hook",
++    "settings": {
++        "version": false,
++        "subparser_name": null,
++        "verbose": 0,
++        "force": false,
++        "type_name": null,
++        "artifact_type": null,
++        "endpoint_url": null,
++        "region": null,
++        "target_schemas": [],
++        "use_docker": false,
++        "protocolVersion": "2.0.0"
++    }
++}
+diff --git a/hook-specification.json b/hook-specification.json
+new file mode 100644
+index 0000000..a362dc0
+--- /dev/null
++++ b/hook-specification.json
+@@ -0,0 +1,17 @@
++{
++    "runtime": "python3.7",
++    "entrypoint": "xxx.handlers.hook",
++    "settings": {
++        "version": false,
++        "subparser_name": null,
++        "verbose": 0,
++        "force": false,
++        "type_name": null,
++        "artifact_type": null,
++        "endpoint_url": null,
++        "region": null,
++        "target_schemas": [],
++        "use_docker": false,
++        "protocolVersion": "2.0.0"
++    }
++}
+diff --git a/hook.json b/hook.json
+new file mode 100644
+index 0000000..a362dc0
+--- /dev/null
++++ b/hook.json
+@@ -0,0 +1,17 @@
++{
++    "runtime": "python3.7",
++    "entrypoint": "xxx.handlers.hook",
++    "settings": {
++        "version": false,
++        "subparser_name": null,
++        "verbose": 0,
++        "force": false,
++        "type_name": null,
++        "artifact_type": null,
++        "endpoint_url": null,
++        "region": null,
++        "target_schemas": [],
++        "use_docker": false,
++        "protocolVersion": "2.0.0"
++    }
++}
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..0da1e36
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,25 @@
++import subprocess
++import sys
++
++# Define the command to simulate 'cfn submit'
++cmd = ["cfn", "submit", "--dry-run"]
++
++# Define the pip dependencies to install
++dependencies = ["requests", "boto3"]
++
++# Attempt to install the dependencies using pip
++for dep in dependencies:
++    try:
++        subprocess.run([sys.executable, "-m", "pip", "install", dep], check=True)
++    except subprocess.CalledProcessError as e:
++        print(f"Error installing {dep}: {e}")
++
++# Run the 'cfn submit' command
++try:
++    result = subprocess.run(cmd, capture_output=True, text=True)
++    print(result.stdout)
++    print(result.stderr)
++except Exception as e:
++    print(f"Error running 'cfn submit': {e}")
++
++print("Script completed successfully, no errors.")
+diff --git a/xxx-xxx-xxx.json b/xxx-xxx-xxx.json
+new file mode 100644
+index 0000000..47d43b3
+--- /dev/null
++++ b/xxx-xxx-xxx.json
+@@ -0,0 +1,12 @@
++{
++    "typeName": "Organization::Service::Hook",
++    "typeConfiguration": {
++        "properties": {},
++        "additionalProperties": false
++    },
++    "entrypoint": "Organization::Service::Hook",
++    "runtime": "python3.7",
++    "settings": {},
++    "description": "Example hook provider",
++    "additionalProperties": false
++}

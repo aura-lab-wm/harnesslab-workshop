@@ -1,0 +1,38 @@
+--- a/store/cache.py
++++ b/store/cache.py
+@@ -7,7 +7,24 @@
+         self.root = root
+         self.ttl = ttl
+         self._now = now
++        self.root = root
++        self.ttl = ttl
++        self._now = now
+         os.makedirs(root, exist_ok=True)
++
++        # Cleanup stale entries
++        for fname in os.listdir(root):
++            if fname.endswith(".json"):
++                p = os.path.join(root, fname)
++                try:
++                    with open(p) as f:
++                        rec = json.load(f)
++                    if self._now() - rec["t"] > self.ttl:
++                        os.remove(p)
++                except (IOError, json.JSONDecodeError):
++                    # Ignore files that are corrupted or cannot be read
++                    os.remove(p)
++
+ 
+     def _path(self, key):
+         return os.path.join(self.root, f"{key}.json")
+@@ -22,4 +39,10 @@
+             return default
+         with open(p) as f:
+             rec = json.load(f)
++        
++        # Check for expired entries and remove them
++        if self._now() - rec["t"] > self.ttl:
++            os.remove(p)
++            return default
++        
+         return rec["v"]

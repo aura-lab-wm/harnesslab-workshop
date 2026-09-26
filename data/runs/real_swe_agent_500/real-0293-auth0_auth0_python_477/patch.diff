@@ -1,0 +1,37 @@
+
+diff --git a/auth0/management/branding.py b/auth0/management/branding.py
+index 38084a9..83e870e 100644
+--- a/auth0/management/branding.py
++++ b/auth0/management/branding.py
+@@ -93,3 +93,31 @@ class Branding:
+             self._url("templates", "universal-login"),
+             body={"template": body},
+         )
++    def get_default_theme(self):
++        """Get the default branding theme. Requires "read:branding" scope.
++
++        See: https://auth0.com/docs/api/management/v2#!/Branding/get_default_branding_theme
++        """
++        
++        return self.client.get(self._url("themes", "default"))
++    def get_theme(self, theme_id):
++        """Get a specific branding theme by its ID. Requires "read:branding" scope.
++
++        Args:
++            theme_id (str): The ID of the branding theme to retrieve.
++        
++        See: https://auth0.com/docs/api/management/v2#!/Branding/get_branding_theme
++        """
++        
++        return self.client.get(self._url("themes", theme_id))
++    def update_theme(self, theme_id, body):
++        """Update a specific branding theme by its ID. Requires "update:branding" scope.
++
++        Args:
++            theme_id (str): The ID of the branding theme to update.
++            body (dict): Attributes for the updated branding theme.
++        
++        See: https://auth0.com/docs/api/management/v2#!/Branding/patch_branding_theme
++        """
++        
++        return self.client.patch(self._url("themes", theme_id), data=body)

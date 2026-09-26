@@ -1,0 +1,14 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 8fe8d11..0064882 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -94,7 +94,7 @@ def ast_parse(contents_text: str) -> ast.Module:
+     # intentionally ignore warnings, we might be fixing warning-ridden syntax
+     with warnings.catch_warnings():
+         warnings.simplefilter('ignore')
+-        return ast.parse(contents_text.encode())
++        return ast.parse(contents_text.encode("utf-8"))
+ 
+ 
+ def inty(s: str) -> bool:

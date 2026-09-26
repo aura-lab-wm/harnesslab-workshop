@@ -1,0 +1,45 @@
+
+diff --git a/credentials.json b/credentials.json
+new file mode 100644
+index 0000000..0afbae8
+--- /dev/null
++++ b/credentials.json
+@@ -0,0 +1,38 @@
++{
++    "current": {
++        "client-1": {
++            "tenant": "tenant1",
++            "user": "user1",
++            "oauth_client": "client-1",
++            "oauth_secret": "secret1"
++        }
++    },
++    "sessions": {
++        "tenant1": {
++            "user1": {
++                "client-1": {
++                    "oauth_client": "client-1",
++                    "oauth_secret": "secret1"
++                },
++                "client-2": {
++                    "oauth_client": "client-2",
++                    "oauth_secret": "secret2"
++                }
++            },
++            "user2": {
++                "client-1": {
++                    "oauth_client": "client-1",
++                    "oauth_secret": "secret3"
++                }
++            }
++        },
++        "tenant2": {
++            "user1": {
++                "client-1": {
++                    "oauth_client": "client-1",
++                    "oauth_secret": "secret4"
++                }
++            }
++        }
++    }
++}

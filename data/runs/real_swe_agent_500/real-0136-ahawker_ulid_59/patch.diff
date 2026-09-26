@@ -1,0 +1,17 @@
+
+diff --git a/ulid/base32.py b/ulid/base32.py
+index 83f8a8a..a993f7f 100644
+--- a/ulid/base32.py
++++ b/ulid/base32.py
+@@ -253,10 +253,9 @@ def decode_ulid(value: str) -> bytes:
+         raise ValueError('Expects 26 characters for timestamp + randomness; got {}'.format(length))
+ 
+     try:
+-        encoded = value.encode('ascii')
++        encoded = value.replace('L', '1').replace('I', '1').replace('O', '0').encode('ascii')
+     except UnicodeEncodeError as ex:
+         raise ValueError('Expects value that can be encoded in ASCII charset: {}'.format(ex))
+-
+     decoding = DECODING
+ 
+     return bytes((

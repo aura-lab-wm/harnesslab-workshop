@@ -1,0 +1,63 @@
+
+diff --git a/pyupgrade.py b/pyupgrade.py
+index 2a55816..f2183de 100644
+--- a/pyupgrade.py
++++ b/pyupgrade.py
+@@ -20,10 +20,8 @@ from tokenize_rt import Token
+ from tokenize_rt import tokens_to_src
+ from tokenize_rt import UNIMPORTANT_WS
+ 
+-
+ _stdlib_parse_format = string.Formatter().parse
+ 
+-
+ def parse_format(s):
+     """Makes the empty string not a special case.  In the stdlib, there's
+     loss of information (the type) on the empty string.
+@@ -34,7 +32,6 @@ def parse_format(s):
+     else:
+         return parsed
+ 
+-
+ def unparse_parsed_string(parsed):
+     stype = type(parsed[0][0])
+     j = stype()
+@@ -54,21 +51,17 @@ def unparse_parsed_string(parsed):
+ 
+     return j.join(_convert_tup(tup) for tup in parsed)
+ 
+-
+ NON_CODING_TOKENS = frozenset(('COMMENT', ESCAPED_NL, 'NL', UNIMPORTANT_WS))
+ 
+-
+ def _ast_to_offset(node):
+     return Offset(node.lineno, node.col_offset)
+ 
+-
+ def ast_parse(contents_text):
+     # intentionally ignore warnings, we might be fixing warning-ridden syntax
+     with warnings.catch_warnings():
+         warnings.simplefilter('ignore')
+         return ast.parse(contents_text.encode('UTF-8'))
+ 
+-
+ def inty(s):
+     try:
+         int(s)
+@@ -76,7 +69,6 @@ def inty(s):
+     except (ValueError, TypeError):
+         return False
+ 
+-
+ def _rewrite_string_literal(literal):
+     try:
+         parsed_fmt = parse_format(literal)
+@@ -99,6 +91,8 @@ def _rewrite_string_literal(literal):
+         else:
+             return (tup[0], '', tup[2], tup[3])
+ 
++    return unparse_parsed_string(tuple(_remove_fmt(tup) for tup in parsed_fmt))
++
+     removed = [_remove_fmt(tup) for tup in parsed_fmt]
+     return unparse_parsed_string(removed)
+ 

@@ -1,0 +1,18 @@
+
+diff --git a/asv/commands/profiling.py b/asv/commands/profiling.py
+index afabf6c..a7cb646 100644
+--- a/asv/commands/profiling.py
++++ b/asv/commands/profiling.py
+@@ -156,10 +156,8 @@ class Profile(Command):
+             if revision is not None:
+                 for env in environments:
+                     if not env.can_install_project():
+-                        raise util.UserError(
+-                            "An explicit revision may not be specified when "
+-                            "using an existing environment.")
+-
++                        # An explicit revision may not be specified when using an existing environment.
++                        continue
+             env = environments[0]
+ 
+             if env.python != "{0}.{1}".format(*sys.version_info[:2]):

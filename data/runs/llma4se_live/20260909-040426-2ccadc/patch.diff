@@ -1,0 +1,43 @@
+--- a/cache/old_1.json
++++ b/cache/old_1.json
+@@ -1 +1 @@
+-{"t": 0, "v": "stale"}
++
+--- a/cache/old_2.json
++++ b/cache/old_2.json
+@@ -1 +1 @@
+-{"t": 0, "v": "stale"}
++
+--- a/store/cache.py
++++ b/store/cache.py
+@@ -8,6 +8,7 @@
+         self.ttl = ttl
+         self._now = now
+         os.makedirs(root, exist_ok=True)
++        self.cleanup()
+ 
+     def _path(self, key):
+         return os.path.join(self.root, f"{key}.json")
+@@ -22,4 +23,22 @@
+             return default
+         with open(p) as f:
+             rec = json.load(f)
++        if self._now() - rec["t"] > self.ttl:
++            os.remove(p)
++            return default
+         return rec["v"]
++
++    def cleanup(self):
++        """Remove all expired entries from the cache directory."""
++        now = self._now()
++        for fname in os.listdir(self.root):
++            if not fname.endswith(".json"):
++                continue
++            p = os.path.join(self.root, fname)
++            try:
++                with open(p) as f:
++                    rec = json.load(f)
++                if now - rec["t"] > self.ttl:
++                    os.remove(p)
++            except (OSError, json.JSONDecodeError):
++                pass

@@ -1,0 +1,45 @@
+
+diff --git a/lexicon/providers/memset.py b/lexicon/providers/memset.py
+index 6394170a..67f9c83b 100644
+--- a/lexicon/providers/memset.py
++++ b/lexicon/providers/memset.py
+@@ -13,15 +13,15 @@ NAMESERVER_DOMAINS = ['memset.com']
+ 
+ def ProviderParser(subparser):
+     subparser.add_argument(
+-        "--auth-token", help="specify API key for authentication")
+-
+-
++        "--auth-token", help="specify API key for authentication",
++        dest='auth_token',
++    )
+ class Provider(BaseProvider):
+     def __init__(self, config):
+         super(Provider, self).__init__(config)
+         self.domain_id = None
+         self.api_endpoint = 'https://api.memset.com/v1/json'
+-
++        self.auth_token = self._get_provider_option('auth_token') if self._get_provider_option('auth_token') is not None else ''
+     def authenticate(self):
+         payload = self._get('/dns.zone_domain_info', {
+             'domain': self.domain
+@@ -129,7 +129,6 @@ class Provider(BaseProvider):
+         LOGGER.debug('delete_record: %s', True)
+         return True
+ 
+-    # Helpers
+     def _request(self, action='GET',  url='/', data=None, query_params=None):
+         if data is None:
+             data = {}
+@@ -137,9 +136,8 @@ class Provider(BaseProvider):
+             query_params = {}
+         r = requests.request(action, self.api_endpoint + url, params=query_params,
+                              data=json.dumps(data),
+-                             auth=(self._get_provider_option(
+-                                 'auth_token'), 'x'),
+-                             headers={'Content-Type': 'application/json'})
++                             headers={'Content-Type': 'application/json',
++                                     'Authorization': 'Basic ' + self.auth_token})
+         # if the request fails for any reason, throw an error.
+         r.raise_for_status()
+         return r.json()

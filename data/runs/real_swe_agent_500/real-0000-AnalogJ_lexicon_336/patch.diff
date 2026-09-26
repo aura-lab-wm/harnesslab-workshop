@@ -1,0 +1,53 @@
+
+diff --git a/lexicon/providers/memset.py b/lexicon/providers/memset.py
+index 6394170a..9c1d3bbe 100644
+--- a/lexicon/providers/memset.py
++++ b/lexicon/providers/memset.py
+@@ -20,11 +20,12 @@ class Provider(BaseProvider):
+     def __init__(self, config):
+         super(Provider, self).__init__(config)
+         self.domain_id = None
++        self.domain = self.config.resolve('lexicon:domain')  # Initialize the domain attribute using the resolve method
+         self.api_endpoint = 'https://api.memset.com/v1/json'
+-
+     def authenticate(self):
+         payload = self._get('/dns.zone_domain_info', {
+-            'domain': self.domain
++            'domain': self.domain,
++            'auth_token': self.config.resolve('lexicon:auth_token')
+         })
+         if not payload['zone_id']:
+             raise Exception('No domain found')
+@@ -137,9 +138,9 @@ class Provider(BaseProvider):
+             query_params = {}
+         r = requests.request(action, self.api_endpoint + url, params=query_params,
+                              data=json.dumps(data),
+-                             auth=(self._get_provider_option(
+-                                 'auth_token'), 'x'),
+-                             headers={'Content-Type': 'application/json'})
++                             auth=(self._get_provider_option('auth_token'), 'x'),
++                             headers={'Content-Type': 'application/json', 'Accept': 'application/json', 'auth-token': self.config.resolve('lexicon:auth_token')}
++                             )
+         # if the request fails for any reason, throw an error.
+         r.raise_for_status()
+         return r.json()
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 00000000..388ca721
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,14 @@
++from lexicon.providers.memset import Provider
++from lexicon.config import ConfigResolver
++import argparse
++
++# Create a config resolver with the required parameters
++config_resolver = ConfigResolver()
++config_resolver.with_env()
++config_resolver.with_args(argparse.Namespace())
++
++# Initialize the provider
++provider = Provider(config_resolver)
++
++# Call the authenticate method
++provider.authenticate()

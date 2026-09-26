@@ -1,0 +1,46 @@
+
+diff --git a/fixtures.py b/fixtures.py
+new file mode 100644
+index 0000000..fea990a
+--- /dev/null
++++ b/fixtures.py
+@@ -0,0 +1,7 @@
++from pyupgrade import main
++from sys import exit
++
++try:
++    exit(main())
++except Exception as e:
++    print(f"Error: {e}")
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..c12b11a
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,7 @@
++from pyupgrade import main
++from sys import exit
++print("Running...")
++try:
++    exit(main())
++except Exception as e:
++    print(f"Error: {e}")
+diff --git a/test_fixtures.py b/test_fixtures.py
+new file mode 100644
+index 0000000..c135b0f
+--- /dev/null
++++ b/test_fixtures.py
+@@ -0,0 +1,13 @@
++from pyupgrade import main
++from sys import exit
++import pytest
++
++print("Running...")
++try:
++    exit(main())
++except Exception as e:
++    print(f"Error: {e}")
++
++@pytest.fixture
++def example_fixture():
++    return 1

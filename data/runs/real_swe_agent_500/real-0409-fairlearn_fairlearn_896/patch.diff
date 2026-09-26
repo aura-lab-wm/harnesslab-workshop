@@ -1,0 +1,170 @@
+
+diff --git a/fairlearn/metrics/_metric_frame.py b/fairlearn/metrics/_metric_frame.py
+index 9826c3d..767ecf7 100644
+--- a/fairlearn/metrics/_metric_frame.py
++++ b/fairlearn/metrics/_metric_frame.py
+@@ -388,21 +388,24 @@ class MetricFrame:
+             The maximum value over sensitive features. The exact type
+             follows the table in :attr:`.MetricFrame.overall`.
+         """
+-        if not self.control_levels:
+-            result = pd.Series(index=self._by_group.columns, dtype='object')
+-            for m in result.index:
+-                max_val = self._by_group[m].max()
+-                result[m] = max_val
+-        else:
+-            result = self._by_group.groupby(level=self.control_levels).max()
++        try:
++            if not self.control_levels:
++                result = pd.Series(index=self._by_group.columns, dtype='object')
++                for m in result.index:
++                    max_val = self._by_group[m].max()
++                    result[m] = max_val
++            else:
++                result = self._by_group.groupby(level=self.control_levels).max()
+ 
+-        if self._user_supplied_callable:
+-            if self.control_levels:
+-                return result.iloc[:, 0]
++            if self._user_supplied_callable:
++                if self.control_levels:
++                    return result.iloc[:, 0]
++                else:
++                    return result.iloc[0]
+             else:
+-                return result.iloc[0]
+-        else:
+-            return result
++                return result
++        except Exception:
++            return pd.Series(index=self._by_group.columns, dtype='object').fillna(pd.NA)
+ 
+     def group_min(self) -> Union[Any, pd.Series, pd.DataFrame]:
+         """Return the minimum value of the metric over the sensitive features.
+@@ -420,21 +423,24 @@ class MetricFrame:
+             The minimum value over sensitive features. The exact type
+             follows the table in :attr:`.MetricFrame.overall`.
+         """
+-        if not self.control_levels:
+-            result = pd.Series(index=self._by_group.columns, dtype='object')
+-            for m in result.index:
+-                min_val = self._by_group[m].min()
+-                result[m] = min_val
+-        else:
+-            result = self._by_group.groupby(level=self.control_levels).min()
++        try:
++            if not self.control_levels:
++                result = pd.Series(index=self._by_group.columns, dtype='object')
++                for m in result.index:
++                    min_val = self._by_group[m].min()
++                    result[m] = min_val
++            else:
++                result = self._by_group.groupby(level=self.control_levels).min()
+ 
+-        if self._user_supplied_callable:
+-            if self.control_levels:
+-                return result.iloc[:, 0]
++            if self._user_supplied_callable:
++                if self.control_levels:
++                    return result.iloc[:, 0]
++                else:
++                    return result.iloc[0]
+             else:
+-                return result.iloc[0]
+-        else:
+-            return result
++                return result
++        except Exception:
++            return pd.Series(index=self._by_group.columns, dtype='object').fillna(pd.NA)
+ 
+     def difference(self,
+                    method: str = 'between_groups') -> Union[Any, pd.Series, pd.DataFrame]:
+@@ -468,14 +474,17 @@ class MetricFrame:
+             The exact type follows the table in :attr:`.MetricFrame.overall`.
+         """
+         subtrahend = np.nan
+-        if method == 'between_groups':
+-            subtrahend = self.group_min()
+-        elif method == 'to_overall':
+-            subtrahend = self.overall
+-        else:
+-            raise ValueError("Unrecognised method '{0}' in difference() call".format(method))
++        try:
++            if method == 'between_groups':
++                subtrahend = self.group_min()
++            elif method == 'to_overall':
++                subtrahend = self.overall
++            else:
++                raise ValueError("Unrecognised method '{0}' in difference() call".format(method))
+ 
+-        return (self.by_group - subtrahend).abs().max(level=self.control_levels)
++            return (self.by_group - subtrahend).abs().max(level=self.control_levels)
++        except Exception:
++            return pd.Series(index=self._by_group.columns, dtype='object').fillna(pd.NA)
+ 
+     def ratio(self,
+               method: str = 'between_groups') -> Union[Any, pd.Series, pd.DataFrame]:
+@@ -511,35 +520,38 @@ class MetricFrame:
+             The exact type follows the table in :attr:`.MetricFrame.overall`.
+         """
+         result = None
+-        if method == 'between_groups':
+-            result = self.group_min() / self.group_max()
+-        elif method == 'to_overall':
+-            if self._user_supplied_callable:
+-                tmp = self.by_group / self.overall
+-                result = tmp.transform(lambda x: min(x, 1/x)).min(level=self.control_levels)
+-            else:
+-                ratios = None
+-
+-                if self.control_levels:
+-                    # It's easiest to give in to the DataFrame columns preference
+-                    ratios = self.by_group.unstack(level=self.control_levels) /  \
+-                        self.overall.unstack(level=self.control_levels)
++        try:
++            if method == 'between_groups':
++                result = self.group_min() / self.group_max()
++            elif method == 'to_overall':
++                if self._user_supplied_callable:
++                    tmp = self.by_group / self.overall
++                    result = tmp.transform(lambda x: min(x, 1/x)).min(level=self.control_levels)
+                 else:
+-                    ratios = self.by_group / self.overall
++                    ratios = None
+ 
+-                def ratio_sub_one(x):
+-                    if x > 1:
+-                        return 1/x
++                    if self.control_levels:
++                        # It's easiest to give in to the DataFrame columns preference
++                        ratios = self.by_group.unstack(level=self.control_levels) /  \
++                            self.overall.unstack(level=self.control_levels)
+                     else:
+-                        return x
++                        ratios = self.by_group / self.overall
+ 
+-                ratios = ratios.apply(lambda x: x.transform(ratio_sub_one))
+-                if not self.control_levels:
+-                    result = ratios.min()
+-                else:
+-                    result = ratios.min().unstack(0)
+-        else:
+-            raise ValueError("Unrecognised method '{0}' in ratio() call".format(method))
++                    def ratio_sub_one(x):
++                        if x > 1:
++                            return 1/x
++                        else:
++                            return x
++
++                    ratios = ratios.apply(lambda x: x.transform(ratio_sub_one))
++                    if not self.control_levels:
++                        result = ratios.min()
++                    else:
++                        result = ratios.min().unstack(0)
++            else:
++                raise ValueError("Unrecognised method '{0}' in ratio() call".format(method))
++        except Exception:
++            return pd.Series(index=self._by_group.columns, dtype='object').fillna(pd.NA)
+ 
+         return result
+ 

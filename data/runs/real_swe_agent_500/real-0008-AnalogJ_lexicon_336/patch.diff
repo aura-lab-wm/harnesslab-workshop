@@ -1,0 +1,45 @@
+
+diff --git a/lexicon/cli.py b/lexicon/cli.py
+index dbef1ae2..99512aa3 100644
+--- a/lexicon/cli.py
++++ b/lexicon/cli.py
+@@ -16,12 +16,16 @@ logger = logging.getLogger(__name__)  # pylint: disable=C0103
+ 
+ def generate_table_result(lexicon_logger, output=None, without_header=None):
+     """Convert returned JSON into a nice table for command line usage"""
+-    try:
+-        _ = (entry for entry in output)
+-    except TypeError:
+-        lexicon_logger.debug('Command output is not iterable, and then cannot '
+-                             'be printed with --quiet parameter not enabled.')
+-        return None
++    if isinstance(output, str):
++        # Convert the string output to a list of dictionaries
++        output = [{'id': output, 'type': '', 'name': '', 'content': '', 'ttl': ''}]
++    else:
++        try:
++            _ = (entry for entry in output)
++        except TypeError:
++            lexicon_logger.debug('Command output is not iterable, and then cannot '
++                                 'be printed with --quiet parameter not enabled.')
++            return None
+ 
+     array = [[
+         row.get('id', ''),
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 00000000..a2ce3ee1
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,11 @@
++import subprocess
++
++# The command that fails, split into a list for Popen
++cmd = ["lexicon", "memset", "create", "example.com", "TXT", "--name", "_acme-challenge.example.com", "--content", "BLAH", "--ttl", "300"]
++
++# Use subprocess to run the command and capture the output
++try:
++    output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
++    print(output.decode())
++except subprocess.CalledProcessError as e:
++    print(e.output.decode())

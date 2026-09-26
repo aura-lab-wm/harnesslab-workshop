@@ -1,0 +1,45 @@
+
+diff --git a/fail.py b/fail.py
+new file mode 100644
+index 0000000..9e9e4c1
+--- /dev/null
++++ b/fail.py
+@@ -0,0 +1,5 @@
++class Foo:
++    bar = 0
++
++    def bar(self):
++        return 1
+diff --git a/ok.py b/ok.py
+new file mode 100644
+index 0000000..a6f3e2f
+--- /dev/null
++++ b/ok.py
+@@ -0,0 +1,6 @@
++class Foo:
++    def bar(self):
++        return 0
++
++    def bar(self):
++        return 1
+diff --git a/pyflakes/checker.py b/pyflakes/checker.py
+index e927715..4adabc6 100644
+--- a/pyflakes/checker.py
++++ b/pyflakes/checker.py
+@@ -1976,7 +1976,15 @@ class Checker:
+                     not isinstance(self.scope, FunctionScope)):
+                 self.deferFunction(lambda: self.handleDoctests(node))
+             for stmt in node.body:
+-                self.handleNode(stmt, node)
++                if isinstance(stmt, ast.Assign) and isinstance(stmt.targets[0], ast.Name):
++                    # Check if the name is being redefined
++                    if stmt.targets[0].id in self.scope:
++                        self.report(messages.RedefinedAttribute, stmt, stmt.targets[0].id)
++                    else:
++                        self.handleNode(stmt, node)
++                else:
++                    self.handleNode(stmt, node)
++                    self.handleNode(stmt, node)
+         self.addBinding(node, ClassDefinition(node.name, node))
+ 
+     def AUGASSIGN(self, node):

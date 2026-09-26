@@ -1,0 +1,28 @@
+
+diff --git a/azure_functions_worker/dispatcher.py b/azure_functions_worker/dispatcher.py
+index e8a7b24..30d60f4 100644
+--- a/azure_functions_worker/dispatcher.py
++++ b/azure_functions_worker/dispatcher.py
+@@ -567,17 +567,17 @@ class Dispatcher(metaclass=DispatcherMeta):
+                                'integer')
+                 return False
+ 
+-            if int_value < PYTHON_THREADPOOL_THREAD_COUNT_MIN or (
+-                    int_value > PYTHON_THREADPOOL_THREAD_COUNT_MAX):
++            if int_value < PYTHON_THREADPOOL_THREAD_COUNT_MIN:
+                 logger.warning(f'{PYTHON_THREADPOOL_THREAD_COUNT} must be set '
+-                               f'to a value between '
+-                               f'{PYTHON_THREADPOOL_THREAD_COUNT_MIN} and '
+-                               f'{PYTHON_THREADPOOL_THREAD_COUNT_MAX}. '
++                               f'to a value greater than '
++                               f'{PYTHON_THREADPOOL_THREAD_COUNT_MIN}. '
+                                'Reverting to default value for max_workers')
+                 return False
+ 
+             return True
+ 
++            return True
++
+         # Starting Python 3.9, worker won't be putting a limit on the
+         # max_workers count in the created threadpool.
+         default_value = None if sys.version_info.minor == 9 \

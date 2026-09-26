@@ -1,0 +1,52 @@
+--- a/cfg/loader.py
++++ b/cfg/loader.py
+@@ -1,5 +1,48 @@
+ def load_config(defaults: dict, env: dict) -> dict:
+     """Return a copy of `defaults` where any env var APP_<KEY> overrides the
+-    value for key <key> (lowercased), coerced to the type of the default."""
++    value for key <key> (lowercased), coerced to the type of the default.
++
++    Supported target types: int, float, bool, str. If coercion fails the
++    default value is left unchanged.
++    """
+     cfg = dict(defaults)
++
++    for k, v in (env or {}).items():
++        if not isinstance(k, str):
++            continue
++        if not k.startswith("APP_"):
++            continue
++        key = k[4:].lower()
++        if key not in cfg:
++            continue
++        default_val = cfg[key]
++        # Work with string representation of the env value
++        raw = v
++        if not isinstance(raw, str):
++            raw = str(raw)
++        try:
++            if isinstance(default_val, bool):
++                sval = raw.strip().lower()
++                if sval in ("1", "true", "t", "yes", "y"):  # truthy
++                    coerced = True
++                elif sval in ("0", "false", "f", "no", "n"):  # falsy
++                    coerced = False
++                else:
++                    # fallback: non-empty => True
++                    coerced = bool(sval)
++            elif isinstance(default_val, int) and not isinstance(default_val, bool):
++                coerced = int(raw.strip())
++            elif isinstance(default_val, float):
++                coerced = float(raw.strip())
++            elif isinstance(default_val, str):
++                coerced = raw
++            else:
++                # unsupported type: skip
++                continue
++        except Exception:
++            # If coercion fails, skip override
++            continue
++
++        cfg[key] = coerced
++
+     return cfg

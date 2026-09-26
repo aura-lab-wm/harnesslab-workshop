@@ -1,0 +1,18 @@
+
+diff --git a/dask_jobqueue/htcondor.py b/dask_jobqueue/htcondor.py
+index fb7b0be..8b103ad 100644
+--- a/dask_jobqueue/htcondor.py
++++ b/dask_jobqueue/htcondor.py
+@@ -62,8 +62,12 @@ Queue
+         else:
+             self.job_extra = job_extra
+ 
++        # env_extra is a dictionary or list of strings that specify environment
++        # variables to be set for the dask-worker process. It does not execute
++        # arbitrary shell commands.
+         env_extra = base_class_kwargs.get("env_extra", None)
+         if env_extra is None:
++            # If env_extra is not provided, default to an empty list of environment variables
+             env_extra = dask.config.get(
+                 "jobqueue.%s.env-extra" % self.config_name, default=[]
+             )

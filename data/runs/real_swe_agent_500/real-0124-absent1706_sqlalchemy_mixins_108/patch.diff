@@ -1,0 +1,54 @@
+
+diff --git a/reproduce.py b/reproduce.py
+new file mode 100644
+index 0000000..aa69fdb
+--- /dev/null
++++ b/reproduce.py
+@@ -0,0 +1,47 @@
++from sqlalchemy import Column, Integer, String
++from sqlalchemy.ext import Base
++from sqlalchemy_mixins import AllFeaturesMixin
++
++class MyBaseClass:
++    __abstract__ = True
++
++    #SOME CODE
++
++class AnotherBaseClass(Base, AllFeaturesMixin):
++    __abstract__ = True
++
++    #SOME OTHER CODE
++
++class MyClass(MyBaseClass):
++    pass
++
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")
++print("Script completed successfully, no errors.")

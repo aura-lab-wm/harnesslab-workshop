@@ -1,0 +1,37 @@
+
+diff --git a/parse_sas.py b/parse_sas.py
+new file mode 100644
+index 0000000..5be6023
+--- /dev/null
++++ b/parse_sas.py
+@@ -0,0 +1,8 @@
++with open("reproduce.sas", "r") as f:
++    code = f.read()
++
++tokens = code.split()
++
++for token in tokens:
++    if token.startswith("/"):
++        print(f"Option separator found: {token}")
+diff --git a/reproduce.sas b/reproduce.sas
+new file mode 100644
+index 0000000..c4d0b53
+--- /dev/null
++++ b/reproduce.sas
+@@ -0,0 +1,3 @@
++data test / view=testvew;
++    set test;
++run;
+diff --git a/sasdocs/objects.py b/sasdocs/objects.py
+index 0ec2506..82e5cb9 100644
+--- a/sasdocs/objects.py
++++ b/sasdocs/objects.py
+@@ -767,7 +767,7 @@ datalineArgPt = ps.seq(
+ ).combine_dict(dataArg)
+ 
+ # datalineOptions: Seperate multiple datalineArgs by spaces
+-datalineOptions = lb >> (datalineArg|datalineArgPt|datalineArgNB|sasName).sep_by(spc) << rb
++datalineOptions = lb >> (datalineArg|datalineArgPt|datalineArgNB|sasName).sep_by(spc|fs) << rb
+ 
+ 
+ # dataObj: Abstracted data object exists as three components:

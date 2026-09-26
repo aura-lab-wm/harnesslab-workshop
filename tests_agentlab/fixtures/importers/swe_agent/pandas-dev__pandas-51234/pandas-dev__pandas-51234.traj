@@ -1,0 +1,68 @@
+{
+ "trajectory": [
+  {
+   "action": "open pandas/core/frame.py",
+   "observation": "[File: pandas/core/frame.py (100 lines)]\n1: import numpy",
+   "response": "DISCUSSION\nLet me open the file.\n```\nopen pandas/core/frame.py\n```",
+   "thought": "Let me open the file.",
+   "state": "{\"open_file\": \"pandas/core/frame.py\", \"working_dir\": \"/pandas\"}",
+   "execution_time": 0.4
+  },
+  {
+   "action": "search_dir \"def to_dict\"",
+   "observation": "Found 2 matches",
+   "response": "```\nsearch_dir \"def to_dict\"\n```",
+   "thought": "Where is to_dict?",
+   "state": "{\"open_file\": \"pandas/core/frame.py\", \"working_dir\": \"/pandas\"}",
+   "execution_time": 0.2
+  },
+  {
+   "action": "edit 120:121\n        return dict(self)\nend_of_edit",
+   "observation": "File updated. [File: pandas/core/frame.py]",
+   "response": "```\nedit 120:121\n        return dict(self)\nend_of_edit\n```",
+   "thought": "Patch to_dict.",
+   "state": "{\"open_file\": \"pandas/core/frame.py\", \"working_dir\": \"/pandas\"}",
+   "execution_time": 0.3
+  },
+  {
+   "action": "python -m pytest pandas/tests/frame/methods/test_to_dict.py -q",
+   "observation": "5 passed in 2.10s",
+   "response": "```\npython -m pytest pandas/tests/frame/methods/test_to_dict.py -q\n```",
+   "thought": "Verify.",
+   "state": "{\"open_file\": \"pandas/core/frame.py\", \"working_dir\": \"/pandas\"}",
+   "execution_time": 2.2
+  },
+  {
+   "action": "submit",
+   "observation": "diff --git a/pandas/core/frame.py b/pandas/core/frame.py",
+   "response": "```\nsubmit\n```",
+   "thought": "Done.",
+   "state": "{\"open_file\": \"pandas/core/frame.py\", \"working_dir\": \"/pandas\"}",
+   "execution_time": 0.1
+  }
+ ],
+ "history": [
+  {
+   "role": "system",
+   "content": "SETTING: You are an autonomous programmer in a command line interface.",
+   "agent": "main"
+  },
+  {
+   "role": "user",
+   "content": "We're solving this issue in pandas-dev/pandas: DataFrame.to_dict drops dtypes.",
+   "agent": "main"
+  }
+ ],
+ "info": {
+  "exit_status": "submitted",
+  "submission": "diff --git a/pandas/core/frame.py b/pandas/core/frame.py\n--- a/pandas/core/frame.py\n+++ b/pandas/core/frame.py\n@@ -120,2 +120,1 @@\n-        old\n+        return dict(self)\n",
+  "model_stats": {
+   "instance_cost": 0.31,
+   "tokens_sent": 41000,
+   "tokens_received": 900,
+   "api_calls": 5
+  },
+  "swe_agent_version": "1.0.1",
+  "model": "gpt-4o"
+ }
+}

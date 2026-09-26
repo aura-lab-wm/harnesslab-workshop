@@ -1,0 +1,56 @@
+--- a/cfg/loader.py
++++ b/cfg/loader.py
+@@ -1,5 +1,52 @@
+ def load_config(defaults: dict, env: dict) -> dict:
+     """Return a copy of `defaults` where any env var APP_<KEY> overrides the
+-    value for key <key> (lowercased), coerced to the type of the default."""
++    value for key <key> (lowercased), coerced to the type of the default.
++
++    Supported coercions: int, float, bool, str. If coercion fails the raw
++    environment value is used.
++    """
+     cfg = dict(defaults)
++    prefix = "APP_"
++
++    def to_bool(s: str) -> bool:
++        true_set = {"1", "true", "t", "yes", "y", "on"}
++        false_set = {"0", "false", "f", "no", "n", "off"}
++        if isinstance(s, bool):
++            return s
++        val = str(s).strip().lower()
++        if val in true_set:
++            return True
++        if val in false_set:
++            return False
++        # Fallback: raise ValueError to let caller handle
++        raise ValueError(f"Cannot coerce {s!r} to bool")
++
++    for k, v in env.items():
++        if not isinstance(k, str):
++            continue
++        if not k.startswith(prefix):
++            continue
++        key = k[len(prefix):].lower()
++        if key not in defaults:
++            continue
++        default_val = defaults[key]
++        target_type = type(default_val)
++        # Try to coerce v to target_type
++        try:
++            if target_type is int:
++                new_val = int(v)
++            elif target_type is float:
++                new_val = float(v)
++            elif target_type is bool:
++                new_val = to_bool(v)
++            elif target_type is str:
++                new_val = str(v)
++            else:
++                # Attempt a best-effort conversion
++                new_val = target_type(v)
++        except Exception:
++            # If coercion fails, fall back to the raw env value (string)
++            new_val = v
++        cfg[key] = new_val
++
+     return cfg

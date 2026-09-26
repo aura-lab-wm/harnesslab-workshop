@@ -1,0 +1,63 @@
+
+diff --git a/dask_jobqueue/core.py b/dask_jobqueue/core.py
+index baf5414..a8bad15 100644
+--- a/dask_jobqueue/core.py
++++ b/dask_jobqueue/core.py
+@@ -49,7 +49,7 @@ job_parameters = """
+     extra : list
+         Additional arguments to pass to `dask-worker`
+     env_extra : list
+-        Other commands to add to script before launching worker.
++        Environment variables as `key=value` pairs which will be inserted into `dask-worker`'s environment. The word "export" will be ignored. This behavior is specific to HTCondorCluster.
+     header_skip : list
+         Lines to skip in the header.
+         Header lines matching this text will be removed
+diff --git a/docs/source/debug.rst b/docs/source/debug.rst
+index 943a6b2..0240eb7 100644
+--- a/docs/source/debug.rst
++++ b/docs/source/debug.rst
+@@ -27,7 +27,7 @@ a real job script file, and submit it using ``qsub``, ``sbatch``, ``bsub`` or
+ what is appropriate for you job queuing system.
+ 
+ To correct any problem detected at this point, you could try to use
+-``job_extra`` or ``env_extra`` kwargs when initializing your cluster object.
++To set environment variables in the job script, you can use the ``env_extra`` keyword argument when initializing your cluster object. The behavior of ``env_extra`` is specific to the job queue implementation.
+ 
+ In particular, pay attention to the python executable used to launch the
+ workers, which by default is the one used to launch the scheduler (this makes
+diff --git a/docs/source/examples.rst b/docs/source/examples.rst
+index ad02971..942df82 100644
+--- a/docs/source/examples.rst
++++ b/docs/source/examples.rst
+@@ -179,4 +179,30 @@ specified for certain steps in the processing. For example:
+ 
+     result_stage_2 = client.compute(stage_2,
+                                     resources={tuple(stage_1): {'GPU': 1},
+-                                               tuple(stage_2): {'ssdGB': 100}})
++HTCondor Deployments
++~~~~~~~~~~~~~~~~~~~
++
++.. code-block:: python
++
++   from dask_jobqueue import HTCondorCluster
++
++   cluster = HTCondorCluster(queue='default',
++                            project='DaskOnHTCondor',
++                            local_directory='$TMPDIR',
++                            cores=24,
++                            processes=6,
++                            memory='16GB',
++                            resource_spec='select=1:ncpus=24:mem=100GB')
++
++   cluster = HTCondorCluster(cores=24,
++                            processes=6,
++                            shebang='#!/usr/bin/env zsh',
++                            memory="6GB",
++                            project='P48500028',
++                            queue='premium',
++                            resource_spec='select=1:ncpus=36:mem=109G',
++                            walltime='02:00:00',
++                            interface='ib0')
++
++To set environment variables in the job script, you can use the ``env_extra`` keyword argument when initializing your cluster object. The behavior of ``env_extra`` is specific to the job queue implementation.
++

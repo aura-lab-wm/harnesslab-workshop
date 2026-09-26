@@ -1,0 +1,9 @@
+
+diff --git a/print_fields.py b/print_fields.py
+new file mode 100644
+index 0000000..e7ee708
+--- /dev/null
++++ b/print_fields.py
+@@ -0,0 +1,2 @@
++import agavepy
++print(agavepy.fields)

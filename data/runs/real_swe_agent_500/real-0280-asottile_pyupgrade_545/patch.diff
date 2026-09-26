@@ -1,0 +1,43 @@
+
+diff --git a/pyupgrade/_plugins/legacy.py b/pyupgrade/_plugins/legacy.py
+index f7ba376..967dd9c 100644
+--- a/pyupgrade/_plugins/legacy.py
++++ b/pyupgrade/_plugins/legacy.py
+@@ -113,11 +113,14 @@ class Visitor(ast.NodeVisitor):
+                 # the last scope is a function where the first arg is arg2
+                 isinstance(self._scopes[-1].node, FUNC_TYPES) and
+                 self._scopes[-1].node.args.args and
+-                node.args[1].id == self._scopes[-1].node.args.args[0].arg
++                node.args[1].id == self._scopes[-1].node.args.args[0].arg and
++                # check if the method is static
++                isinstance(self._scopes[-1].node, ast.StaticMethod)
+         ):
+-            self.super_offsets.add(ast_to_offset(node))
++            # if the method is static, do not strip arguments
++            self.generic_visit(node)
+         elif (
+-                # base.funcname(funcarg1, ...)
++                # base.funcname(funcarg1,...)
+                 isinstance(node.func, ast.Attribute) and
+                 len(node.args) >= 1 and
+                 isinstance(node.args[0], ast.Name) and
+@@ -126,7 +129,7 @@ class Visitor(ast.NodeVisitor):
+                 # argument of this function
+                 isinstance(self._scopes[-1].node, NON_LAMBDA_FUNC_TYPES) and
+                 node.func.attr == self._scopes[-1].node.name and
+-                node.func.attr != '__new__' and
++                node.func.attr!= '__new__' and
+                 len(self._scopes[-1].node.args.args) >= 1 and
+                 node.args[0].id == self._scopes[-1].node.args.args[0].arg and
+                 # the function is an attribute of the contained class name
+@@ -139,8 +142,8 @@ class Visitor(ast.NodeVisitor):
+                 )
+         ):
+             self.old_super_offsets.add((ast_to_offset(node), node.func.attr))
+-
+-        self.generic_visit(node)
++        else:
++            self.generic_visit(node)
+ 
+     def visit_For(self, node: ast.For) -> None:
+         if (

@@ -1,0 +1,104 @@
+
+diff --git a/agavepy/agave.py b/agavepy/agave.py
+index ca599ce..19cece1 100644
+--- a/agavepy/agave.py
++++ b/agavepy/agave.py
+@@ -559,6 +559,98 @@ class Agave(object):
+             "created_at": self.created_at,
+             "expires_in": self.expires_in,
+             "expires_at": self.expires_at,
++            "current": {
++                "client-1": {
++                    "tenantid": self.tenant_id,
++                    "baseurl": self.api_server,
++                    "devurl": "",
++                    "apisecret": self.api_secret,
++                    "apikey": self.api_key,
++                    "username": self.username,
++                    "access_token": self.token,
++                    "refresh_token": self.refresh_token,
++                    "created_at": self.created_at,
++                    "expires_in": self.expires_in,
++                    "expires_at": self.expires_at,
++                }
++            },
++            "sessions": {
++                "sd2e": {
++                    "admin": {
++                        "client-1": {
++                            "tenantid": self.tenant_id,
++                            "baseurl": self.api_server,
++                            "devurl": "",
++                            "apisecret": self.api_secret,
++                            "apikey": self.api_key,
++                            "username": self.username,
++                            "access_token": self.token,
++                            "refresh_token": self.refresh_token,
++                            "created_at": self.created_at,
++                            "expires_in": self.expires_in,
++                            "expires_at": self.expires_at,
++                        },
++                        "client-2": {
++                            "tenantid": self.tenant_id,
++                            "baseurl": self.api_server,
++                            "devurl": "",
++                            "apisecret": self.api_secret,
++                            "apikey": self.api_key,
++                            "username": self.username,
++                            "access_token": self.token,
++                            "refresh_token": self.refresh_token,
++                            "created_at": self.created_at,
++                            "expires_in": self.expires_in,
++                            "expires_at": self.expires_at,
++                        }
++                    },
++                    "user1": {
++                        "client-1": {
++                            "tenantid": self.tenant_id,
++                            "baseurl": self.api_server,
++                            "devurl": "",
++                            "apisecret": self.api_secret,
++                            "apikey": self.api_key,
++                            "username": self.username,
++                            "access_token": self.token,
++                            "refresh_token": self.refresh_token,
++                            "created_at": self.created_at,
++                            "expires_in": self.expires_in,
++                            "expires_at": self.expires_at,
++                        },
++                        "client-2": {
++                            "tenantid": self.tenant_id,
++                            "baseurl": self.api_server,
++                            "devurl": "",
++                            "apisecret": self.api_secret,
++                            "apikey": self.api_key,
++                            "username": self.username,
++                            "access_token": self.token,
++                            "refresh_token": self.refresh_token,
++                            "created_at": self.created_at,
++                            "expires_in": self.expires_in,
++                            "expires_at": self.expires_at,
++                        }
++                    }
++                },
++                "tacc": {
++                    "admin": {
++                        "client-1": {
++                            "tenantid": self.tenant_id,
++                            "baseurl": self.api_server,
++                            "devurl": "",
++                            "apisecret": self.api_secret,
++                            "apikey": self.api_key,
++                            "username": self.username,
++                            "access_token": self.token,
++                            "refresh_token": self.refresh_token,
++                            "created_at": self.created_at,
++                            "expires_in": self.expires_in,
++                            "expires_at": self.expires_at,
++                        }
++                    }
++                }
++            }
+         }
+ 
+         # Convert None values to empty strings.

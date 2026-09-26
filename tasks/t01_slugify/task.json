@@ -1,0 +1,9 @@
+{
+  "id": "t01_slugify",
+  "title": "slugify collapses hyphens incorrectly",
+  "probe": "none",
+  "src_files": [
+    "textkit/slug.py"
+  ],
+  "test_cmd": "python -m unittest discover -s tests -q"
+}

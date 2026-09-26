@@ -1,0 +1,20 @@
+
+diff --git a/delphin/tdl.py b/delphin/tdl.py
+index ec330f4..45f4127 100644
+--- a/delphin/tdl.py
++++ b/delphin/tdl.py
+@@ -1371,10 +1371,12 @@ def format(obj, indent=0):
+         return _format_environment(obj, indent)
+     elif isinstance(obj, FileInclude):
+         return _format_include(obj, indent)
+-    else:
++    if isinstance(obj, str) and obj in ["LineComment", "BlockComment"]:
++        return _format_comment(obj, indent)
+         raise ValueError(f'cannot format object as TDL: {obj!r}')
+ 
+-
++def _format_comment(comment, indent):
++    return f"{comment} {indent}"
+ def _format_term(term, indent):
+     fmt = {
+         TypeIdentifier: _format_id,

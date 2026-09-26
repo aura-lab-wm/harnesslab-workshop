@@ -1,0 +1,14 @@
+
+diff --git a/dask_jobqueue/core.py b/dask_jobqueue/core.py
+index baf5414..dc5dd73 100644
+--- a/dask_jobqueue/core.py
++++ b/dask_jobqueue/core.py
+@@ -49,7 +49,7 @@ job_parameters = """
+     extra : list
+         Additional arguments to pass to `dask-worker`
+     env_extra : list
+-        Other commands to add to script before launching worker.
++        Environment variables to set for the Dask worker. Must be `key=value` pairs. Arbitrary shell commands are not supported.
+     header_skip : list
+         Lines to skip in the header.
+         Header lines matching this text will be removed

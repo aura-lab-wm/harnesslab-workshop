@@ -1,0 +1,23 @@
+
+diff --git a/mobly/config_parser.py b/mobly/config_parser.py
+index aa43c03..df1b031 100644
+--- a/mobly/config_parser.py
++++ b/mobly/config_parser.py
+@@ -20,6 +20,7 @@ import os
+ import yaml
+ 
+ from mobly import keys
++import logging
+ from mobly import utils
+ 
+ # An environment variable defining the base location for Mobly logs.
+@@ -151,7 +152,8 @@ def _load_config_file(path):
+         A dict that represents info in the config file.
+     """
+     with io.open(utils.abs_path(path), 'r', encoding='utf-8') as f:
+-        conf = yaml.load(f)
++        conf = yaml.load(f, Loader=yaml.SafeLoader)
++        logging.getLogger(__name__).debug("Loaded configuration: %s", conf)
+         return conf
+ 
+ 

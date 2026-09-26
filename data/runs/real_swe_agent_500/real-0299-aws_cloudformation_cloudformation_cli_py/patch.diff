@@ -1,0 +1,75 @@
+
+diff --git a/.rpdk-config b/.rpdk-config
+new file mode 100644
+index 0000000..82f0e7a
+--- /dev/null
++++ b/.rpdk-config
+@@ -0,0 +1,29 @@
++{
++    "artifact_type": "HOOK",
++    "typeName": "XXX::XXX::XXX",
++    "language": "python37",
++    "runtime": "python3.7",
++    "entrypoint": "xxx.handlers.hook",
++    "testEntrypoint": "xxx.handlers.hook",
++    "settings": {
++        "version": false,
++        "subparser_name": null,
++        "verbose": 0,
++        "force": false,
++        "type_name": null,
++        "artifact_type": null,
++        "endpoint_url": null,
++        "region": null,
++        "target_schemas": [],
++        "use_docker": false,
++        "protocolVersion": "2.0.0"
++    },
++    "hook_specification": {
++        "type": "pre-create",
++        "version": "0.1.0",
++        "notification_arns": ["arn:aws:sns:us-east-1:123456789012:my-topic"],
++        "target_arns": ["arn:aws:lambda:us-east-1:123456789012:function:my-function"],
++        "role_arn": "arn:aws:iam::123456789012:role/my-role",
++        "target_model": "xxx::xxx::xxx"
++    }
++}
+diff --git a/reproduce_bug.py b/reproduce_bug.py
+new file mode 100644
+index 0000000..437d015
+--- /dev/null
++++ b/reproduce_bug.py
+@@ -0,0 +1,33 @@
++import subprocess
++import os
++import shutil
++
++# Define the dummy dependency to be installed
++dependency = "example-package"
++
++# Define the build directory where dependencies are installed
++build_dir = "build"
++
++# Define the plugin versions to test
++plugin_versions = ["2.1.5", "2.1.6"]
++
++for version in plugin_versions:
++    # Create a temporary directory to mimic the plugin environment
++    temp_dir = f"temp_{version}"
++    os.mkdir(temp_dir)
++
++    # Install the plugin version
++    subprocess.run(["pip", "install", f"cloudformation-cli-python-plugin=={version}"], check=True)
++
++    # Submit the code using the installed plugin version
++    subprocess.run(["cfn", "submit", "--dry-run"], check=True)
++
++    # Check the build directory for the installed dependency
++    dependency_installed = dependency in os.listdir(build_dir)
++
++    print(f"Plugin version {version}: Dependency installed: {dependency_installed}")
++
++    # Clean up by removing the temporary directory
++    shutil.rmtree(temp_dir)
++
++print("Script completed successfully, no errors.")

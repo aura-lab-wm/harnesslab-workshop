@@ -1,0 +1,33 @@
+{
+  "run_id": "20260902-083921-416dcf",
+  "task_id": "t02_intervals",
+  "harness_id": "baseline",
+  "model": "mock-weak",
+  "provider": "mock",
+  "repeat_index": 8,
+  "started_at": "2026-09-02T08:39:21Z",
+  "finished_at": "2026-09-02T08:39:21Z",
+  "exit_reason": "submitted",
+  "steps": 8,
+  "tool_calls": 8,
+  "edits": 2,
+  "lines_added": 9,
+  "lines_removed": 8,
+  "files_touched": [
+    "ranges/merge.py"
+  ],
+  "boundary_events": 0,
+  "boundary_kinds": [],
+  "tests_run_by_agent": 3,
+  "ran_tests_before_submit": true,
+  "input_tokens": 8079,
+  "output_tokens": 623,
+  "cost_usd": 0.0027985,
+  "wall_ms": 280,
+  "visible_pass": true,
+  "hidden_pass": true,
+  "strong_pass": true,
+  "tests_modified": false,
+  "patch_bytes": 577,
+  "error": ""
+}

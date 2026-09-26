@@ -1,0 +1,65 @@
+/* views/questions.jsx — question stack, answer, figure, runs. Classes: rg-q-*. var(--rig-*) only. */
+.rg-q-stack{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 var(--rig-s5)}
+.rg-q-stack.compact{grid-template-columns:repeat(3,minmax(0,1fr))}
+@container rgdoc (max-width:1100px){.rg-q-stack,.rg-q-stack.compact{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container rgdoc (max-width:640px){.rg-q-stack,.rg-q-stack.compact{grid-template-columns:minmax(0,1fr)}}
+@container rgdoc (min-width:1800px){.rg-q-stack,.rg-q-stack.compact{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@container rgdoc (min-width:3000px){.rg-q-stack,.rg-q-stack.compact{grid-template-columns:repeat(6,minmax(0,1fr))}}
+.rg-q-stack li{display:flex;min-width:0}
+/* Cards on one row share their three tracks (question · figure · sentence), so a question that wraps
+   to two lines no longer pushes its figure below its neighbours'. */
+@supports (grid-template-rows:subgrid){
+  .rg-q-stack li{display:grid;grid-row:span 3;grid-template-rows:subgrid;row-gap:8px}
+  .rg-q-stack li>.rg-q-card{grid-row:1 / -1;grid-template-rows:subgrid}
+}
+/* Fewer boxes: a question is a block under a hairline, not a card; hover lifts it slightly. */
+.rg-q-card{display:grid;grid-template-columns:22px minmax(0,1fr);grid-template-areas:"n qq" "n qv" "n qa";gap:8px 10px;align-content:start;width:100%;padding:var(--rig-s4) var(--rig-s2) var(--rig-s5);border:0;border-top:1px solid var(--rig-line);background:none;text-align:left;color:var(--rig-text);min-width:0;border-radius:0}
+.rg-q-card:hover{background:var(--rig-panel);box-shadow:inset 0 1px 0 var(--rig-sel)}
+.rg-q-card:focus-visible{outline:2px solid var(--rig-sel);outline-offset:1px}
+.rg-q-card.lead{box-shadow:inset 3px 0 0 var(--rig-sel)}
+.rg-q-card.na{border-top-style:dashed}
+.rg-q-card .n{grid-area:n;font:600 11px/1 var(--rig-sans);font-variant-numeric:tabular-nums;color:var(--rig-sel-t);padding-top:2px}
+.rg-q-card .qq{grid-area:qq;font:600 14.5px/1.4 var(--rig-sans)}
+.rg-q-card .qv{grid-area:qv;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;min-width:0}
+.rg-q-card .qv b{font:500 22px/1 var(--rig-sans);color:var(--rig-sky-t);letter-spacing:-.02em}
+.rg-q-card .qv small{font:500 12px/1.3 var(--rig-sans);color:var(--rig-mute)}
+.rg-q-card .qa{grid-area:qa;font-size:13px;line-height:1.55;color:var(--rig-dim)}
+.rg-q-card.na .qa{color:var(--rig-mute)}
+.rg-q-mark-t{background:none;color:var(--rig-text);font-weight:600;box-shadow:inset 0 -2px 0 var(--rig-sel)}
+.rg-q-ask{display:flex;align-items:flex-start;gap:12px;margin:var(--rig-s2) 0 var(--rig-s5)}
+.rg-q-ask .rg-q-mark{width:28px;height:28px;font-size:15px;flex:none}
+.rg-q-ask h1{font-size:22px;line-height:1.25}
+.rg-q-answer{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--rig-s6);align-items:center;padding:var(--rig-s2) 0 var(--rig-s2) var(--rig-s5);border-left:3px solid var(--rig-sel);margin-bottom:var(--rig-s4);padding-right:var(--rig-s5)}
+.rg-q-answer .a{margin:0;font-size:17px;line-height:1.55;color:var(--rig-text);max-width:62ch}
+.rg-q-answer .big{text-align:right;min-width:0}
+.rg-q-answer .big .v{font:600 36px/1 var(--rig-sans);font-variant-numeric:tabular-nums;color:var(--rig-text);letter-spacing:-.03em}
+.rg-q-answer .big .l{font:500 11.5px/1.35 var(--rig-sans);color:var(--rig-mute);margin-top:6px;max-width:260px}
+@container rgdoc (max-width:640px){.rg-q-answer{grid-template-columns:minmax(0,1fr)}.rg-q-answer .big{text-align:left}}
+.rg-q-next{display:flex;align-items:center;gap:var(--rig-s4);flex-wrap:wrap;margin-top:var(--rig-s6)}
+.rg-q-next p{margin:0;flex:1;min-width:220px;max-width:72ch;color:var(--rig-dim)}
+.rg-q-next b{color:var(--rig-text);font-weight:600}
+#rg-q-figure:focus{outline:none}
+.rg-q-2x2{max-width:420px}
+.rg-q-2x2 th{position:static}
+.rg-q-strips{display:flex;flex-direction:column;gap:4px;margin-bottom:8px}
+.rg-q-strip{display:grid;grid-template-columns:minmax(110px,170px) minmax(0,1fr) 64px 56px;gap:10px;align-items:center;min-height:26px}
+.rg-q-rib{display:flex;gap:2px;flex-wrap:wrap}
+.rg-q-rib .c{display:inline-grid;place-items:center;width:20px;height:20px;font:600 11.5px/1 var(--rig-sans)}
+.rg-q-rib .c.p{background:var(--rig-sky-bg2);color:var(--rig-sky-t);box-shadow:inset 0 -2px 0 var(--rig-sky)}
+.rg-q-rib .c.f{background:var(--rig-red-bg);color:var(--rig-red-t);box-shadow:inset 0 -2px 0 var(--rig-red)}
+.rg-q-rib .c.u{border:1px dashed var(--rig-unk);color:var(--rig-unk)}
+@container rgdoc (max-width:640px){.rg-q-strip{grid-template-columns:minmax(0,1fr) auto;row-gap:4px}.rg-q-strip .rg-q-rib{grid-column:1/-1}}
+.rg-q-probe{flex:none;min-width:0}
+.rg-q-list{margin:0;padding-left:0;list-style:none}
+.rg-q-lesson{border:1px solid var(--rig-sel);background:var(--rig-sel-bg);padding:var(--rig-s4) var(--rig-s5);margin-bottom:var(--rig-s6);border-radius:10px}
+.rg-q-lesson ol{margin:8px 0 0;padding-left:18px;display:grid;gap:6px;font-size:12.5px}
+.rg-q-lesson b{display:inline-block;min-width:120px;color:var(--rig-text);font-weight:600;margin-right:6px}
+.rg-q-runsbar{width:min(240px,100%)}
+.rg-q-answer .big .l{max-width:320px}
+.rg-q-pinrow{margin:0 0 var(--rig-s6);gap:var(--rig-s3);align-items:flex-start}
+.rg-q-note{max-width:72ch;line-height:1.55;padding-top:3px}
+.rg-q-disc{margin-top:var(--rig-s6);max-width:72ch}
+.rg-q-pager{padding:var(--rig-s3) var(--rig-s5);border-top:1px solid var(--rig-line);gap:var(--rig-s2)}
+.rg-q-else{gap:var(--rig-s2)}
+.rg-q-else:not(:has(.rg-btn)){display:none}
+[data-el~="question-runs"]+.rg-about{margin-top:var(--rig-s5)}
