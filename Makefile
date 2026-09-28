@@ -16,10 +16,13 @@ VENV    ?= /tmp/harnesslab-venv
 WHEELDIR?= dist
 DISTOUT ?= harnesslab/frontend/dist
 
-.PHONY: help test test-v test-js menubar-test test-all build-frontend lint wheel wheel-check school-package docker docker-run bench index clean
+.PHONY: help check test test-v test-js menubar-test test-all build-frontend lint wheel wheel-check school-package docker docker-run bench index clean
 
 help:
 	@grep -E "^[a-z][a-z-]*:.*##" $(MAKEFILE_LIST) | sed -E "s/^([a-z-]+):.*## /  \\1|/" | awk -F"|" '{printf "  %-16s %s\n", $$1, $$2}'
+
+check:  ## check this install works: version, UI, data, mock run (14 / 24 PASS), an exercise (~10 s, offline)
+	cd $(CURDIR) && $(PY) scripts/check_install.py
 
 test:  ## run the unittest suite
 	cd $(CURDIR) && $(PY) -m unittest discover -s tests_agentlab -q

@@ -17,6 +17,9 @@ seat in the room runs the same environment. You need a browser and a GitHub acco
 That's it. The editor tab behind it holds the repository: `exercises/`, `tasks/`, `harnesses/`
 and a terminal.
 
+**Check it works.** In that terminal run `python scripts/check_install.py` (or `make check`). About ten
+seconds later it should say `All 5 checks passed`. If a check fails, it says what to do.
+
 ## What works without a key
 
 Everything in the method, on the recorded datasets: the questions already answered, the analysis

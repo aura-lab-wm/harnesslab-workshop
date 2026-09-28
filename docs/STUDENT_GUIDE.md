@@ -787,7 +787,14 @@ restart `python -m harnesslab`.
 
 ### 11.4 A five-minute smoke test
 
-Run this after installing, or whenever you are unsure the install still works:
+Run this after installing, or whenever you are unsure the install still works. The quickest way
+is one command, which runs the checks below for you and says what to do if one fails:
+
+```bash
+python scripts/check_install.py      # or: make check  ->  All 5 checks passed
+```
+
+The same steps by hand:
 
 ```bash
 python -m harnesslab --version                                   # harnesslab 0.3.0

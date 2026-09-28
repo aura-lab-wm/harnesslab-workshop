@@ -78,7 +78,8 @@ def main() -> None:
             run(['gh', 'repo', 'create', args.repo, '--public', '--description', DESCRIPTION])
 
         work = tmp / 'repo'
-        run(['git', 'clone', '--quiet', f'https://github.com/{args.repo}.git', str(work)])
+        # Shallow: the new commit only needs the tip to diff against, not 140 MB of history.
+        run(['git', 'clone', '--quiet', '--depth', '1', f'https://github.com/{args.repo}.git', str(work)])
         replace_tree(work, archive)
         run(['git', 'add', '-A'], cwd=work)
         if not run(['git', 'status', '--porcelain'], cwd=work, capture=True):

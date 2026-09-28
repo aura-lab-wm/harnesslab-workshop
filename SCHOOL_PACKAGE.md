@@ -12,6 +12,15 @@ offline run, the web interface, running experiments, reading the results, the ex
 and troubleshooting, step by step. `HANDOUT.md` holds the lab exercises and their questions;
 `LAB_1H.md` is the one-hour teaching plan.
 
+**Check that it works** (about ten seconds, offline, no key):
+
+```bash
+python scripts/check_install.py      # or: make check
+```
+
+Expect `All 5 checks passed`. The mock agent must score exactly 14 / 24; any other number means
+the grader, not the model, is broken (see `docs/STUDENT_GUIDE.md`, section 13).
+
 ## Run the dashboard
 
 Python 3.10 or newer is required (3.12 recommended). On macOS the built-in `python3` is 3.9 and
@@ -188,3 +197,24 @@ ships every tracked file under an included root regardless of its extension, fai
 if a tracked file under an included root would otherwise be silently dropped, and does not
 include any unlisted results directory. It generates the package README and selects the bundled
 mock model without changing local configuration.
+
+## How to cite
+
+If you use HarnessLab in academic work, please cite the website and the version you used.
+GitHub's **Cite this repository** button gives the same entry from `CITATION.cff`.
+
+```bibtex
+@software{mastropaolo2026harnesslab,
+  author  = {Antonio Mastropaolo},
+  title   = {{HarnessLab}: Treating the Agent Harness as a Controlled Experimental Variable},
+  year    = {2026},
+  version = {0.3.0},
+  url     = {https://traceharness.dev}
+}
+```
+
+Plain text: Mastropaolo, A. (2026). *HarnessLab: Treating the agent harness as a controlled
+experimental variable* (Version 0.3.0) [Computer software]. https://traceharness.dev
+
+If you use the 500 runs in `data/runs/real_swe_agent_500`, also cite Nebius,
+[SWE-agent-trajectories](https://huggingface.co/datasets/nebius/SWE-agent-trajectories) (CC BY 4.0).

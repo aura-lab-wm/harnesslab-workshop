@@ -132,8 +132,8 @@
     },
     {
       "path": "CITATION.cff",
-      "bytes": 1560,
-      "sha256": "8f353887b58835ceaf64fc233689535cc4968d92d99d5bdb21f22c6fd9e34d69"
+      "bytes": 1536,
+      "sha256": "c3db769148dd4efca5a008687645ed4f12e92da351f74abfe233ddd5cfc1d136"
     },
     {
       "path": "Dockerfile",
@@ -157,18 +157,18 @@
     },
     {
       "path": "Makefile",
-      "bytes": 3996,
-      "sha256": "849d3cb64f5d7c9f88723f7c950d0db6f8ff241ddadf7c3584ba5366d46bcf74"
+      "bytes": 4161,
+      "sha256": "7aae1758c7578d3b7fc1fa1939abc69f6a587b6af36b52e5339a32204a23ade4"
     },
     {
       "path": "README.md",
-      "bytes": 10194,
-      "sha256": "4d86da481f025b10b4c260441f4bdc65ea4a7b4e2403df2a4b8d1ca4826dae47"
+      "bytes": 11311,
+      "sha256": "71677d529a3d06b898afb10d22bbff971fbb6ff21d968c3ac6dd6c6b2e1ae55f"
     },
     {
       "path": "SCHOOL_PACKAGE.md",
-      "bytes": 10194,
-      "sha256": "4d86da481f025b10b4c260441f4bdc65ea4a7b4e2403df2a4b8d1ca4826dae47"
+      "bytes": 11311,
+      "sha256": "71677d529a3d06b898afb10d22bbff971fbb6ff21d968c3ac6dd6c6b2e1ae55f"
     },
     {
       "path": "data/runs/captured_claude_code/imp-claude-code-5a95de19f443/ledger.jsonl",
@@ -69277,13 +69277,13 @@
     },
     {
       "path": "docs/STUDENT_GUIDE.md",
-      "bytes": 44464,
-      "sha256": "454cef7cc7ea368d6eccc2827a1e9e43625aad7136e43ecb1c75af7c8e53cae8"
+      "bytes": 44684,
+      "sha256": "1c9d548025b3b1bbb26c5c3a9ab375a5d0ed00ee55399022556a14aaff1aa7b3"
     },
     {
       "path": "docs/WORKSHOP.md",
-      "bytes": 4959,
-      "sha256": "f3152624b4c4ffdcf35a3e8bb21cd29d5c4cb428127b1fc675d80a24f074f0b9"
+      "bytes": 5153,
+      "sha256": "2a6ba091f9d6c01c72a8224d342f45c89a7d1c84da97a368d2a28223b39cefde"
     },
     {
       "path": "docs/img/student-guide/rig-dataset.png",
@@ -70461,6 +70461,11 @@
       "sha256": "954873be941a2a5584676a5d4c59a9b9f4d93eb0feaabe6c82458bca7f81c88c"
     },
     {
+      "path": "scripts/check_install.py",
+      "bytes": 4233,
+      "sha256": "c945d9ca6011693b99ba090bf604e1aa8a78ce34dd156b8d8c593585f3df65da"
+    },
+    {
       "path": "scripts/frontier_batch.py",
       "bytes": 5356,
       "sha256": "91d09cf9bf5b3407b1aeb19b582d14abdd21ba72bd04344f9e4e6fe4863f845d"
@@ -70472,8 +70477,8 @@
     },
     {
       "path": "scripts/publish_workshop_repo.py",
-      "bytes": 4624,
-      "sha256": "9865c487e68d24528dc0cc30b0b58551ef215d36e160e2f04f143a29446a3f9f"
+      "bytes": 4733,
+      "sha256": "e51fd426e95555d8b22e38a024ac4068d521b789c61e866833db6c80ed908282"
     },
     {
       "path": "scripts/smoke_rig.py",

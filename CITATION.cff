@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use harnesslab or the agentlab harness in academic work, please cite it as below."
-title: "harnesslab: treating the agent harness as a controlled experimental variable"
+title: "HarnessLab: treating the agent harness as a controlled experimental variable"
 abstract: >-
   harnesslab is an open platform for measuring coding agents rather than only scoring them. It pairs a
   small, fully configurable coding-agent harness with a measurement ledger that records every model
@@ -16,8 +16,8 @@ authors:
     given-names: Antonio
     affiliation: "William & Mary"
     orcid: "https://orcid.org/0000-0002-7965-7712"
-repository-code: "https://github.com/antonio-mastropaolo/harnesslab"
-url: "https://github.com/antonio-mastropaolo/harnesslab"
+repository-code: "https://github.com/aura-lab-wm/harnesslab-workshop"
+url: "https://traceharness.dev"
 keywords:
   - large language models
   - coding agents
