@@ -122,8 +122,8 @@
   "files": [
     {
       "path": ".devcontainer/devcontainer.json",
-      "bytes": 2033,
-      "sha256": "e5825aac5d7eea9fb5c8cb5d4ef02ccd093af1a106339c7722e1052dbd484f15"
+      "bytes": 2226,
+      "sha256": "e19a0ea29ca263c0acbfb9881b9f0ab97a6b5eb9343051b741564da713dc3b72"
     },
     {
       "path": ".devcontainer/start.sh",

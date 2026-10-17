@@ -22,7 +22,9 @@
       "documentationUrl": "https://openrouter.ai/keys"
     }
   },
-  "postCreateCommand": "python -m pip install --user --no-warn-script-location -e . && python -m harnesslab --paths >/dev/null",
+  // The [real] extra (datasets) lets the workbench stream more of nebius/SWE-agent-trajectories from
+  // Hugging Face; without it only the 500 bundled runs open and the import fails.
+  "postCreateCommand": "python -m pip install --user --no-warn-script-location -e '.[real]' && python -m harnesslab --paths >/dev/null",
   "postStartCommand": "bash .devcontainer/start.sh",
   "forwardPorts": [8765],
   "portsAttributes": {
