@@ -274,3 +274,13 @@
 @container rgdoc (max-width:900px){
   .rg-an-ftgrid{grid-template-columns:minmax(0,1fr)}
 }
+/* action patterns (features step, every dataset) */
+.rg-an-alpha{gap:6px;margin-bottom:var(--rig-s3)}
+.rg-an-alpha .rg-chip b,.rg-an-ftx .rg-chip b{color:var(--rig-text);font-weight:600}
+.rg-an-seq{display:inline-block;max-width:44ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom;color:var(--rig-text);letter-spacing:.04em}
+.rg-an-q{gap:var(--rig-s3);align-items:flex-end;margin-bottom:var(--rig-s3)}
+.rg-an-qf{flex:1 1 320px;min-width:0}
+.rg-an-qf .rg-inp{width:100%;height:36px}
+.rg-an-qres{gap:var(--rig-s4);margin-top:var(--rig-s4)}
+.rg-an-qsk{height:96px;margin-top:var(--rig-s4)}
+.rg-an-code{display:block;margin:var(--rig-s3) 0;padding:var(--rig-s3) var(--rig-s4);max-height:320px;overflow:auto;white-space:pre;line-height:1.55}

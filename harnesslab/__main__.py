@@ -21,7 +21,7 @@ def build_parser() -> argparse.ArgumentParser:
         epilog="subcommands: `harnesslab run ...` sweeps the lab's own harnesses; "
                "`harnesslab watch [<dir>[/<run_id>]]` follows a run's ledger in the terminal as it "
                "is written; `harnesslab import <path>` reads another harness's trace into the "
-               "ledger (`--detect` first, to see what it is); `harnesslab oracle <dir>`, "
+               "ledger (`--detect` first, to see what it is); `harnesslab oracle <dir>`, `harnesslab patterns <dir> [--query REGEX]`, "
                "`harnesslab comparisons <dir> [--baseline B]` and `harnesslab fit <dir>` print the "
                "same canonical study-aggregate statistics as GET /api/results/<dir>/{oracle,"
                "comparisons,experiment} as JSON; `harnesslab serve` is this, the default.",
@@ -424,6 +424,49 @@ def integrity_cli(argv: list[str]) -> int:
     return 0
 
 
+def build_patterns_parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(
+        prog="harnesslab patterns",
+        description="Sets of runs over the action alphabet (L list, R read, F search, W write, E edit, "
+                    "T run tests, B bash, S submit): the distinct action sequences with their pass rates, "
+                    "where the runs of each task diverge, transitions and clusters -- the SAME "
+                    "metrics.patterns GET /api/results/<dir>/patterns serves, printed as JSON. With "
+                    "--query, the runs whose action string matches a regex against the rest (pass rate "
+                    "inside and outside, Ochiai, risk ratio), as GET /api/results/<dir>/query.",
+        epilog="example: harnesslab patterns prerecorded_mock --harness baseline --query '[WE](?!.*T)' "
+               "--unittest > trajectory_tests/test_edit_never_tested.py",
+    )
+    p.add_argument("--harness", default=None, metavar="HARNESS", help="only runs under this harness (default: all)")
+    p.add_argument("--query", default=None, metavar="REGEX", help="a regex over each run's action string")
+    p.add_argument("--unittest", action="store_true",
+                   help="with --query: print the generated unittest (the query as a regression test) instead of the JSON")
+    return p
+
+
+def patterns_cli(argv: list[str]) -> int:
+    """`harnesslab patterns <dir> [--harness H] [--query REGEX [--unittest]]` -- see build_patterns_parser.
+    Exit 1: no such directory, no runs for the selection, or a bad regex."""
+    args = _add_dir_and_lab_args(build_patterns_parser()).parse_args(argv)
+    if args.lab:
+        os.environ["HARNESSLAB_LAB"] = os.path.abspath(os.path.expanduser(args.lab))
+    from harnesslab.backend import paths                      # noqa: E402  (after HARNESSLAB_LAB)
+    from harnesslab.backend import metrics as M                # noqa: E402
+    import json                                                # noqa: E402
+    rows, err = _study_rows_or_die(args.dir, paths.RUNS_ROOT)
+    if rows is None:
+        print(err, file=sys.stderr)
+        return 1
+    out = M.run_query(args.dir, args.query, args.harness) if args.query is not None else M.patterns(args.dir, args.harness)
+    if "error" in out:
+        print(out["error"], file=sys.stderr)
+        return 1
+    if args.query is not None and args.unittest:
+        print(out["unittest"], end="")
+        return 0
+    print(json.dumps(out, indent=2))
+    return 0
+
+
 def build_fit_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="harnesslab fit",
@@ -535,6 +578,8 @@ def main(argv: list[str] | None = None) -> int:
         return fit_cli(argv[1:])
     if argv and argv[0] == "integrity":
         return integrity_cli(argv[1:])
+    if argv and argv[0] == "patterns":
+        return patterns_cli(argv[1:])
     if argv and argv[0] == "serve":
         argv = argv[1:]
 

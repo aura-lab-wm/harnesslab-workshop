@@ -15,9 +15,11 @@
                outcome pools every model under the harness; shown as "all N models · h (pooled)"
      setup     compose a cell; Launch = POST /jobs (same body as method/StepRun.jsx) behind
                ConfirmAction, never automatic; disabled in a static export
-     features  /real/<dir>/analysis (exercise 7) on an imported SWE-agent set: Ochiai attribution of
-               binary trajectory features with example runs, resolved vs unresolved against the
-               dataset card, exit status, action mix, resolve rate per model
+     features  every dataset: action sequences, where a task's runs diverge, and a regex query over
+               the action string (/results/<dir>/patterns, /query; exercise 3); on an imported
+               SWE-agent set first /real/<dir>/analysis (exercise 7): Ochiai attribution of binary
+               trajectory features with example runs, resolved vs unresolved against the dataset
+               card, exit status, action mix, resolve rate per model
    Every body sits under the AskingSentence; figures and cells carry PinButtons.
 
    Round 3 (breathing + dead ends): each view leads with its ANSWER sentence (Head `lead`),
@@ -33,7 +35,7 @@ import { makeSpec } from '../route'
 import { api, IS_STATIC } from '../../api'
 import {
   useDataset, useDatasets, useOverview, useRuns, useMetrics, useComparisons, useExperiment, useOracle, useIntegrity, useReport,
-  useTasks, useModels, useJobs, useApi, useRealAnalysis, short, fmt, tally, tokStats, conditionRuns, resolveCondition, metricsCell,
+  useTasks, useModels, useJobs, useApi, useRealAnalysis, usePatterns, useQuery, short, fmt, tally, tokStats, conditionRuns, resolveCondition, metricsCell,
   verdict, invalidate, paths,
 } from '../data'
 import { useRig, useTabState } from '../context'
@@ -55,7 +57,7 @@ export const AN_VIEWS = [
   ['report', 'Report', 'Report card', '8'], ['setup', 'Run setup', 'Run setup · compose a cell', '9'],
 ]
 const AN_LABEL = Object.fromEntries(AN_VIEWS.map(([v, l]) => [v, l]))
-const PAL_KEYWORDS = { delta: 'compare comparison delta matrix baseline', judge: 'oracle integrity leakage kappa judge', fit: 'experiment anova two-factor contrasts', outcomes: 'pass@1 pass^k flip ci', family: 'family matrix models harnesses', report: 'report card export', setup: 'launch run setup compose', features: 'features ochiai attribution sbfl failure swe-agent exit action mix' }
+const PAL_KEYWORDS = { delta: 'compare comparison delta matrix baseline', judge: 'oracle integrity leakage kappa judge', fit: 'experiment anova two-factor contrasts', outcomes: 'pass@1 pass^k flip ci', family: 'family matrix models harnesses', report: 'report card export', setup: 'launch run setup compose', features: 'features patterns sequences query regex action string ochiai attribution sbfl failure swe-agent' }
 const LIVE_CMD = 'python -m harnesslab'
 
 const probeLabel = (p) => String(p || '').replace(/_/g, ' ')
@@ -1036,23 +1038,33 @@ const EX7_CMD = 'python exercises/ex7_real_trajectories.py --offline'
 function Rate({ v, tone }) {
   return <span className={cx('rg-an-rate', tone)} aria-hidden="true"><i style={{ width: `${Math.max(0, Math.min(1, v || 0)) * 100}%` }} /></span>
 }
-function Features({ dir }) {
-  const { datasets } = useRig()
+function Features({ spec, dir, c }) {
+  const { datasets, oracle } = useRig()
   const A = useRealAnalysis(dir)
+  const P = usePatterns(dir, c.harness, OUTCOME_OF[oracle])
   const head = (lead, actions, about) => (
     <Head eyebrow="More analysis · which trajectory features go with failure" title="Trajectory features" el="features-answer" lead={lead} actions={actions} about={about} />
   )
   if (A.error) return <ErrorState error={A.error} onRetry={A.reload} what={`/api/real/${dir}/analysis`} />
-  if (!A.data) return <Loading label={`Reading /api/real/${dir}/analysis…`} />
+  if (!A.data || (!P.data && !P.error)) return <Loading label={`Reading /api/real/${dir}/analysis and /patterns…`} />
   const d = A.data
   if (d.error || !d.n) {
+    // A dataset recorded by the lab: no SWE-agent feature table, but every run has an action string.
     const alt = datasets.filter((x) => x.name !== dir && (x.harnesses || []).includes('swe-agent'))
+    const pd = P.data && !P.data.error ? P.data : null
+    const s0 = pd && (pd.sequences || [])[0]
+    const nSeq = pd ? (pd.sequences || []).length : 0
+    const lead = s0
+      ? <>Under <b>{c.harness}</b>, the {int(pd.n_runs)} runs take {nSeq < 30 ? plural(nSeq, 'distinct action sequence') : 'at least 30 distinct action sequences'}. The most common, <span className="rg-mono">{s0.sequence}</span>, covers {int(s0.n)} runs and passes {pct(s0.pass_rate, 0)} of them under the {oracle} suite.</>
+      : null
     return (<>
-      {head(null)}
-      <Empty title="No trajectory features for this dataset." actions={[
-        ...alt.slice(0, 2).map((x, i) => ({ label: `Open the features of ${x.name}`, spec: makeSpec('an', x.name, 'features'), primary: i === 0 })),
-        { label: 'Download a SWE-agent sample', spec: 'sources', primary: !alt.length },
-      ]}>Features are computed when SWE-agent trajectories are imported from nebius/SWE-agent-trajectories (Sources → Download a public sample). <span className="rg-mono">{dir}</span> holds none.</Empty>
+      {head(lead, null, PATTERNS_ABOUT)}
+      <ActionPatterns spec={spec} dir={dir} c={c} P={P} />
+      <Note el="features-swe-note"><div>SWE-agent sets also rank yes/no trajectory features (never verified after the last edit, ran out of context, …) by Ochiai.
+        <NextSteps actions={[
+          ...alt.slice(0, 1).map((x) => ({ label: `Open the features of ${x.name}`, spec: makeSpec('an', x.name, 'features') })),
+          { label: 'Download a SWE-agent sample', spec: 'sources', primary: !alt.length },
+        ]} /></div></Note>
     </>)
   }
   const att = d.ochiai || []
@@ -1130,6 +1142,95 @@ function Features({ dir }) {
           <span key={a} className="rg-row rg-small"><i className={'a' + i} aria-hidden="true" />{a} <span className="rg-mono rg-mute">{pct((mix.resolved || {})[a] || 0, 0)} · {pct((mix.unresolved || {})[a] || 0, 0)}</span></span>
         ))}</div>
       </div>
+    </Sec>
+    <ActionPatterns spec={spec} dir={dir} c={c} P={P} />
+  </>)
+}
+
+/* -------- action patterns: every dataset (exercise 3) */
+const OUTCOME_OF = { visible: 'visible_pass', strengthened: 'strong_pass' }     // hidden is the endpoints' default
+const ALPHA = [['L', 'list'], ['R', 'read'], ['F', 'search'], ['W', 'write'], ['E', 'edit'], ['T', 'run tests'], ['B', 'bash'], ['S', 'submit']]
+const ACTION_NAME = Object.fromEntries(ALPHA)
+const PRESETS = [['[WE](?!.*T)', 'an edit never followed by a test'], ['[WE]S$', 'submits right after an edit'], ['^[^T]*$', 'never runs the tests']]
+const PATTERNS_ABOUT = <>
+  <p>Each run becomes one string over the action alphabet, one letter per tool call: <span className="rg-mono">L</span> list · <span className="rg-mono">R</span> read · <span className="rg-mono">F</span> search · <span className="rg-mono">W</span> write · <span className="rg-mono">E</span> edit · <span className="rg-mono">T</span> run tests · <span className="rg-mono">B</span> bash · <span className="rg-mono">S</span> submit. <span className="rg-mono">LRTWTS</span> lists, reads, tests, writes, tests again and submits.</p>
+  <p>Everything here is about sets of runs: which shapes pass, where the runs of one task part ways, and how often a shape you describe with a regular expression goes with failure. One trajectory cannot tell you whether a habit is associated with failure.</p>
+  <p>The same numbers print in the terminal: <span className="rg-mono">python -m harnesslab patterns &lt;dataset&gt; --harness &lt;h&gt; [--query REGEX]</span>.</p>
+</>
+const seqCell = (q) => <span className="rg-mono rg-an-seq" title={q}>{q || '(no tool call)'}</span>
+function ActionPatterns({ spec, dir, c, P }) {
+  const { oracle, toast } = useRig()
+  const [q, setQ] = useTabState(spec, 'pq', PRESETS[0][0])
+  const [draft, setDraft] = useTabState(spec, 'pq.draft', PRESETS[0][0])
+  const Q = useQuery(dir, q, c.harness, OUTCOME_OF[oracle])
+  if (P.error) return <ErrorState error={P.error} onRetry={P.reload} what={`/api/results/${dir}/patterns`} />
+  const pd = P.data
+  if (!pd || pd.error) return <Note el="patterns-empty"><div>No runs under <span className="rg-mono">{c.harness}</span> to describe as action strings{pd && pd.error ? ` (${pd.error})` : ''}.</div></Note>
+  const meta = `${int(pd.n_runs)} runs · ${c.harness} · all models · ${oracle} suite`
+  const qd = Q.data
+  const cli = `python -m harnesslab patterns ${dir} --harness ${c.harness} --query '${q}' --unittest > trajectory_tests/test_my_query.py`
+  const copy = async (text) => {
+    let ok = false
+    try { if (navigator.clipboard && navigator.clipboard.writeText) { await navigator.clipboard.writeText(text); ok = true } } catch { ok = false }
+    toast(ok ? 'Copied the test — save it under trajectory_tests/' : 'Copy is blocked here — select the code and copy it by hand')
+  }
+  return (<>
+    <Sec title="Action sequences" meta={meta} el="action-sequences">
+      <div className="rg-row rg-wrap rg-an-alpha" aria-label="Action alphabet">{ALPHA.map(([k, l]) => <span key={k} className="rg-chip"><b className="rg-mono">{k}</b> {l}</span>)}</div>
+      <div className="rg-pnl"><div className="rg-tblwrap"><table className="rg-tbl">
+        <thead><tr><th>sequence</th><th className="rg-num">runs</th><th>pass rate</th><th className="rg-num rg-hide-sm">mean steps</th><th>example</th></tr></thead>
+        <tbody>{(pd.sequences || []).slice(0, 15).map((x) => (
+          <tr key={x.sequence} data-el="sequence-row">
+            <td>{seqCell(x.sequence)}</td><td className="rg-num">{int(x.n)}</td>
+            <td><div className="rg-an-ftr"><Rate v={x.pass_rate} tone="sky" /><span className="rg-mono rg-small">{pct(x.pass_rate, 0)}</span>{x.ci95 && <span className="rg-tiny rg-mute rg-mono">[{pct(x.ci95[0], 0)}, {pct(x.ci95[1], 0)}]</span>}</div></td>
+            <td className="rg-num rg-hide-sm">{fx(x.mean_steps, 1)}</td>
+            <td>{x.example ? <Go spec={makeSpec('run', x.example)} className="rg-tlink" title={x.example} label={`Open run ${x.example}`}>{x.example.slice(-6)}</Go> : '—'}</td>
+          </tr>))}</tbody>
+      </table></div></div>
+      {(pd.sequences || []).length > 15 && <p className="rg-small rg-mute rg-an-ftnote">The 15 most common of {(pd.sequences || []).length < 30 ? int((pd.sequences || []).length) : 'at least 30'} shapes.</p>}
+    </Sec>
+    <Sec title="Where the runs of a task diverge" meta="the first step where repeats of the same task part ways" el="divergence">
+      <div className="rg-pnl"><div className="rg-tblwrap"><table className="rg-tbl">
+        <thead><tr><th>task</th><th className="rg-num">runs</th><th>shared start</th><th className="rg-num">diverge at</th><th>next action</th><th className="rg-num rg-hide-sm">shapes</th><th>pass rate</th></tr></thead>
+        <tbody>{(pd.divergence || []).map((x) => (
+          <tr key={x.task} data-el="divergence-row">
+            <td><Go spec={makeSpec('task', dir, short(c.model), c.harness, x.task)} className="rg-tlink">{x.task}</Go></td><td className="rg-num">{int(x.runs)}</td>
+            <td>{seqCell(x.common_prefix)}</td><td className="rg-num">{x.diverge_at == null ? '—' : `step ${x.diverge_at + 1}`}</td>
+            <td><div className="rg-row rg-wrap rg-an-ftx">{(x.branches || []).map(([a, n]) => (
+              <span key={a} className="rg-chip" title={a === '·' ? 'the run had already ended' : ACTION_NAME[a]}><b className="rg-mono">{a === '·' ? 'end' : a}</b> ×{int(n)}</span>))}</div></td>
+            <td className="rg-num rg-hide-sm">{int(x.distinct_sequences)}</td>
+            <td><div className="rg-an-ftr"><Rate v={x.pass_rate} tone="sky" /><span className="rg-mono rg-small">{pct(x.pass_rate, 0)}</span></div></td>
+          </tr>))}</tbody>
+      </table></div></div>
+    </Sec>
+    <Sec title="Query the action string" meta="a regular expression over each run's actions, against the rest" el="action-query">
+      {IS_STATIC ? <Note el="query-static"><div>Queries run on the live server. In the terminal: <CopyCmd cmd={`python -m harnesslab patterns ${dir} --harness ${c.harness} --query '${q}'`} /></div></Note> : (<>
+        <form className="rg-row rg-wrap rg-an-q" onSubmit={(e) => { e.preventDefault(); setQ(draft.trim()) }}>
+          <label className="rg-fld rg-an-qf">Pattern<input className="rg-inp rg-mono" value={draft} spellCheck={false} onChange={(e) => setDraft(e.target.value)} aria-label="Pattern over the action string" /></label>
+          <button type="submit" className="rg-btn pri" disabled={!draft.trim()}>Run query</button>
+        </form>
+        <div className="rg-row rg-wrap rg-an-ftx" data-el="query-presets">{PRESETS.map(([p, l]) => (
+          <button key={p} type="button" className={cx('rg-chip', q === p && 'on')} aria-pressed={q === p} onClick={() => { setDraft(p); setQ(p) }}><span className="rg-mono">{p}</span> {l}</button>))}</div>
+        {Q.error ? <ErrorState error={Q.error} onRetry={Q.reload} what={`/api/results/${dir}/query`} />
+          : !qd ? <div className="rg-skel rg-an-qsk" />
+            : qd.error ? <Note tone="red" el="query-error"><div>{qd.error}</div></Note>
+              : (<div className="rg-col rg-an-qres" data-el="query-result">
+                <div className="rg-stats rg-an-r5">
+                  <div className="rg-stat"><span className="rg-lbl">matched</span><span className="rg-fig sm">{int(qd.matched)}</span><span className="rg-tiny rg-mute rg-mono">of {int(qd.total)} runs</span></div>
+                  <div className="rg-stat"><span className="rg-lbl">pass · matched</span><span className="rg-fig sm">{pct(qd.pass_in, 0)}</span></div>
+                  <div className="rg-stat"><span className="rg-lbl">pass · the rest</span><span className="rg-fig sm">{pct(qd.pass_out, 0)}</span></div>
+                  <div className="rg-stat"><span className="rg-lbl">ochiai</span><span className="rg-fig sm">{fx(qd.ochiai)}</span></div>
+                  <div className="rg-stat"><span className="rg-lbl">risk ratio</span><span className="rg-fig sm">{fx(qd.risk_ratio)}</span><span className="rg-tiny rg-mute">failure rate, matched ÷ rest</span></div>
+                </div>
+                {(qd.examples || []).length > 0 && <div className="rg-row rg-wrap rg-an-ftx"><span className="rg-small rg-mute">Matching runs:</span>{qd.examples.slice(0, 8).map((id) => <Go key={id} spec={makeSpec('run', id)} className="rg-chip" title={id} label={`Open matching run ${id}`}>{id.slice(-6)}</Go>)}</div>}
+                <About summary="The query as a regression test" el="query-unittest">
+                  <p>Save it under <span className="rg-mono">trajectory_tests/</span>: it fails when more runs match than you allow. Or write it from the terminal:</p>
+                  <CopyCmd cmd={cli} />
+                  <pre className="rg-code rg-an-code">{qd.unittest}</pre>
+                  <button type="button" className="rg-btn" onClick={() => copy(qd.unittest)}>Copy the test</button>
+                </About>
+              </div>)}
+      </>)}
     </Sec>
   </>)
 }
@@ -1285,7 +1386,7 @@ export const views = {
     crumbs: (a) => [[a[0], makeSpec('ds', a[0])], ['analysis', a[1] && a[1] !== 'family' ? makeSpec('an', a[0], 'family', a[2], a[3]) : null], [AN_LABEL[a[1] || 'family'] || a[1] || 'analysis']],
     retarget: (a, c) => makeSpec('an', c.dir, a[1] || 'family', short(c.model), c.harness),
     outsideGuided: (a) => a[1] === 'setup',
-    palette: (env) => env.datasets.flatMap((d) => AN_VIEWS.filter(([v]) => v !== 'traj' && (v !== 'features' || (d.harnesses || []).includes('swe-agent'))).map(([v, , l]) => ({ group: 'view', title: l, detail: d.name, spec: makeSpec('an', d.name, v), keywords: PAL_KEYWORDS[v] || v }))),
+    palette: (env) => env.datasets.flatMap((d) => AN_VIEWS.filter(([v]) => v !== 'traj').map(([v, , l]) => ({ group: 'view', title: l, detail: d.name, spec: makeSpec('an', d.name, v), keywords: PAL_KEYWORDS[v] || v }))),
     render: AnalysisDoc,
     Actions: OracleActions,
   },

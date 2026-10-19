@@ -243,6 +243,8 @@ export function joinOutcomes(runs, outcomes) {
 
 /* ------------------------------------------------------------------ paths (one place) */
 const E = encodeURIComponent
+/** ?a=1&b=2 from the set entries, in order; '' when none is set. */
+const qs = (o) => { const p = Object.entries(o).filter(([, v]) => v != null && v !== '').map(([k, v]) => `${k}=${E(v)}`); return p.length ? '?' + p.join('&') : '' }
 export const paths = {
   overview: () => '/overview',
   runs: (dir) => `/results/${E(dir)}/runs`,
@@ -254,7 +256,8 @@ export const paths = {
   oracle: (dir) => `/results/${E(dir)}/oracle`,
   integrity: (dir, harness) => `/results/${E(dir)}/integrity${harness ? '?harness=' + E(harness) : ''}`,
   report: (dir, harness) => `/results/${E(dir)}/report${harness ? '?harness=' + E(harness) : ''}`,
-  patterns: (dir, harness) => `/results/${E(dir)}/patterns${harness ? '?harness=' + E(harness) : ''}`,
+  patterns: (dir, harness, outcome) => `/results/${E(dir)}/patterns${qs({ harness, outcome })}`,
+  query: (dir, pattern, harness, outcome) => `/results/${E(dir)}/query${qs({ pattern, harness, outcome })}`,
   repeats: (dir, harness) => `/repeats/${E(dir)}${harness ? '?harness=' + E(harness) : ''}`,
   runRepeats: (dir, id) => `/repeats/${E(dir)}/run/${E(id)}`,
   harnessVersions: (dir) => `/harness/versions?dir=${E(dir)}`,
@@ -305,7 +308,9 @@ export function useIntegrity(dir, harness) { return useApi(dir ? paths.integrity
 export function useReport(dir, harness) { return useApi(dir ? paths.report(dir, harness) : null) }
 /** Exercise 7 on an imported SWE-agent set (real_features.jsonl); `{error}` for any other dataset. */
 export function useRealAnalysis(dir) { return useApi(dir ? paths.realAnalysis(dir) : null) }
-export function usePatterns(dir, harness) { return useApi(dir ? paths.patterns(dir, harness) : null) }
+export function usePatterns(dir, harness, outcome) { return useApi(dir ? paths.patterns(dir, harness, outcome) : null) }
+/** A regex over each run's action string: matched vs the rest. Live server only (a static export has no queries). */
+export function useQuery(dir, pattern, harness, outcome) { return useApi(dir && pattern && !IS_STATIC ? paths.query(dir, pattern, harness, outcome) : null) }
 export function useRepeats(dir, harness) { return useApi(dir ? paths.repeats(dir, harness) : null) }
 export function useHarnessVersions(dir) { return useApi(dir ? paths.harnessVersions(dir) : null) }
 export function useSentinel() { return useApi(paths.sentinel()) }

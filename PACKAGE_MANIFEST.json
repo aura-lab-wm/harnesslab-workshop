@@ -142,8 +142,8 @@
     },
     {
       "path": "HANDOUT.md",
-      "bytes": 21529,
-      "sha256": "48a594108ee49de38f38a3ccd6281b68df69c5bcfc64d50e65e645a45dee0f9b"
+      "bytes": 24179,
+      "sha256": "bb439a740c5143cba247224ac0b0fcee9954ed07e2e115ea718cd46938792b98"
     },
     {
       "path": "LAB_1H.md",
@@ -69282,38 +69282,43 @@
     },
     {
       "path": "docs/STUDENT_GUIDE.md",
-      "bytes": 44714,
-      "sha256": "3712aaee090490dc29c4c45c5ad7fd0c82eae84ee9b1e7c13bdecd0d973f96b5"
+      "bytes": 45254,
+      "sha256": "7dd31d709656fa69b4dbc7e4b12abec516322c9ca007c9a62a3ec15e202e38f3"
     },
     {
-      "path": "docs/img/student-guide/rig-dataset.png",
-      "bytes": 235259,
-      "sha256": "5e3a3d48438a800a5b2f78e8198b714470d6f269dceadad646dcd54182846bd4"
+      "path": "docs/img/student-guide/dataset.png",
+      "bytes": 420936,
+      "sha256": "8f6cfe87e7cda2e868c3a7d70d680897604e34637d76d4e8724fd7dddf881d01"
     },
     {
-      "path": "docs/img/student-guide/rig-datasets.png",
-      "bytes": 176969,
-      "sha256": "661cdc620106bc76ba7f7fe44d1e680c9035ff33cacf313e8726331ee2cb2b1a"
+      "path": "docs/img/student-guide/datasets.png",
+      "bytes": 307830,
+      "sha256": "64eadc291b0495d28aaa90e2d4304debbd4eba38e37c2f37cea615ded6120ecc"
     },
     {
-      "path": "docs/img/student-guide/rig-event-log.png",
-      "bytes": 235269,
-      "sha256": "134f370a50f0b0fcf2fc3022b787c07d8f8978d5eab2ea8f4c23a0380cf1eeba"
+      "path": "docs/img/student-guide/event-log.png",
+      "bytes": 414958,
+      "sha256": "6c160de05271b705e4fa7729a63e4c55d2a69701f87c9083a485d2ecbc44cb86"
     },
     {
-      "path": "docs/img/student-guide/rig-run-setup.png",
-      "bytes": 168895,
-      "sha256": "835b75e5c162384c57974d523071f5d774a1aa2d3bbadbd35b2e6cfdc78fbd78"
+      "path": "docs/img/student-guide/run-setup.png",
+      "bytes": 317103,
+      "sha256": "830717f86bc58459ea2bb76e17c7d4fa7c787873cc9bfd6f98c0f2c984d97e0c"
     },
     {
-      "path": "docs/img/student-guide/rig-task.png",
-      "bytes": 211646,
-      "sha256": "be32d845d907dbda928356c156d91d9dfdee22e70494168e390a74c50cd2c94a"
+      "path": "docs/img/student-guide/task.png",
+      "bytes": 352745,
+      "sha256": "aba6befe3c7ed16cbcba824dec10735c45589b0953362941acea6cad77aaa4f9"
     },
     {
-      "path": "docs/img/student-guide/rig-tasks.png",
-      "bytes": 187289,
-      "sha256": "44b2e485af02f2b22e2ea7a641f85d0f5fc93e3b725593f356209274b5448d02"
+      "path": "docs/img/student-guide/trajectories.png",
+      "bytes": 333676,
+      "sha256": "a1d16bcfae9ee2beed9fed32195370261620f34f63b6cbf284ebfc3fa7eeb52d"
+    },
+    {
+      "path": "docs/img/student-guide/trajectory-features.png",
+      "bytes": 328184,
+      "sha256": "924e92e81d9f78787b7ca39a15dc85c0a3220154445a42f9514159e7f21f1889"
     },
     {
       "path": "docs/student-lab.md",
@@ -69402,8 +69407,8 @@
     },
     {
       "path": "harnesslab/__main__.py",
-      "bytes": 32936,
-      "sha256": "22ad619dee4c4f99d612d51963c7b0f73b50427e58273bfb4abe30dde0d8d622"
+      "bytes": 35555,
+      "sha256": "45fd265712cbaa265c389985c8153d211a5d20910ef7c76dd8d29b4e96b0efc0"
     },
     {
       "path": "harnesslab/backend/__init__.py",
@@ -69801,19 +69806,19 @@
       "sha256": "d5ba37a83499d73bd22ca9d114891d154257149055b2d6a58d21483d6112d664"
     },
     {
-      "path": "harnesslab/frontend/dist/assets/index-BMNMxyG0.js",
-      "bytes": 680301,
-      "sha256": "57af1eca4ed50e119706094bc799a3d8501faa1de556d67ca89ed9eb5c574e59"
+      "path": "harnesslab/frontend/dist/assets/index-B38bxl-D.js",
+      "bytes": 690690,
+      "sha256": "dde3c03155d67a5bfa44986b5caa853ce7adab1317393a4a728f4c1c5d8cabdb"
     },
     {
-      "path": "harnesslab/frontend/dist/assets/index-D6P_OI9D.css",
-      "bytes": 266782,
-      "sha256": "a4500a9010fc316d818743ae96652e3c6296142679d3233533c2d1836a4ef165"
+      "path": "harnesslab/frontend/dist/assets/index-sQKz2MgP.css",
+      "bytes": 267487,
+      "sha256": "f0a96e38de99b4cc63551c600ab2c84f7e6e35eb3acd54609996a9bac70bb232"
     },
     {
       "path": "harnesslab/frontend/dist/build-source.json",
       "bytes": 96,
-      "sha256": "880059db3e43920c0b260bca74b705824300b7bd2c379caf4d3f9e65fbf727cc"
+      "sha256": "46529f8b7cbcb8f5395fc144dc6cf0a8630d2cbe56438878a9ed9ca222591d62"
     },
     {
       "path": "harnesslab/frontend/dist/design-directions/README.md",
@@ -69898,7 +69903,7 @@
     {
       "path": "harnesslab/frontend/dist/index.html",
       "bytes": 4373,
-      "sha256": "0cd1c416dca0b1d561b0683d010b789711dc292104e746f166cea9d19688b6b0"
+      "sha256": "eb111471c1f71093f655061aae3bfdd882503c1dcb07f1c6be9a0dea690018bf"
     },
     {
       "path": "harnesslab/frontend/index.html",
@@ -70157,8 +70162,8 @@
     },
     {
       "path": "harnesslab/frontend/src/rig/data.js",
-      "bytes": 22132,
-      "sha256": "5b303ea1df39d61568fd26e6252e9e172b236c8aa08d2b0ed3612d30b8370b9f"
+      "bytes": 22763,
+      "sha256": "d504fd46a836b4f0c9cc898ea1d34a1a45d6f6561ba000d61159fab993da2765"
     },
     {
       "path": "harnesslab/frontend/src/rig/data.test.js",
@@ -70212,18 +70217,18 @@
     },
     {
       "path": "harnesslab/frontend/src/rig/views/analysis.css",
-      "bytes": 17949,
-      "sha256": "c37d7cecc5339cb82acb32fc1524a6b4c9744508a30977844b6c8eb72d2a22f5"
+      "bytes": 18720,
+      "sha256": "febf4a7c048ad7fd3f80d672b2b2e25339a00504da6156de7f6a7a5b0aed2d35"
     },
     {
       "path": "harnesslab/frontend/src/rig/views/analysis.dom.test.jsx",
-      "bytes": 35962,
-      "sha256": "b99b14146b391c33e4880d835516ac54cfa93b0aade59a0c1e7b70cfeffdb085"
+      "bytes": 37905,
+      "sha256": "87031414e03bd0ccea51407864e48cccec8db8c595efeb64fad59f9746cefbd6"
     },
     {
       "path": "harnesslab/frontend/src/rig/views/analysis.jsx",
-      "bytes": 103785,
-      "sha256": "f28e69e09d2f3767bd18b93affbcd2c6057fd1636ff6ee2d602124e1d1a43195"
+      "bytes": 113728,
+      "sha256": "81f465e350e0579cc844eeef041a54096946561d681d62dfae1a61b940862846"
     },
     {
       "path": "harnesslab/frontend/src/rig/views/buddy.jsx",
@@ -71144,6 +71149,11 @@
       "path": "tests_agentlab/test_packaging.py",
       "bytes": 28543,
       "sha256": "1cf0079cb3dbdf890e5b6bf48117e5565834f4e818c75e00b1072433d7bcb058"
+    },
+    {
+      "path": "tests_agentlab/test_patterns_route_and_cli.py",
+      "bytes": 3364,
+      "sha256": "3631927db87f4dd75d7e49a544b74664be4c60ee277af7b1e4464979c94080ed"
     },
     {
       "path": "tests_agentlab/test_port_pick.py",

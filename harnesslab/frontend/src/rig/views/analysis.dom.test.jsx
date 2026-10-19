@@ -479,6 +479,12 @@ describe('round 3 · breathing: every view leads with its answer and keeps metho
   })
 })
 
+const PATTERNS = { [`/results/${MINI}/patterns?harness=baseline`]: {
+  n_runs: 8, n_pass: 5, n_fail: 3, alphabet: [],
+  sequences: [{ sequence: 'LRTWTS', n: 6, graded: 6, pass_rate: 4 / 6, ci95: [0.3, 0.9], mean_steps: 6, example: 'r-9' }, { sequence: 'LRWS', n: 2, graded: 2, pass_rate: 0.5, ci95: [0.1, 0.9], mean_steps: 4, example: 'r-8' }],
+  divergence: [{ task: 't1', runs: 4, diverge_at: 2, common_prefix: 'LR', distinct_sequences: 2, pass_rate: 0.75, branches: [['T', 3], ['W', 1]] }],
+} }
+
 describe('features (exercise 7 on an imported SWE-agent set)', () => {
   const RA = {
     n: 4, resolved: 1, unresolved: 3, steps_ci_unresolved: [12, 28],
@@ -491,7 +497,7 @@ describe('features (exercise 7 on an imported SWE-agent set)', () => {
     by_model: [{ model: 'm70', n: 3, resolved: 1 / 3 }, { model: 'm8', n: 1, resolved: 0 }],
   }
   it('names the feature that goes with failure most, and each example opens its run in the console', () => {
-    const { container } = renderRig('#/rig/an:mini:features', { data: { ...data(), [`/real/${MINI}/analysis`]: RA } })
+    const { container } = renderRig('#/rig/an:mini:features', { data: { ...data(), ...PATTERNS, [`/real/${MINI}/analysis`]: RA } })
     expect(el(container, 'features-answer').textContent).toBe('3 of 4 runs did not resolve their issue. The feature that goes with failure most is never verified after the last edit (Ochiai 0.71): 67% of failed runs show it, against 0% of resolved ones.')
     const rows = container.querySelectorAll('[data-el="feature-row"]')
     expect(rows).toHaveLength(2)
@@ -501,15 +507,28 @@ describe('features (exercise 7 on an imported SWE-agent set)', () => {
     expect(el(container, 'resolved-vs-unresolved').textContent).toContain('94.6% vs 57.6%')
     expect(el(container, 'exit-status').textContent).toContain('exit_context')
   })
-  it('the command palette offers the features view only for datasets with SWE-agent runs', () => {
+  it('the command palette offers the features view for every dataset (action patterns work on any ledger)', () => {
     const env = { datasets: [{ name: 'lab', harnesses: ['baseline'] }, { name: 'swe', harnesses: ['swe-agent'] }] }
     const feats = views.an.palette(env).filter((e) => /^an:[^:]+:features$/.test(e.spec)).map((e) => e.spec)
-    expect(feats).toEqual(['an:swe:features'])
+    expect(feats).toEqual(['an:lab:features', 'an:swe:features'])
   })
-  it('a dataset recorded by the lab has no features: it says so and offers the download', () => {
-    const { container } = renderRig('#/rig/an:mini:features', { data: { ...data(), [`/real/${MINI}/analysis`]: { error: 'no real_features.jsonl in this directory' } } })
-    const empty = el(container, 'empty-state')
-    expect(empty.textContent).toContain('No trajectory features for this dataset.')
-    expect(within(empty).getByRole('button', { name: 'Download a SWE-agent sample' }).getAttribute('data-spec')).toBe('sources')
+  it('a dataset recorded by the lab shows its action sequences, where tasks diverge, and a query over the action string', async () => {
+    const q = (pattern) => `/results/${MINI}/query?pattern=${encodeURIComponent(pattern)}&harness=baseline`
+    const res = (pattern, matched) => ({ pattern, matched, unmatched: 8 - matched, total: 8, pass_in: 0.5, pass_out: 0.75, ochiai: 0.41, risk_ratio: 2, fail_rate_in: 0.5, fail_rate_out: 0.25,
+      examples: ['r-1', 'r-2'], unittest: `PATTERN = r"${pattern}"\n` })
+    const { container } = renderRig('#/rig/an:mini:features', { data: { ...data(), ...PATTERNS,
+      [`/real/${MINI}/analysis`]: { error: 'no real_features.jsonl in this directory' },
+      [q('[WE](?!.*T)')]: res('[WE](?!.*T)', 2), [q('^[^T]*$')]: res('^[^T]*$', 1) } })
+    expect(el(container, 'features-answer').textContent).toBe('Under baseline, the 8 runs take 2 distinct action sequences. The most common, LRTWTS, covers 6 runs and passes 67% of them under the hidden suite.')
+    expect([...container.querySelectorAll('[data-el="sequence-row"]')].map((r) => r.querySelector('td').textContent)).toEqual(['LRTWTS', 'LRWS'])
+    expect(el(container, 'divergence').textContent).toContain('step 3')
+    const qr = el(container, 'query-result')
+    expect(qr.textContent).toContain('matched2of 8 runs')
+    expect(within(qr).getByRole('button', { name: 'Open matching run r-1' }).getAttribute('data-spec')).toBe('run:r-1')
+    expect(el(container, 'query-unittest').textContent).toContain('PATTERN = r"[WE](?!.*T)"')
+    act(() => { fireEvent.click(within(el(container, 'query-presets')).getByRole('button', { name: /never runs the tests/ })) })
+    expect(el(container, 'query-result').textContent).toContain('matched1of 8 runs')
+    const note = el(container, 'features-swe-note')
+    expect(within(note).getByRole('button', { name: 'Download a SWE-agent sample' }).getAttribute('data-spec')).toBe('sources')
   })
 })

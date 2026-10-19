@@ -303,11 +303,14 @@ need to restart the server.
 TraceHarness has one interface, the **TraceHarness app**, at `http://127.0.0.1:8765/`. It is
 keyboard-first, with tabs and split panes, and was built for investigation. Old addresses from
 earlier versions of this guide or the handout (`#/`, `#/s/<dataset>/judge`, `#/field/<dataset>`, …)
-still work: each one opens the Rig page that replaced it.
+still work: each one opens the page that replaced it.
+
+**Step by step, with screenshots:** <https://traceharness.dev/guide/> loads 1,000 real SWE-agent trajectories and
+walks through the analyses below.
 
 ### 7.1 The TraceHarness app
 
-![Rig: datasets](img/student-guide/rig-datasets.png)
+![TraceHarness: datasets](img/student-guide/datasets.png)
 
 The layout:
 
@@ -315,7 +318,7 @@ The layout:
   right **Ask Buddy** (**Ctrl J**), the split button, the maximize button and the light/dark switch.
 - **Sidebar.** At the top, the dataset you are working in: click it to switch. Below it,
   *Workspace* (Datasets, Analysis, Trajectories) and *Tools* (Sources & capture, Sentinel,
-  Canvas), and Settings at the bottom. In Analysis the eight study steps open under *Analysis*;
+  Canvas), and Settings at the bottom. In Analysis the nine steps open under *Analysis*;
   on a task page the dataset's tasks open under *Trajectories*. **Ctrl B** (⌘B) collapses it to
   icons and back; collapsed, the steps or tasks become a strip across the top of the page.
 - **Tabs.** The bar above each page shows where you are (workspace › dataset › page) and that
@@ -344,7 +347,7 @@ questions, each answered from the data with one sentence and one number. For exa
 Click any number to follow it down: Answer → Figure → Runs → Run → Event. The chain stays at the
 top of the page as a breadcrumb.
 
-![Rig: a dataset opens on its answered questions](img/student-guide/rig-dataset.png)
+![TraceHarness: a dataset opens on its answered questions](img/student-guide/dataset.png)
 
 **The "Asking…" sentence.** Near the top of most pages you will see *Asking [dataset] about
 [model] under [harness], graded by the [suite] suite.* Each bracket is a menu. Changing one
@@ -356,17 +359,30 @@ changes what the page shows.
 - red × failed
 - dashed ? unknown
 
-![Rig: trajectory explorer](img/student-guide/rig-tasks.png)
+![TraceHarness: trajectory explorer](img/student-guide/trajectories.png)
 
 Click a task to open its investigation page. It shows every attempt, the reason each failed run
 failed (*cut off · no patch*, *wrong patch*, …), the evidence events, and **Compare with passing
 run**.
 
-![Rig: task investigation](img/student-guide/rig-task.png)
+![TraceHarness: task investigation](img/student-guide/task.png)
 
-![Rig: the Event log open on the right](img/student-guide/rig-event-log.png)
+**A run.** Open any attempt to see **How it failed** (with evidence links to the exact events), **What it did**
+(every step beside Sentinel's risk curve and the detectors that fired) and **Run facts**. **Compare with …**
+puts it next to a repeat that ended differently, from the first step where they differ.
 
-**Case file** (bottom panel, opened from the status bar). Press **Pin** on runs, events, cells or
+![TraceHarness: a run, with the Event log open on the right](img/student-guide/event-log.png)
+
+**Trajectory features.** Analysis → **5 Trajectory features** describes each run as a string over the action
+alphabet (L list · R read · F search · W write · E edit · T run tests · B bash · S submit) and shows which
+sequences pass, where the runs of a task diverge, and a query box: a regex such as `[WE](?!.*T)` (an edit never
+followed by a test) gives the pass rate inside and outside the match, Ochiai, the risk ratio, and the query as a
+unittest. On imported SWE-agent sets the page starts with the Ochiai ranking of trajectory features. The terminal
+version is `python -m harnesslab patterns <dataset> [--harness H] [--query REGEX]`.
+
+![TraceHarness: trajectory features, action sequences and the query box](img/student-guide/trajectory-features.png)
+
+**Case file** (a panel, opened from the status bar). Press **Pin** on runs, events, cells or
 figures you want to keep. The case file can:
 
 - export a Markdown review of everything you pinned
@@ -376,7 +392,7 @@ figures you want to keep. The case file can:
 **Reading guide.** Press **Ctrl K** and type *reading guide*. It is a nine-step walk from the big
 picture to the recorded action that changed an outcome, and a good first hour.
 
-#### Keyboard shortcuts (Rig)
+#### Keyboard shortcuts
 
 On macOS use **⌘** wherever this table says Ctrl.
 
@@ -485,7 +501,7 @@ python exercises/ex2_harness.py --results data/runs/mine_mock --treatment mine
 
 > `max_tokens_per_call` matters more than it looks. In the recorded `llma4se_live` data, 133 of
 > the 227 hidden-suite failures were replies cut off at the 2,048-token per-call limit before the
-> agent made any edit. The Rig labels these runs **cut off · no patch**.
+> agent made any edit. TraceHarness labels these runs **cut off · no patch**.
 
 ### 8.3 Mock runs (always free, always offline)
 
@@ -517,7 +533,7 @@ A few points:
 - With OpenRouter, the cost recorded per call is the exact amount the endpoint charged.
 - A run makes 4–15 model calls. The whole conversation is re-sent on every call, so input tokens
   add up quickly.
-- The price per model is shown in **Rig → Analysis → Run setup**.
+- The price per model is shown in **Analysis → Run setup**.
 
 `--provider openai` (with `OPENAI_API_KEY`) and `--provider anthropic` (with `ANTHROPIC_API_KEY`)
 work the same way. Use `--price in,out` (USD per million tokens) for a model that is not in the
@@ -552,11 +568,11 @@ about 6 seconds.
 
 ### 8.6 Launching from the web app
 
-In the Rig, go to **Analysis → Run setup**. Pick models, harnesses, tasks and repeats. The page
+In TraceHarness, go to **Analysis → Run setup**. Pick models, harnesses, tasks and repeats. The page
 shows the number of runs and the estimated cost before you confirm. It writes into `data/runs/<name>`
 and the runs appear live.
 
-![Rig: run setup](img/student-guide/rig-run-setup.png)
+![TraceHarness: run setup](img/student-guide/run-setup.png)
 
 - **Mock models** launch with no key.
 - **Real models** launched from the web app go through OpenRouter. They need
@@ -642,7 +658,7 @@ head -3 data/runs/mine/<run_id>/ledger.jsonl
 
 ### 9.4 How a failed run failed
 
-The Rig puts a chip on every failed attempt. The chip is derived from the ledger, not guessed.
+TraceHarness puts a chip on every failed attempt. The chip is derived from the ledger, not guessed.
 
 | chip | meaning |
 |---|---|
@@ -704,23 +720,10 @@ python exercises/ex1_variance.py --results data/runs/prerecorded_mock   # the mo
 python exercises/ex2_harness.py --results data/runs/mine_mock --treatment mine
 python exercises/ex6_report_card.py --results data/runs/live_mine --harness baseline > report_live.md
 python exercises/ex8_experiment.py --results data/runs/prerecorded_mock --results2 data/runs/prerecorded_mock_weak
-python exercises/ex7_real_trajectories.py --n 500      # streams from Hugging Face; needs `pip install -e ".[real]"` and network
+python exercises/ex7_real_trajectories.py --n 500      # downloads from Hugging Face; needs `pip install -e ".[real]"` and network
 ```
 
-> **Page names in HANDOUT.md are from an older interface.** Use this table to find them now:
->
-> | HANDOUT says | today |
-> |---|---|
-> | Command center (launch, watch live) | Rig → Analysis → **Run setup**, plus the **Event log** panel |
-> | Outcome | Rig → Analysis → **Outcomes** |
-> | Harness lab | Rig → Analysis → **Family matrix** and **Comparison** |
-> | Trajectories, Compare two runs | Rig → **Trajectories**; **Compare with passing run** on a task page |
-> | Judge, Integrity | Rig → Analysis → **Judge & integrity** |
-> | Experiment | Rig → Analysis → **Experiment** |
-> | Report card | Rig → Analysis → **Report** |
-> | Data sources | Rig → **Sources & capture** (**Load trajectories** on the Datasets page) |
-> | Sentinel | Rig → **Sentinel** |
-> | Patterns, Queries, Attribution | not in this package (see section 12.3); use `exercises/ex3_trajectories.py` and the trajectory tests |
+**HANDOUT.md** names the TraceHarness view for every exercise, next to its script.
 
 ---
 
@@ -837,7 +840,7 @@ The image uses Python 3.12 and is a few hundred MB. It includes whatever is in `
 you build it.
 
 - New runs started from its web app use the bundled mock model unless you pass a key.
-- Launch runs from the web app (Rig → Analysis → Run setup). `harnesslab run` typed inside the
+- Launch runs from the web app (Analysis → Run setup). `harnesslab run` typed inside the
   container cannot find the tasks.
 - `docker compose up --build` also works, and it keeps new runs in `./data/runs` on your
   machine.
@@ -849,7 +852,7 @@ python -m harnesslab --export lab.html --export-results prerecorded_mock --expor
 ```
 
 This writes a single self-contained file, about 6 MB for this example, that opens straight from
-disk with no server. The Rig works in it, read-only.
+disk with no server. TraceHarness works in it, read-only.
 
 - Anything that would launch or change runs is absent.
 - Leave out `--export-results` to embed every dataset. The file gets much larger.
@@ -857,9 +860,9 @@ disk with no server. The Rig works in it, read-only.
 
 ### 12.3 The legacy console
 
-HANDOUT.md mentions an older console with **Patterns**, **Queries** and **Attribution** pages
-(`python -m harnesslab.core.serve`). It is **not included in this package**; the command starts but
-serves no page. Exercise 3's script and the trajectory tests (section 11.1) cover the same ground.
+Older material mentions a second console (`python -m harnesslab.core.serve`). It is not part of this package.
+Its Patterns, Queries and Attribution views are in TraceHarness under Analysis → **Trajectory features**, and
+`python -m harnesslab patterns <dataset>` prints the same in the terminal.
 
 ---
 
@@ -921,7 +924,7 @@ steps) or **Docker** (section 12.1). If you do use native Windows:
   - A small, fast model such as `deepseek/deepseek-v4.1-flash` costs under $0.001 per run. A
     frontier model costs roughly $0.05–0.15 per run.
   - Set `--max-cost` on every real sweep.
-  - The Rig's Run setup shows the estimated cost before anything starts.
+  - Run setup shows the estimated cost before anything starts.
 - **Your runs stay local.** New folders under `data/runs/` are yours. Delete one to remove it.
 
 ---
@@ -932,14 +935,14 @@ These were observed on 23 September 2026. None of them changes the recorded data
 
 1. **Pooled numbers under one model's name.** Some views and exercises summarise *all* models
    under a harness while a heading names one model. For example, `baseline` in `llma4se_live` has
-   272 runs, which is all five models pooled. The Rig labels such figures **pooled** in amber;
+   272 runs, which is all five models pooled. TraceHarness labels such figures **pooled** in amber;
    read the *n* before comparing.
 2. **Strengthened grades for `real_swe_agent_500`.** These third-party runs carry no strengthened
    grade. Parts of the judge/integrity analysis report them as 0.0 % instead of "not graded". The
-   Rig shows "not graded".
+   TraceHarness shows "not graded".
 3. **In an exported HTML file**, the dataset picker in the "Asking…" sentence can list datasets
    that were not embedded. Only the embedded ones have data.
-4. **HANDOUT.md and LAB_1H.md use older page names.** Use the mapping table in section 10.
+4. **LAB_1H.md**, the instructor's run sheet, still uses some older page names.
 
 ---
 
@@ -971,4 +974,5 @@ These were observed on 23 September 2026. None of them changes the recorded data
 - **[README.md](../README.md)**: what the zip contains, running it in Docker, the local server's
   security checks, and the included datasets.
 - **[docs/student-lab.md](student-lab.md)**: how Student Lab · Guided Analysis works.
-- In the Rig, press **Ctrl K** and type *reading guide*.
+- In TraceHarness, press **Ctrl K** and type *reading guide*.
+- **<https://traceharness.dev/guide/>**: load real SWE-agent trajectories and analyse them, step by step, with screenshots.
