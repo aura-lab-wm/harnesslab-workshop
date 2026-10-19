@@ -15,7 +15,7 @@ was ever about the model.
 Keep a shared notes file. Each exercise ends with questions; write two or three sentences per question.
 We will discuss them in the last ten minutes.
 
-## The platform: harnesslab
+## The platform: TraceHarness
 
 Every exercise below is a command-line script, and every one of them has a page in the platform. Use whichever
 you prefer — they call the same functions in `harnesslab/core/analysis.py`, so the numbers agree by construction. The
@@ -47,7 +47,7 @@ the Patterns page's queries — and the tests you generate from them — possibl
 ---
 
 
-> **Legacy console.** The earlier stdlib single-page app still ships (`python -m harnesslab.core.serve`, port 8766, `--export me.html`). harnesslab supersedes it; its remaining unique views (Patterns, Queries, the oracle chip) are being ported, after which it is removed.
+> **Legacy console.** The earlier stdlib single-page app still ships (`python -m harnesslab.core.serve`, port 8766, `--export me.html`). TraceHarness supersedes it; its remaining unique views (Patterns, Queries, the oracle chip) are being ported, after which it is removed.
 
 ## 0. Setup (0:00 – 0:12)
 
@@ -241,11 +241,11 @@ document from whatever filter is active (Copy Markdown). Read yours and answer:
 
 Everything so far ran on a mock agent or on your own small live runs. Now the same analysis on real data:
 nebius/SWE-agent-trajectories, 80,036 SWE-agent runs on real GitHub issues, each labelled resolved or not
-(CC-BY-4.0). You stream 500 of them.
+(CC-BY-4.0). You download 500 of them.
 
 ```bash
 pip install datasets
-python exercises/ex7_real_trajectories.py --n 500 --to-console data/runs/nebius_500   # 1-3 minutes; also loads them into the console
+python exercises/ex7_real_trajectories.py --n 500 --to-console data/runs/nebius_500   # seconds (one 85 MB file, cached); also loads them into the console
 python exercises/ex7_real_trajectories.py --n 300 --model swe-agent-llama-70b
 python exercises/ex7_real_trajectories.py --offline               # the 500 real trajectories bundled in data/runs/real_swe_agent_500, no network
 ```

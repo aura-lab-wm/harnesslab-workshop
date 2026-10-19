@@ -20,6 +20,8 @@
   --rig-sky:var(--rig-sky-d);--rig-sky-t:var(--rig-sky-t-d);--rig-red:var(--rig-red-d);--rig-red-t:var(--rig-red-t-d);--rig-amb:var(--rig-amb-d);--rig-amb-t:var(--rig-amb-t-d);
   --rig-qty:var(--rig-qty-d);--rig-ser1:var(--rig-ser1-d);--rig-ser2:var(--rig-ser2-d);--rig-ser3:var(--rig-ser3-d);--rig-ser4:var(--rig-ser4-d);--rig-ser5:var(--rig-ser5-d);--rig-ser6:var(--rig-ser6-d);
   --rig-on-accent:var(--rig-on-accent-d);--rig-shadow:var(--rig-shadow-d);--rig-scrim:var(--rig-scrim-d);
+
+  --rig-cx-bg:var(--rig-cx-bg-d);--rig-cx-bg2:var(--rig-cx-bg2-d);--rig-cx-bg3:var(--rig-cx-bg3-d);--rig-cx-line:var(--rig-cx-line-d);--rig-cx-line2:var(--rig-cx-line2-d);--rig-cx-text:var(--rig-cx-text-d);--rig-cx-dim:var(--rig-cx-dim-d);--rig-cx-mute:var(--rig-cx-mute-d);--rig-cx-acc:var(--rig-cx-acc-d);--rig-cx-ok:var(--rig-cx-ok-d);--rig-cx-bad:var(--rig-cx-bad-d);--rig-cx-amb:var(--rig-cx-amb-d);--rig-cx-k-i-bg:var(--rig-cx-k-i-bg-d);--rig-cx-k-i:var(--rig-cx-k-i-d);--rig-cx-k-e-bg:var(--rig-cx-k-e-bg-d);--rig-cx-k-e:var(--rig-cx-k-e-d);--rig-cx-k-t-bg:var(--rig-cx-k-t-bg-d);--rig-cx-k-t:var(--rig-cx-k-t-d);--rig-cx-k-b-bg:var(--rig-cx-k-b-bg-d);--rig-cx-k-b:var(--rig-cx-k-b-d);--rig-cx-k-s-bg:var(--rig-cx-k-s-bg-d);--rig-cx-k-s:var(--rig-cx-k-s-d);--rig-cx-shadow:var(--rig-cx-shadow-d);--rig-sel-h:var(--rig-sel-h-d);--rig-dot:var(--rig-dot-d);
   color-scheme:dark;
 }
 .rig[data-rig-theme="light"]{
@@ -30,6 +32,8 @@
   --rig-sky:var(--rig-sky-l);--rig-sky-t:var(--rig-sky-t-l);--rig-red:var(--rig-red-l);--rig-red-t:var(--rig-red-t-l);--rig-amb:var(--rig-amb-l);--rig-amb-t:var(--rig-amb-t-l);
   --rig-qty:var(--rig-qty-l);--rig-ser1:var(--rig-ser1-l);--rig-ser2:var(--rig-ser2-l);--rig-ser3:var(--rig-ser3-l);--rig-ser4:var(--rig-ser4-l);--rig-ser5:var(--rig-ser5-l);--rig-ser6:var(--rig-ser6-l);
   --rig-on-accent:var(--rig-on-accent-l);--rig-shadow:var(--rig-shadow-l);--rig-scrim:var(--rig-scrim-l);
+
+  --rig-cx-bg:var(--rig-cx-bg-l);--rig-cx-bg2:var(--rig-cx-bg2-l);--rig-cx-bg3:var(--rig-cx-bg3-l);--rig-cx-line:var(--rig-cx-line-l);--rig-cx-line2:var(--rig-cx-line2-l);--rig-cx-text:var(--rig-cx-text-l);--rig-cx-dim:var(--rig-cx-dim-l);--rig-cx-mute:var(--rig-cx-mute-l);--rig-cx-acc:var(--rig-cx-acc-l);--rig-cx-ok:var(--rig-cx-ok-l);--rig-cx-bad:var(--rig-cx-bad-l);--rig-cx-amb:var(--rig-cx-amb-l);--rig-cx-k-i-bg:var(--rig-cx-k-i-bg-l);--rig-cx-k-i:var(--rig-cx-k-i-l);--rig-cx-k-e-bg:var(--rig-cx-k-e-bg-l);--rig-cx-k-e:var(--rig-cx-k-e-l);--rig-cx-k-t-bg:var(--rig-cx-k-t-bg-l);--rig-cx-k-t:var(--rig-cx-k-t-l);--rig-cx-k-b-bg:var(--rig-cx-k-b-bg-l);--rig-cx-k-b:var(--rig-cx-k-b-l);--rig-cx-k-s-bg:var(--rig-cx-k-s-bg-l);--rig-cx-k-s:var(--rig-cx-k-s-l);--rig-cx-shadow:var(--rig-cx-shadow-l);--rig-sel-h:var(--rig-sel-h-l);--rig-dot:var(--rig-dot-l);
   color-scheme:light;
 }
 .rig{
@@ -63,8 +67,8 @@
 /* ---------------------------------------------------------------- utilities */
 /* ids and figures: the sans with tabular numerals. Monospace is kept for code, diffs, raw
    payloads and keys (code, .rg-code, .rg-pre, .rg-kbd), where alignment is the point. */
-.rg-mono{font-family:var(--rig-sans);font-variant-numeric:tabular-nums}
-.rg-num{font-family:var(--rig-sans);font-variant-numeric:tabular-nums;text-align:right}
+.rg-mono{font-family:var(--rig-mono);font-variant-numeric:tabular-nums}
+.rg-num{font-family:var(--rig-mono);font-variant-numeric:tabular-nums;text-align:right}
 .rg-lbl{font:600 11.5px/1.2 var(--rig-sans);color:var(--rig-mute)}
 .rg-mute{color:var(--rig-mute)}.rg-dim{color:var(--rig-dim)}
 .rg-sky{color:var(--rig-sky-t)}.rg-red,.rg-red-t{color:var(--rig-red-t)}.rg-acc{color:var(--rig-sel-t)}.rg-amb{color:var(--rig-amb-t)}
@@ -74,6 +78,7 @@
 .rg-col{display:flex;flex-direction:column;gap:8px;min-width:0}
 .rg-grow{flex:1;min-width:0}
 .rg-ell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rg-nw{white-space:nowrap}
 .rg-hr{height:1px;background:var(--rig-line);margin:12px 0}
 .rg-narrow{max-width:760px}
 .rg-grid{display:grid;gap:12px;min-width:0}
@@ -82,16 +87,28 @@
 .rg-g4{grid-template-columns:repeat(4,minmax(0,1fr))}
 .rg-ico{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:square;flex:none}
 
+/* The run console is always dark (the site's console is). Every page token is re-pointed at its
+   -d primitive inside it, so shared components nested in the console (RowDetail buttons, PinButton,
+   <pre>) are dark even when the app is light. Derived tints are re-declared here because a custom
+   property that uses var() is resolved where it is declared, not where it is used. */
+.rig .rg-cx{
+  --rig-bg:var(--rig-bg-d);--rig-panel:var(--rig-panel-d);--rig-panel2:var(--rig-panel2-d);--rig-panel3:var(--rig-panel3-d);--rig-line:var(--rig-line-d);--rig-line2:var(--rig-line2-d);--rig-line3:var(--rig-line3-d);--rig-text:var(--rig-text-d);--rig-dim:var(--rig-dim-d);--rig-mute:var(--rig-mute-d);--rig-unk:var(--rig-unk-d);--rig-sel:var(--rig-sel-d);--rig-sel-t:var(--rig-sel-t-d);--rig-sel-ink:var(--rig-sel-ink-d);--rig-sky:var(--rig-sky-d);--rig-sky-t:var(--rig-sky-t-d);--rig-red:var(--rig-red-d);--rig-red-t:var(--rig-red-t-d);--rig-amb:var(--rig-amb-d);--rig-amb-t:var(--rig-amb-t-d);--rig-qty:var(--rig-qty-d);--rig-ser1:var(--rig-ser1-d);--rig-ser2:var(--rig-ser2-d);--rig-ser3:var(--rig-ser3-d);--rig-ser4:var(--rig-ser4-d);--rig-ser5:var(--rig-ser5-d);--rig-ser6:var(--rig-ser6-d);--rig-on-accent:var(--rig-on-accent-d);--rig-shadow:var(--rig-shadow-d);--rig-scrim:var(--rig-scrim-d);
+  --rig-sel-bg:color-mix(in srgb,var(--rig-sel) 10%,transparent);--rig-sel-bg2:color-mix(in srgb,var(--rig-sel) 18%,transparent);
+  --rig-sky-bg:color-mix(in srgb,var(--rig-sky) 12%,transparent);--rig-sky-bg2:color-mix(in srgb,var(--rig-sky) 22%,transparent);
+  --rig-red-bg:color-mix(in srgb,var(--rig-red) 12%,transparent);--rig-red-bg2:color-mix(in srgb,var(--rig-red) 20%,transparent);--rig-amb-bg:color-mix(in srgb,var(--rig-amb) 12%,transparent);
+  --rig-red-wash:color-mix(in srgb,var(--rig-red) 6%,transparent);
+  --rig-sky-fill:color-mix(in srgb,var(--rig-sky) 62%,var(--rig-panel3));--rig-qty-bg2:color-mix(in srgb,var(--rig-qty) 24%,transparent);
+  --rig-dot:var(--rig-dot-d);--rig-sel-h:var(--rig-sel-h-d);
+  color-scheme:dark;
+}
+
 /* ---------------------------------------------------------------- titlebar
    The shell recedes: one quiet frame (titlebar + rail + tab strip in --rig-panel), hairlines
    only where a region ends, and the document on --rig-bg gets every row the chrome gives up. */
 .rg-tb{grid-column:1/-1;display:flex;align-items:center;gap:8px;padding:0 8px 0 0;background:var(--rig-panel);border-bottom:1px solid var(--rig-line);min-width:0}
 .rg-brand{display:flex;align-items:center;gap:8px;height:44px;padding:0 12px 0 0;text-decoration:none;flex:none;border:0;background:none}
 .rg-brand .mk{width:48px;height:44px;display:grid;place-items:center}
-.rg-brand .mk i{display:block;width:18px;height:18px;border:2px solid var(--rig-sel);position:relative}
-.rg-brand .mk i::after{content:"";position:absolute;inset:3px 6px;background:var(--rig-sel)}
-.rg-brand b{font:600 14px/1 var(--rig-sans)}
-.rg-brand small{font:500 11.5px/1 var(--rig-sans);color:var(--rig-mute);margin-left:2px}
+.rg-brand b{font:600 16px/1 var(--rig-sans);letter-spacing:-.015em}
 .rg-cmd{flex:1 1 auto;max-width:520px;margin:0 auto;height:32px;display:flex;align-items:center;gap:8px;padding:0 6px 0 10px;background:var(--rig-bg);border:1px solid var(--rig-line);border-radius:6px;color:var(--rig-mute);text-align:left;min-width:0}
 .rg-cmd:hover{border-color:var(--rig-line3);color:var(--rig-dim)}
 .rg-cmd .rg-cmd-ph{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-family:var(--rig-sans);font-size:12px}
@@ -237,7 +254,7 @@ button.rg-stat:hover{background:var(--rig-panel2)}
 .rg-fig.acc{color:var(--rig-sel-t)}.rg-fig.amb{color:var(--rig-amb-t)}
 .rg-fig .u{font-size:.5em;color:var(--rig-dim);margin-left:2px;letter-spacing:0}
 .rg-tbl{width:100%;border-collapse:collapse;font-size:12px}
-.rg-tbl th{position:sticky;top:0;background:var(--rig-panel);font:600 11.5px/1.2 var(--rig-sans);color:var(--rig-mute);text-align:left;padding:8px 10px;border-bottom:1px solid var(--rig-line2);white-space:nowrap;z-index:1}
+.rg-tbl th{position:sticky;top:0;background:var(--rig-panel);text-align:left;padding:8px 10px;border-bottom:1px solid var(--rig-line2);white-space:nowrap;z-index:1}
 .rg-tbl td{padding:6px 10px;border-bottom:1px solid var(--rig-line);vertical-align:middle}
 .rg-tbl td.rg-num,.rg-tbl th.rg-num{text-align:right}
 .rg-tbl tr.hov:hover td{background:var(--rig-panel2);cursor:pointer}
@@ -365,7 +382,7 @@ button.rg-stat:hover{background:var(--rig-panel2)}
 .rig h3{font-size:14px}
 .rg-lbl{font:500 12px/1.3 var(--rig-sans);color:var(--rig-mute)}
 .rg-small{font-size:12.5px}.rg-tiny{font-size:11.5px}
-.rg-pnl{border-radius:10px;border-color:var(--rig-line)}
+.rg-pnl{border-radius:14px;border-color:var(--rig-line)}
 .rg-tab{font-size:13px;padding-left:14px}
 .rg-tab .k{display:none}
 .rg-tab.act{border-top-color:var(--rig-text)}
@@ -385,9 +402,9 @@ button.rg-stat:hover{background:var(--rig-panel2)}
 .rg-asking{font-size:15px}
 .rg-q-mark{font-family:var(--rig-sans)}
 /* Figures are quantities, not verdicts: they read in ink. */
-.rg-fig{color:var(--rig-text);font-weight:600}
+.rg-fig{color:var(--rig-text);font-weight:500}
 .rg-fig.acc{color:var(--rig-sel-t)}.rg-fig.amb{color:var(--rig-amb-t)}
-.rg-q-card .qv b,.rg-q-answer .big .v{color:var(--rig-text);font-weight:600}
+.rg-q-card .qv b,.rg-q-answer .big .v{color:var(--rig-text);font-weight:500}
 .rg-q-card .n{color:var(--rig-mute)}
 .rg-q-card.lead{box-shadow:none}
 .rg-q-mark-t{box-shadow:inset 0 -1px 0 var(--rig-line3)}
@@ -419,7 +436,7 @@ button.rg-stat:hover{background:var(--rig-panel2)}
 .rg-tbl td{padding:var(--rig-s2) var(--rig-s3)}
 :where(.rg-tbl) :where(td){height:40px}
 .rg-tbl td.rg-num,.rg-tbl th.rg-num{text-align:right}
-.rg-tbl td.rg-num{font-family:var(--rig-sans);font-variant-numeric:tabular-nums}
+.rg-tbl td.rg-num{font-family:var(--rig-mono);font-variant-numeric:tabular-nums}
 /* long explanations live behind "About this" (ui.jsx <About>) */
 .rg-about{max-width:72ch;font-size:13px;color:var(--rig-dim)}
 .rg-about summary{cursor:pointer;width:max-content;max-width:100%;font:500 12.5px/1.4 var(--rig-sans);color:var(--rig-mute);list-style:none;display:flex;align-items:center;gap:6px;padding:2px 0}
@@ -550,7 +567,6 @@ button.rg-stat:hover{background:var(--rig-panel2)}
   .rg-eyebrow,.rg-lbl{font-size:clamp(12px,.38vw,15px)}
   .rg-asking,.rg-brk select{font-size:clamp(16px,.48vw,19px)}
   .rg-tbl{font-size:clamp(14px,.46vw,18px)}
-  .rg-tbl th{font-size:clamp(12px,.39vw,15px)}
   .rg-tbl td{height:52px}
   .rg-home-tbl td{padding-block:clamp(16px,.55vw,22px)}
   .rg-home-models{max-width:none;font-size:clamp(14px,.42vw,17px)}
@@ -560,7 +576,7 @@ button.rg-stat:hover{background:var(--rig-panel2)}
 }
 
 /* ---------------------------------------------------------------- one UI, full window
-   The Rig is HarnessLab's only interface, so it takes the whole window at every size: no document
+   The Rig is TraceHarness's only interface, so it takes the whole window at every size: no document
    is a 1240px column centred between empty margins. Tables, panels, grids and figures use the
    width they are given; running prose keeps its own measure (the 72ch/80ch rules on paragraphs),
    so lines stay readable. Phone gutters are untouched (this block is desktop-only). */
@@ -614,8 +630,8 @@ button.rg-stat:hover{background:var(--rig-panel2)}
    resizable, with its own tabs. Layout rules are desktop-only; the phone layout above stands. */
 .rig{--rig-nav-w:56px;--rig-dock-cw:min(var(--rig-dock-w,420px),60vw)}
 .rig[data-rig-nav="open"]{--rig-nav-w:224px}
-.rg-brand .mk{width:24px;height:24px;border-radius:6px;background:var(--rig-sel);color:var(--rig-sel-ink);display:grid;place-items:center;flex:none}
-.rg-brand .mk svg{stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.rg-brand .mk{width:22px;height:24px;display:grid;place-items:center;flex:none}
+.rg-mark .m1{fill:var(--rig-line3)}.rg-mark .m2{fill:var(--rig-ser4)}.rg-mark .m3{fill:var(--rig-text)}.rg-mark .m4{fill:var(--rig-sel)}
 .rg-cmd-k{display:flex;gap:3px;flex:none}
 body.rg-resizing{cursor:col-resize;user-select:none}
 @media (min-width:761px){
@@ -628,7 +644,7 @@ body.rg-resizing{cursor:col-resize;user-select:none}
   .rg-tb{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,600px) minmax(0,1fr);align-items:center;column-gap:16px;padding:0 12px}
   .rg-tb-l{display:flex;align-items:center;min-width:0;height:100%}
   .rg-brand{height:100%;gap:10px;padding:0 12px 0 4px}
-  .rg-brand b{font:600 14.5px/1 var(--rig-sans);letter-spacing:-.01em;color:var(--rig-text)}
+  .rg-brand b{font:600 16px/1 var(--rig-sans);letter-spacing:-.015em;color:var(--rig-text)}
   .rg-cmd{width:100%;max-width:none;margin:0;height:34px;gap:10px;padding:0 8px 0 12px;background:var(--rig-panel2);border:1px solid var(--rig-line);border-radius:8px}
   .rg-cmd:hover{border-color:var(--rig-line3);background:var(--rig-panel3)}
   .rg-cmd .rg-cmd-ph{font-size:13px;color:var(--rig-mute)}
@@ -639,6 +655,9 @@ body.rg-resizing{cursor:col-resize;user-select:none}
 
   /* sidebar */
   .rg-rail{grid-row:2/4;padding:10px;gap:0;overflow:visible;background:var(--rig-panel)}
+  /* expanded, the rail scrolls instead of running under the status bar on a short window (the
+     collapsed icon rail stays overflow:visible so its tooltips can leave it) */
+  .rig:not([data-rig-nav="closed"]) .rg-rail{overflow-y:auto;overflow-x:hidden;min-height:0;scrollbar-width:thin}
   .rg-nav-g{display:flex;flex-direction:column;gap:2px}
   .rg-nav-g+.rg-nav-g{margin-top:16px}
   .rg-nav-gl{font:600 11px/1 var(--rig-sans);letter-spacing:.05em;text-transform:uppercase;color:var(--rig-mute);padding:4px 9px 8px}
@@ -816,4 +835,120 @@ body.rg-resizing{cursor:col-resize;user-select:none}
   .rg-ws-list li.rg-ws-capl>:nth-child(n+2):not(:last-child){display:none}
   .rg-ws-list li.rg-ws-capo{grid-template-columns:minmax(0,1fr) auto}
   .rg-ws-list li.rg-ws-capo>:last-child{display:none}
+}
+
+/* ================================================================ TraceHarness look (traceharness.dev)
+   Last in the cascade on purpose: it restates the shared primitives in the website's vocabulary
+   (tools/site.css .cx-lbl / .cx-chip / .sev / .btn / .kc). It sets no heights, so the phone and
+   large-screen touch-target rules above still win. Data is mono (ids, steps, numbers, chips,
+   small labels); prose and headings stay IBM Plex Sans. Shared names for the run console:
+   .rg-lbl (section label)  .rg-chip + .on/.ok/.bad/.amb (chip)  .rg-sev + .s1-.s4 (severity)
+   .rg-kc + .k-i/.k-e/.k-t/.k-b/.k-s (event-kind badge)  .rg-btn(.pri/.ghost)  .rg-mono  .rg-num */
+.rg-lbl,.rg-eyebrow{font:500 11px/1.2 var(--rig-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--rig-mute)}
+/* Eyebrows carry task, model, run and dataset ids, which are case-sensitive data: keep their case
+   (the site's eyebrows are prose, so it can uppercase them). .rg-lbl holds fixed labels only. */
+.rg-eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--rig-sel-t);margin-bottom:10px;text-transform:none;letter-spacing:.02em}
+.rg-eyebrow::before{content:"";width:6px;height:6px;border-radius:1px;background:var(--rig-sel);flex:none}
+.rg-nav-gl,.rg-pal-g,.rg-pal-it .k,.rg-fld{font-family:var(--rig-mono);font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase}
+/* table headers: table.data thead th. One rule for every header row (tables and grid rows), so no
+   view declares its own header font. Matrix headers are harness ids (case-sensitive data): keep case. */
+.rg-tbl th,.rg-an-mx thead th,.rg-an-trow.th>*{font:500 11.5px/1.3 var(--rig-mono);letter-spacing:.04em;text-transform:uppercase;color:var(--rig-mute);white-space:nowrap}
+.rg-an-mx thead th,.rg-tbl.rg-keep th{text-transform:none}   /* .rg-keep: a header row that names runs, models or harnesses keeps case in every cell */
+.rg-tbl thead th,.rg-an-mx thead th,.rg-an-trow.th{background:var(--rig-panel2)}
+.rg-pnl>.rg-tblwrap:first-child,.rg-pnl>.rg-an-trow.th:first-child{border-top-left-radius:13px;border-top-right-radius:13px}
+.rg-pnl>.rg-tblwrap:last-child{border-bottom-left-radius:13px;border-bottom-right-radius:13px}
+.rg-fld{font-size:11px}
+.rg-nav-gl{color:var(--rig-mute)}
+.rg-kbd,.rg-sb,.rg-sb .it,.rg-sb-docks .n,.rg-tab .k,.rg-mtab .n,.rg-dock-tab .n{font-family:var(--rig-mono)}
+.rg-sb{font-size:11.5px}
+.rg-crumb{font-family:var(--rig-mono);font-size:12px}
+.rg-kv dt{font-family:var(--rig-mono);font-size:11.5px}
+.rg-kv dd{font-family:var(--rig-mono)}
+.rg-hb .nm,.rg-hb .vl{font-family:var(--rig-mono)}
+.rg-hb .nm{font-size:12px}
+.rg-fig{font-family:var(--rig-mono);font-weight:500;letter-spacing:-.03em}
+.rg-chain{font-family:var(--rig-mono)}
+.rg-nav-sub-it .n,.rg-nav-sub-it .ct,.rg-dsw-o small{font-family:var(--rig-mono)}
+.rg-an-nb .n,.rg-traj-nav-it .n{font-family:var(--rig-mono)}
+.rig code,.rig .rg-code{border-radius:6px}
+
+/* chips: .cx-chip */
+.rg-tag,.rg-fchip,.rg-chip{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 8px;border:1px solid var(--rig-line2);border-radius:6px;font:500 11.5px/1 var(--rig-mono);color:var(--rig-dim);white-space:nowrap;background:none;max-width:100%}
+/* a chip never pokes out of its cell: <Tag> wraps plain text in .rg-ell, which truncates with an ellipsis */
+.rg-tag>.rg-ell{line-height:1.3}
+.rg-tag.sky,.rg-chip.ok{color:var(--rig-sky-t);border-color:color-mix(in srgb,var(--rig-sky) 40%,transparent);background:none}
+.rg-tag.red,.rg-chip.bad{color:var(--rig-red-t);border-color:color-mix(in srgb,var(--rig-red) 40%,transparent);background:none}
+.rg-tag.acc,.rg-chip.on{color:var(--rig-sel-t);border-color:color-mix(in srgb,var(--rig-sel-t) 45%,transparent);background:none}
+.rg-tag.amb,.rg-chip.amb{color:var(--rig-amb-t);border-color:color-mix(in srgb,var(--rig-amb) 40%,transparent);background:none}
+.rg-tag.dash{border-style:dashed;color:var(--rig-mute)}
+.rg-tag.nc{text-transform:none;letter-spacing:0}
+.rg-fchip{color:var(--rig-red-t);border-color:color-mix(in srgb,var(--rig-red) 40%,transparent);background:none}
+.rg-fchip.he{color:var(--rig-dim);border-color:var(--rig-line3);background:none}
+.rg-pal-in .rg-pal-chip{font-family:var(--rig-mono);border-radius:6px}
+.rg-pin{border-radius:6px;font-family:var(--rig-mono);font-size:11.5px}
+.rg-chain button,.rg-chain .off{border-radius:6px;padding:4px 8px}
+/* severity: .sev */
+.rg-sev{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 8px;border-radius:6px;font:500 11px/1 var(--rig-mono);letter-spacing:.04em;text-transform:uppercase;background:var(--rig-panel3);color:var(--rig-dim)}
+.rg-sev::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.rg-sev.s4{background:var(--rig-red-bg);color:var(--rig-red-t)}.rg-sev.s3{background:var(--rig-amb-bg);color:var(--rig-amb-t)}.rg-sev.s2{background:var(--rig-sel-bg);color:var(--rig-sel-t)}
+/* event-kind badge: .kc */
+.rg-kc{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:4px;font:600 11px/1 var(--rig-mono);flex:none;background:var(--rig-panel3);color:var(--rig-dim)}
+.rg-kc.k-e{background:var(--rig-sel-bg2);color:var(--rig-sel-t)}
+.rg-kc.k-t{background:var(--rig-sky-bg2);color:var(--rig-sky-t)}
+.rg-kc.k-b{background:var(--rig-amb-bg);color:var(--rig-amb-t)}
+.rg-kc.k-s{background:var(--rig-text);color:var(--rig-bg)}
+.rg-v{font-family:var(--rig-mono);border-radius:4px}
+.rg-vt{font-family:var(--rig-mono);font-weight:500}
+
+/* buttons: .btn (primary = accent fill + white text; default/ghost = bordered) */
+.rg-btn{border-radius:8px;font-weight:500;background:transparent}
+.rg-btn.pri{background:var(--rig-sel);border-color:var(--rig-sel);color:var(--rig-sel-ink);font-weight:500}
+.rg-btn.pri:hover{filter:none;background:var(--rig-sel-h);border-color:var(--rig-sel-h)}
+.rg-btn.ghost{background:none;border-color:var(--rig-line2);color:var(--rig-text)}
+.rg-btn.ghost:hover{border-color:var(--rig-line3);background:var(--rig-panel2)}
+.rg-btn.warn{font-weight:500}
+.rg-tbtn{border-radius:8px}
+.rg-tbtn.on{border-color:var(--rig-line2)}
+.rg-seg{border-radius:8px}
+.rg-inp,.rg-selc{border-radius:8px}
+.rg-cmd{border-radius:8px}
+.rg-cmd .rg-cmd-ph{font-family:var(--rig-sans)}
+.rg-sw .rg-sw-tr{border-radius:9px}
+
+/* surfaces: 1px line borders, cards 12px */
+.rg-pnl{border-radius:14px;border-color:var(--rig-line)}
+.rg-pnl>.rg-pnl-h:first-child{border-radius:13px 13px 0 0}
+.rg-stats{border-radius:14px}
+.rg-stats>.rg-stat:first-child{border-radius:13px 0 0 13px}.rg-stats>.rg-stat:last-child{border-radius:0 13px 13px 0}
+.rg-pre{border-radius:8px}
+.rg-note{border-radius:8px}
+.rg-pal{border-radius:14px}
+.rg-pop{border-radius:12px}
+.rg-sheet{border-radius:14px 14px 0 0}
+.rg-toast{border-radius:8px;font-family:var(--rig-sans)}
+.rg-pal-it .k{width:72px}
+.rg-dh h1{letter-spacing:-.02em}
+.rg-tbl .rg-tlink{font-family:var(--rig-mono);font-size:12.5px}
+.rg-pal-in input:focus-visible{outline:none;box-shadow:none}
+
+/* ================================================================ Site accuracy pass (traceharness.dev tools/site.css)
+   Values copied from the website's stylesheet: headings (h1-h4 500 / -.02em / balance), the hero's
+   dot-grid backdrop, the lede, the stat figure (.risk b), and the .icon-btn. Buttons, panels and
+   figures are restated in place above. Eyebrows keep their case (they carry case-sensitive ids). */
+.rig h1,.rig h2,.rig h3{font-weight:500;letter-spacing:-.02em;text-wrap:balance}
+.rig h2{letter-spacing:-.015em}
+.rig .rg-dh h1{font-size:26px;line-height:1.15}
+.rg-dh{position:relative;isolation:isolate}
+/* a field of dots behind the title, as behind the site's hero: tall enough for several rows (one masked row
+   read as a stray dotted rule), fading out from the title */
+.rg-dh::before{content:"";position:absolute;z-index:-1;pointer-events:none;inset:-56px -24px -28px -24px;
+  background-image:radial-gradient(var(--rig-dot) 1px,transparent 1.2px);background-size:22px 22px;background-position:11px 11px;
+  -webkit-mask-image:radial-gradient(ellipse 60% 75% at 22% 45%,var(--rig-text) 25%,transparent 78%);mask-image:radial-gradient(ellipse 60% 75% at 22% 45%,var(--rig-text) 25%,transparent 78%)}
+.rig .rg-dh p,.rg-an-sub,.rg-traj-lede,.rg-ws-intro p{color:var(--rig-dim);font-size:15px;line-height:1.6;max-width:62ch}
+@media (max-width:760px){.rig .rg-dh h1{font-size:22px}}
+@media (min-width:1800px){.rig .rg-dh h1{font-size:clamp(26px,1.1vw,36px)}.rig .rg-dh p,.rg-an-sub,.rg-traj-lede,.rg-ws-intro p{font-size:clamp(15px,.45vw,18px)}}
+/* top-bar icon buttons: site .icon-btn (34px, radius 8, line2 border, dim -> text) */
+@media (min-width:761px) and (max-width:1799px){
+  .rg-tbtn.ico{width:34px;min-width:34px;height:34px;border-color:var(--rig-line2);color:var(--rig-dim);border-radius:8px}
+  .rg-tbtn.ico:hover{color:var(--rig-text);border-color:var(--rig-line3);background:none}
 }

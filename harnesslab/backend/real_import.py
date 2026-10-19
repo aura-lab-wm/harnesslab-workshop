@@ -11,7 +11,7 @@ Mapping SWE-agent's command language onto the lab's tool surface:
   submit         -> submit                    other -> bash
 """
 from __future__ import annotations
-import json, os, re, time
+import hashlib, json, os, re, time
 from collections import Counter
 
 from harnesslab.core.real_traj import load_nebius, parse_trajectory, patch_stats, classify_command, features as real_features
@@ -59,11 +59,23 @@ def _exit_reason(status: str) -> str:
     return "no_action" if not s else s[:24]
 
 
+#: The sample the package ships. It keeps the run ids it was published with.
+BUNDLED = "real_swe_agent_500"
+
+
+def id_prefix(out_root: str) -> str:
+    """Run-id prefix for a results directory. The console resolves run:<id> across every dataset, and
+    the loader always streams the same first rows, so two downloads would otherwise share ids (a
+    student's fresh sample and the bundled one). Every directory but the bundled one gets its own tag."""
+    name = os.path.basename(os.path.normpath(out_root))
+    return "real" if name == BUNDLED else "real-" + hashlib.sha1(name.encode()).hexdigest()[:4]
+
+
 def convert(row: dict, out_root: str, idx: int) -> RunSummary:
     steps = parse_trajectory(row["trajectory"])
     inst = row["instance_id"]
     model = row.get("model_name") or "swe-agent"
-    run_id = f"real-{idx:04d}-{re.sub(r'[^A-Za-z0-9]+', '_', inst)[:40]}"
+    run_id = f"{id_prefix(out_root)}-{idx:04d}-{re.sub(r'[^A-Za-z0-9]+', '_', inst)[:40]}"
     run_dir = os.path.join(out_root, run_id)
     os.makedirs(run_dir, exist_ok=True)
     harness = _harness_for(model)
@@ -149,8 +161,15 @@ def convert(row: dict, out_root: str, idx: int) -> RunSummary:
 
 
 def import_runs(n: int, out_root: str, seed: int = 0, model: str | None = None, progress=None) -> dict:
+    rows = load_nebius(n, seed=seed, model=model, progress=(lambda d, t, unit: progress(d, t, "download", unit)) if progress else None)
+    return write_runs(rows, out_root, progress)
+
+
+def write_runs(rows: list[dict], out_root: str, progress=None) -> dict:
+    """Write loaded nebius rows as a results directory: one run per row, index.jsonl and
+    real_features.jsonl. The workbench download and exercise 7's --to-console both write through
+    here, so the two give the same directory (and the Trajectory features view works on both)."""
     os.makedirs(out_root, exist_ok=True)
-    rows = load_nebius(n, seed=seed, model=model)
     feats = []
     with open(os.path.join(out_root, "index.jsonl"), "w") as idx:
         for i, r in enumerate(rows):
@@ -158,7 +177,7 @@ def import_runs(n: int, out_root: str, seed: int = 0, model: str | None = None, 
             idx.write(json.dumps(s.__dict__) + "\n")
             feats.append(real_features(r))
             if progress and (i % 25 == 0 or i == len(rows) - 1):
-                progress(i + 1, len(rows))
+                progress(i + 1, len(rows), "write", "runs")
     with open(os.path.join(out_root, "real_features.jsonl"), "w") as f:
         for x in feats:
             f.write(json.dumps(x) + "\n")
@@ -171,6 +190,7 @@ CARD = {"steps": "31.3 vs 58.4", "files_edited": "1.33 vs 2.17", "lines_edited":
 
 def analysis(out_root: str) -> dict:
     from harnesslab.core.analysis import bootstrap_ci, ochiai_attribution
+    from harnesslab.core.real_traj import binary_features
     p = os.path.join(out_root, "real_features.jsonl")
     if not os.path.exists(p):
         return {"error": "no real_features.jsonl in this directory"}
@@ -200,4 +220,31 @@ def analysis(out_root: str) -> dict:
     by_model = [{"model": mdl, "n": c, "resolved": sum(1 for r in rows if r["model"] == mdl and r["resolved"]) / c} for mdl, c in models.items()]
     return {"n": len(rows), "resolved": len(ok), "unresolved": len(ko), "table": table, "steps_ci_unresolved": list(ci),
             "exit_status": dict(exits.most_common()), "action_mix": {k: norm(v) for k, v in mix.items()},
-            "ochiai": ochiai_attribution(rows), "by_model": by_model}
+            "ochiai": _with_examples(ochiai_attribution(rows), rows, _run_ids(out_root, len(rows)), binary_features), "by_model": by_model}
+
+
+def _run_ids(out_root: str, n: int) -> list:
+    """Run id of each real_features.jsonl row. import_runs writes index.jsonl and real_features.jsonl
+    in the same order, so line i of one is line i of the other; a directory where the counts differ
+    (edited by hand) gets no ids rather than wrong ones."""
+    p = os.path.join(out_root, "index.jsonl")
+    ids = [json.loads(l).get("run_id") for l in open(p) if l.strip()] if os.path.exists(p) else []
+    return ids if len(ids) == n else [None] * n
+
+
+def _with_examples(att: list, rows: list, ids: list, binary_features, k_fail: int = 3, k_pass: int = 2) -> list:
+    """Add, per feature, a few runs that show it: failed ones (examples_fail) and resolved ones
+    (examples_pass, the coincidental coverage), each from a different task, so the console can open
+    the recorded trajectory behind a score."""
+    feats = [binary_features(r) for r in rows]
+    for a in att:
+        name = a["feature"]
+        for key, want, k in (("examples_fail", False, k_fail), ("examples_pass", True, k_pass)):
+            out, seen = [], set()
+            for rid, r, f in zip(ids, rows, feats):
+                if rid and f.get(name) and bool(r["resolved"]) is want and r["instance_id"] not in seen:
+                    out.append(rid); seen.add(r["instance_id"])
+                    if len(out) == k:
+                        break
+            a[key] = out
+    return att

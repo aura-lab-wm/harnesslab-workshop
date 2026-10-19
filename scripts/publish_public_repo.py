@@ -1,9 +1,9 @@
-"""Publish the school package as the public workshop repository.
+"""Publish the school package as the public repository students open in GitHub Codespaces.
 
-    python3 scripts/publish_workshop_repo.py            # build, sync, commit, push
-    python3 scripts/publish_workshop_repo.py --dry-run  # build and sync, show the diff, push nothing
+    python3 scripts/publish_public_repo.py            # build, sync, commit, push
+    python3 scripts/publish_public_repo.py --dry-run  # build and sync, show the diff, push nothing
 
-Students open GitHub Codespaces from the public repository (docs/WORKSHOP.md). That repository
+Students open GitHub Codespaces from the public repository (docs/CODESPACES.md). That repository
 holds exactly what the school package holds -- the same allow-list, so no instructor solutions,
 captured sessions, keys, local state or Git history -- and nothing else. This checkout stays
 private; the public repository gets one commit per publish, naming the private commit it came from.
@@ -21,8 +21,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REPO = 'aura-lab-wm/harnesslab-workshop'
-DESCRIPTION = ('HarnessLab workshop: measure LLM coding agents as model x harness cells. '
-               'Open in GitHub Codespaces; bring your own OpenRouter key.')
+DESCRIPTION = ('TraceHarness: measure coding agents from their trajectories. '
+               'Open in GitHub Codespaces; no key needed for the recorded datasets.')
 PACKAGE_DIR = 'harnesslab-school'
 
 
@@ -68,7 +68,7 @@ def main() -> None:
         raise SystemExit('Commit or stash tracked changes first: the public commit names a private commit.')
     source = run(['git', 'rev-parse', '--short', 'HEAD'], cwd=ROOT, capture=True)
 
-    with tempfile.TemporaryDirectory(prefix='hl-workshop-') as tmp:
+    with tempfile.TemporaryDirectory(prefix='hl-publish-') as tmp:
         tmp = Path(tmp)
         archive = tmp / 'package.zip'
         run(['python3', str(ROOT / 'scripts/build_school_package.py'), '--out', str(archive)])
@@ -89,7 +89,7 @@ def main() -> None:
         if args.dry_run:
             print('Dry run: nothing pushed.')
             return
-        run(['git', 'commit', '--quiet', '-m', f'Workshop package from harnesslab {source}'], cwd=work)
+        run(['git', 'commit', '--quiet', '-m', f'TraceHarness from harnesslab {source}'], cwd=work)
         run(['git', 'branch', '-M', 'main'], cwd=work)
         run(['git', 'push', '--quiet', 'origin', 'main'], cwd=work)
         print(f'Published https://github.com/{args.repo} from {source}.')

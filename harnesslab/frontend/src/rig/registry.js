@@ -35,6 +35,7 @@ import * as m_pending from './views/_pending.jsx'
 import * as m_analysis from './views/analysis.jsx'
 import * as m_buddy from './views/buddy.jsx'
 import * as m_casefile from './views/casefile.jsx'
+import * as m_console from './views/console.jsx'
 import * as m_dataset from './views/dataset.jsx'
 import * as m_home from './views/home.jsx'
 import * as m_questions from './views/questions.jsx'
@@ -45,6 +46,7 @@ export const modules = {
   './views/analysis.jsx': m_analysis,
   './views/buddy.jsx': m_buddy,
   './views/casefile.jsx': m_casefile,
+  './views/console.jsx': m_console,
   './views/dataset.jsx': m_dataset,
   './views/home.jsx': m_home,
   './views/questions.jsx': m_questions,

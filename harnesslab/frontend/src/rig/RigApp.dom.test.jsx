@@ -202,7 +202,7 @@ describe('Rig shell', () => {
   it('in Analysis the sidebar carries the study steps; a step replaces the tab in place', () => {
     const { container } = renderRig('#/rig/an:mini:outcomes', { storage: { 'rig.nav': 'open' } })
     const steps = within(screen.getByRole('group', { name: 'Analysis steps' }))
-    expect(steps.getAllByRole('button').map((b) => b.textContent)).toEqual(['1Family matrix', '2Outcomes', '3Comparison', '4Trajectories', '5Judge & integrity', '6Experiment', '7Report', '8Run setup'])
+    expect(steps.getAllByRole('button').map((b) => b.textContent)).toEqual(['1Family matrix', '2Outcomes', '3Comparison', '4Trajectories', '5Trajectory features', '6Judge & integrity', '7Experiment', '8Report', '9Run setup'])
     expect(steps.getByRole('button', { name: /Outcomes/ }).getAttribute('aria-current')).toBe('page')
     act(() => { fireEvent.click(steps.getByRole('button', { name: /Report/ })) })
     expect(container.querySelector('.rg-doc').dataset.spec).toMatch(/^an:mini:report/)

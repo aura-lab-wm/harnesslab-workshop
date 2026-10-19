@@ -669,7 +669,7 @@ class RealImportIn(BaseModel):
     out: Optional[str] = None
 
 
-REAL_STATE = {"status": "idle", "progress": None, "error": None, "result": None}
+REAL_STATE = {"status": "idle", "progress": None, "phase": None, "unit": None, "error": None, "result": None}
 
 
 @app.post("/api/real/import")
@@ -681,12 +681,12 @@ def real_import(r: RealImportIn):
         raise HTTPException(400, "bad results dir name")
 
     def work():
-        REAL_STATE.update(status="running", progress=[0, r.n], error=None, result=None)
+        REAL_STATE.update(status="running", progress=None, phase="download", unit=None, error=None, result=None)
         BUS.publish("real_import", status="running", out=out)
         try:
-            def prog(i, n):
-                REAL_STATE["progress"] = [i, n]
-                BUS.publish("real_import", status="running", out=out, progress=[i, n])
+            def prog(i, n, phase="write", unit="runs"):   # "download" (MB, then trajectories kept), then "write"
+                REAL_STATE.update(progress=[i, n], phase=phase, unit=unit)
+                BUS.publish("real_import", status="running", out=out, progress=[i, n], phase=phase, unit=unit)
             res = RI.import_runs(r.n, os.path.join(M.RUNS_ROOT, out), seed=r.seed, model=r.model, progress=prog)
             REAL_STATE.update(status="done", result={**res, "out": out})
         except Exception as e:

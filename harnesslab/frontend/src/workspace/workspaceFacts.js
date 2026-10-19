@@ -33,7 +33,7 @@ export function reviewKey(dataset,runId) { return `hs.review.${JSON.stringify([d
 export function reviewReport({dataset,run,record,note,url}) {
  const summary={...run,...record.summary}
  return [
-  '# HarnessLab investigation',`Dataset: ${dataset}`,`Task: ${run.task_id}`,`Model: ${run.model}`,`Harness: ${run.harness_id}`,`Run: ${run.run_id}`,
+  '# TraceHarness investigation',`Dataset: ${dataset}`,`Task: ${run.task_id}`,`Model: ${run.model}`,`Harness: ${run.harness_id}`,`Run: ${run.run_id}`,
   `Hidden tests: ${verdict(summary.hidden_pass)}`,`Visible tests: ${verdict(summary.visible_pass)}`,`Exit: ${summary.exit_reason||'Not recorded'}`,
   '', '## Recorded checkpoints',...findings({...record,summary}).map(f=>`- ${f.title}${f.index>=0?` (event ${f.index+1})`:''}: ${f.detail}`),
   'Root cause is not established by these checkpoints alone.', '', '## Researcher note',`Review status: ${note.status||'unreviewed'}`,note.text||'No note saved.',

@@ -26,7 +26,7 @@
       "title": "Start here",
       "paths": [
         "docs/STUDENT_GUIDE.md",
-        "docs/WORKSHOP.md",
+        "docs/CODESPACES.md",
         "README.md",
         "SCHOOL_PACKAGE.md",
         "HANDOUT.md",
@@ -90,7 +90,7 @@
     "docs/img/student-guide/",
     "docs/student-lab.md",
     "docs/STUDENT_GUIDE.md",
-    "docs/WORKSHOP.md",
+    "docs/CODESPACES.md",
     "exercises/",
     "tasks/",
     "harnesses/",

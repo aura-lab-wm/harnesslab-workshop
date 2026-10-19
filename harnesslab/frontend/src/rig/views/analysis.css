@@ -73,7 +73,7 @@
 /* ---------- matrix (family, delta, cell grid) */
 .rg-an-mxp{min-width:0;overflow:hidden}
 .rg-an-mx{border-collapse:collapse;font-size:13px;width:100%}
-.rg-an-mx th{font:600 12px/1.2 var(--rig-sans);color:var(--rig-mute);padding:12px 14px;text-align:left;border-bottom:1px solid var(--rig-line2);white-space:nowrap;background:var(--rig-panel)}
+.rg-an-mx th{padding:12px 14px;text-align:left;border-bottom:1px solid var(--rig-line2);background:var(--rig-panel)}
 .rg-an-mx th:first-child{position:sticky;left:0;z-index:2}
 .rg-an-mx td{border:1px solid var(--rig-line);padding:0;vertical-align:top;min-width:136px}
 .rg-an-mx tr:last-child td{border-bottom:0}
@@ -211,19 +211,20 @@
 .rg-an-srch{flex:1 1 220px;min-width:0}
 .rg-an-segb{border:0;border-left:1px solid var(--rig-line2);background:none;padding:0 10px;min-height:28px;font:500 12px/1 var(--rig-sans);color:var(--rig-dim);white-space:nowrap;cursor:pointer}
 .rg-an-segb:hover{color:var(--rig-text);background:var(--rig-panel2)}
-.rg-an-trow{display:grid;grid-template-columns:minmax(170px,1.1fr) minmax(0,1.5fr) 84px 110px 90px 150px;gap:var(--rig-s4);align-items:center;min-height:56px;padding:12px var(--rig-s4);border-bottom:1px solid var(--rig-line);min-width:0;box-sizing:border-box}
+.rg-an-trow{display:grid;grid-template-columns:minmax(170px,1.1fr) minmax(0,1.5fr) 84px 110px 90px 176px;gap:var(--rig-s4);align-items:center;min-height:56px;padding:12px var(--rig-s4);border-bottom:1px solid var(--rig-line);min-width:0;box-sizing:border-box}
 .rg-an-trow:last-child{border-bottom:0}
 .rg-an-trow>*{min-width:0}
 .rg-an-trow:hover:not(.th){background:var(--rig-panel2)}
-.rg-an-trow.th{min-height:40px;font:600 12px/1.2 var(--rig-sans);color:var(--rig-mute);border-bottom-color:var(--rig-line2);padding-top:10px;padding-bottom:10px}
+.rg-an-trow.th{min-height:40px;border-bottom-color:var(--rig-line2);padding-top:10px;padding-bottom:10px}
 .rg-an-trow .t-cnt,.rg-an-trow .t-tok{font-variant-numeric:tabular-nums}
 .rg-an-trow .t-name{display:flex;flex-direction:column;gap:3px}
 .rg-an-trow .t-name .rg-an-modes{margin-top:3px}
-.rg-an-tn{gap:6px}
+.rg-an-tn{gap:4px 6px;flex-wrap:wrap}
+.rg-an-tn .rg-tlink{min-width:0;overflow-wrap:anywhere}
 .rg-an-trow .t-pm{display:none}
 .rg-an-pager{gap:var(--rig-s2);padding:var(--rig-s3) var(--rig-s4);border-top:1px solid var(--rig-line)}
 @container rgdoc (max-width:1000px){
-  .rg-an-trow{grid-template-columns:minmax(150px,1fr) minmax(0,1.5fr) 64px 90px}
+  .rg-an-trow{grid-template-columns:minmax(150px,1fr) minmax(0,1.5fr) 84px 90px}
   .rg-an-trow .t-tok,.rg-an-trow .t-probe{display:none}
   .rg-an-trow .t-pm{display:inline}
 }
@@ -244,3 +245,32 @@
 }
 /* the 2×2 starts on the stat labels above it */
 .rg-an-o2>.rg-an-2x2 :is(th,td):first-child{padding-left:0}
+
+/* ---------- trajectory features (an:<dir>:features) */
+.rg-an-ft td{vertical-align:middle}
+.rg-an-ftn{color:var(--rig-text)}
+.rg-an-ftr{display:flex;align-items:center;gap:8px;min-width:0}
+.rg-an-ftr .rg-tiny{white-space:nowrap}
+.rg-an-rate{position:relative;flex:none;width:72px;height:6px;border-radius:3px;background:var(--rig-panel3);overflow:hidden}
+.rg-an-rate>i{position:absolute;inset:0 auto 0 0;border-radius:3px;background:var(--rig-dim)}
+.rg-an-rate.red>i{background:var(--rig-red)}
+.rg-an-rate.sky>i{background:var(--rig-sky)}
+.rg-an-ftx{gap:6px}
+.rg-an-ftnote{margin-top:var(--rig-s2)}
+.rg-an-ftgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 var(--rig-s5)}
+.rg-an-mix{display:flex;flex-direction:column;gap:12px}
+.rg-an-mixr{display:grid;grid-template-columns:96px minmax(0,1fr);align-items:center;gap:12px}
+.rg-an-mixb{display:flex;height:14px;border-radius:4px;overflow:hidden;background:var(--rig-panel3)}
+.rg-an-mixb>i{display:block;height:100%}
+.rg-an-mix i.a0{background:var(--rig-ser1)}
+.rg-an-mix i.a1{background:var(--rig-ser2)}
+.rg-an-mix i.a2{background:var(--rig-ser3)}
+.rg-an-mix i.a3{background:var(--rig-ser4)}
+.rg-an-mix i.a4{background:var(--rig-ser5)}
+.rg-an-mix i.a5{background:var(--rig-ser6)}
+.rg-an-mixk{gap:6px 18px;padding-top:4px}
+.rg-an-mixk .rg-row{gap:6px}
+.rg-an-mixk i{display:inline-block;width:10px;height:10px;border-radius:2px;flex:none}
+@container rgdoc (max-width:900px){
+  .rg-an-ftgrid{grid-template-columns:minmax(0,1fr)}
+}

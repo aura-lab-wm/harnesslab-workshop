@@ -1,5 +1,5 @@
 /* ====================================================================================
-   Rig · RigApp.jsx — the workbench shell at #/rig, HarnessLab's one UI (ported from the Rig prototype:
+   Rig · RigApp.jsx — the workbench shell at #/rig, TraceHarness's one UI (ported from the Rig prototype:
    directions/rig/src/00_core.js, 90_boot.js, shell.html, style.css).
 
    Titlebar (palette button, Buddy, split, maximize, theme) · left rail · one or two panes of document
@@ -28,7 +28,6 @@ import { TaskSideNav } from './views/trajectory.jsx'
 import { Icon, Kbd, MOD, NotFound, EvidenceChain, Toaster, toast as showToast, Seg, NextSteps } from './ui'
 
 const cx = (...a) => a.filter(Boolean).join(' ')
-import './rig-fonts.css'
 import './rig.css'
 
 const LAB_KEY = 'hs.studentLab'
@@ -401,7 +400,7 @@ export default function RigApp() {
 
   useEffect(() => {
     const t = tabInfo(curSpec).title
-    document.title = `${t} · HarnessLab`
+    document.title = `${t} · TraceHarness`
   })
 
   const nTabs = panes.reduce((a, p) => a + p.tabs.length, 0)
@@ -420,7 +419,7 @@ export default function RigApp() {
         <a className="rg-skip" href="#rig-doc-main" data-el="skip-link" onClick={(e) => { e.preventDefault(); document.getElementById('rig-doc-main')?.focus() }}>Skip to document</a>
         <header className="rg-tb">
           <div className="rg-tb-l">
-            <button type="button" className="rg-brand" data-el="brand" aria-label="HarnessLab home" onClick={() => openTab('home')}><BrandMark /><b>HarnessLab</b></button>
+            <button type="button" className="rg-brand" data-el="brand" aria-label="TraceHarness home" onClick={() => openTab('home')}><BrandMark /><b>TraceHarness</b></button>
           </div>
           <button type="button" className="rg-mtab" aria-label={`Switch document (${nTabs} open)`} onClick={() => setSheet(route.sheet ? null : 'tabs')}><Icon name="tabs" size={16} /><span className="tt">{curInfo.title}</span><span className="n">{nTabs}</span></button>
           <button type="button" className="rg-cmd" aria-label="Open command palette" onClick={() => setPalette(true)}><Icon name="search" size={15} /><span className="rg-cmd-ph">Search datasets, runs, tasks and views…</span><span className="rg-cmd-k"><Kbd>{MOD}</Kbd><Kbd>K</Kbd></span></button>
@@ -482,7 +481,7 @@ export default function RigApp() {
           {condition && condition.model && <button type="button" className="it" data-pop="cond" aria-label="Change model and harness" aria-expanded={!!pop && pop.id === 'cond'} onClick={(e) => setPop(pop && pop.id === 'cond' ? null : { id: 'cond', left: e.currentTarget.getBoundingClientRect().left })}>{short(condition.model)} · {condition.harness} ▾</button>}
           <button type="button" className="it" data-el="harness-oracle-picker" aria-label="Change test suite and harness" aria-expanded={!!pop && pop.id === 'oracle'} onClick={(e) => setPop(pop && pop.id === 'oracle' ? null : { id: 'oracle', left: e.currentTarget.getBoundingClientRect().left })}>oracle <b className={route.oracle === 'hidden' ? '' : 'alt'}>{route.oracle}</b> ▾</button>
           {!IS_STATIC && jobs.data.running > 0 && <span className="it" title={`${jobs.data.active.length} job(s) active`}><span className="rg-dot" />{jobs.data.running} {jobs.data.running === 1 ? 'run' : 'runs'} in progress</span>}
-          {build.stale && <button type="button" className="it rg-sb-update" data-el="update-ready" title="HarnessLab was rebuilt on the server. Reload to use it (your tabs are kept)." onClick={() => location.reload()}>New version ready · reload</button>}
+          {build.stale && <button type="button" className="it rg-sb-update" data-el="update-ready" title="TraceHarness was rebuilt on the server. Reload to use it (your tabs are kept)." onClick={() => location.reload()}>New version ready · reload</button>}
           {lab ? <button type="button" className="it lab-on" data-el="guided-indicator" onClick={() => openTab('guide')}>Guided analysis on</button>
             : <button type="button" className="it" data-el="student-lab-toggle" title="Turn on the Student Lab reading guide" onClick={() => setLab(true)}>Student Lab off</button>}
           <span className="sp" />
@@ -532,9 +531,17 @@ function RailButton({ spec, icon, label, on, el, onGo }) {
       onClick={(e) => onGo(spec, { side: e.metaKey || e.ctrlKey })}><Icon name={icon} size={18} /><span className="lbl">{label}</span><span className="tip">{label}</span></button>
   )
 }
-/** The product mark: the harness (two uprights and a crossbar) around the model (the node). */
+/** The TraceHarness mark: four bars of a trace, the last one the accent (same SVG as traceharness.dev). */
 function BrandMark() {
-  return <span className="mk" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M6 5v14M18 5v14M6 12h12" /><circle cx="12" cy="12" r="2.4" /></svg></span>
+  return (
+    <span className="mk" aria-hidden="true">
+      <svg className="rg-mark" viewBox="0 0 22 14" width="22" height="14">
+        <rect x="0" y="3" width="3" height="8" className="m1" /><rect x="5" y="3" width="3" height="8" className="m1" />
+        <rect x="10" y="3" width="3" height="8" className="m2" /><rect x="15" y="3" width="3" height="8" className="m3" />
+        <rect x="20" y="1" width="2" height="12" className="m4" />
+      </svg>
+    </span>
+  )
 }
 /** Top of the sidebar: which dataset the workbench is about, and a one-click way to change it. */
 function DatasetSwitch({ condition, datasets }) {

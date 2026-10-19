@@ -9,7 +9,7 @@ const runs = joinOutcomes(normRuns(miniRuns(), MINI), { ...miniOutcomes(), byId:
 const outcomes = { ...F[`/outcomes/${MINI}`], byId: Object.fromEntries(F[`/outcomes/${MINI}`].modes.map((m) => [m.id, m])) }
 const input = (o = {}) => ({ dir: MINI, row, cond: { dir: MINI, model: 'acme/alpha-1', harness: 'baseline' }, oracle: 'hidden', runs,
   metrics: F[`/results/${MINI}/metrics`], experiment: F[`/results/${MINI}/experiment`], oracleData: F[`/results/${MINI}/oracle`],
-  integrity: F[`/results/${MINI}/integrity?harness=baseline`], sentinel: F['/sentinel'], report: F[`/results/${MINI}/report`], outcomes, ...o })
+  integrity: F[`/results/${MINI}/integrity?harness=baseline`], sentinel: F['/sentinel'], report: F[`/results/${MINI}/report?harness=baseline`], outcomes, ...o })
 const text = (a) => a.sentence.map((p) => (typeof p === 'string' ? p : p.mark)).join('')
 const ask = (id, o) => answerQuestion(QMAP[id], input(o))
 

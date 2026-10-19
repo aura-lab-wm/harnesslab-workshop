@@ -166,10 +166,13 @@ export function resolveModel(row, m) {
   if (!row || !m) return null
   return row.models.find((x) => x === m || short(x) === m) || null
 }
-/** The condition a dataset opens on: first model alphabetically, baseline if it exists. */
+/** The condition a dataset opens on: the model with the most runs (alphabetical on a tie, or when
+ *  the row carries no counts), baseline if it exists. A larger SWE-agent sample adds a model with a
+ *  handful of runs that sorts first; opening on it would answer every question from two tasks. */
 export function defaultCondition(row) {
   if (!row) return { model: null, harness: null }
-  const ms = [...row.models].sort()
+  const n = row.model_runs || {}
+  const ms = [...row.models].sort((a, b) => (n[b] || 0) - (n[a] || 0) || (a < b ? -1 : a > b ? 1 : 0))
   return { model: ms[0] || null, harness: row.harnesses.includes('baseline') ? 'baseline' : row.harnesses[0] || null }
 }
 /** Resolve possibly-short / possibly-invalid model+harness against a dataset row. */
@@ -208,7 +211,7 @@ function once(obj, tag, fn) {
 export function normOverview(raw) {
   return once(raw, 'ov', () => {
     const results = ((raw && raw.results) || []).map((r) => ({
-      name: r.name, runs: r.runs, harnesses: r.harnesses || [], models: r.models || [], tasks: r.tasks || [],
+      name: r.name, runs: r.runs, harnesses: r.harnesses || [], models: r.models || [], model_runs: r.model_runs || null, tasks: r.tasks || [],
       pass_rate: r.pass_rate ?? null, updated: r.updated || '', kind: datasetKind(r),
     }))
     return { results, harnesses: (raw && raw.harnesses) || [], tasks: (raw && raw.tasks) || [], key_present: !!(raw && raw.key_present), jobs: (raw && raw.jobs) || [] }
@@ -255,6 +258,7 @@ export const paths = {
   repeats: (dir, harness) => `/repeats/${E(dir)}${harness ? '?harness=' + E(harness) : ''}`,
   runRepeats: (dir, id) => `/repeats/${E(dir)}/run/${E(id)}`,
   harnessVersions: (dir) => `/harness/versions?dir=${E(dir)}`,
+  realAnalysis: (dir) => `/real/${E(dir)}/analysis`,
   sentinel: () => '/sentinel', tasks: () => '/tasks', models: () => '/models', settings: () => '/settings',
   status: () => '/status', jobs: () => '/jobs', judge: () => '/judge',
 }
@@ -299,6 +303,8 @@ export function useExperiment(dir) { return useApi(dir ? paths.experiment(dir) :
 export function useOracle(dir) { return useApi(dir ? paths.oracle(dir) : null) }
 export function useIntegrity(dir, harness) { return useApi(dir ? paths.integrity(dir, harness) : null) }
 export function useReport(dir, harness) { return useApi(dir ? paths.report(dir, harness) : null) }
+/** Exercise 7 on an imported SWE-agent set (real_features.jsonl); `{error}` for any other dataset. */
+export function useRealAnalysis(dir) { return useApi(dir ? paths.realAnalysis(dir) : null) }
 export function usePatterns(dir, harness) { return useApi(dir ? paths.patterns(dir, harness) : null) }
 export function useRepeats(dir, harness) { return useApi(dir ? paths.repeats(dir, harness) : null) }
 export function useHarnessVersions(dir) { return useApi(dir ? paths.harnessVersions(dir) : null) }

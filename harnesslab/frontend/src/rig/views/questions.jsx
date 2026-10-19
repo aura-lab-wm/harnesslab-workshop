@@ -32,7 +32,7 @@ export function useAnswers(dir, override) {
   const oracleData = useOracle(dir)
   const integrity = useIntegrity(defH ? dir : null, defH)
   const sentinel = useSentinel()
-  const report = useReport(dir)
+  const report = useReport(defH ? dir : null, defH)   // the backend's default is baseline, which an imported set may not have
   const outcomes = useOutcomes(dir)
   const mem = conditionFor(dir)
   const cond = useMemo(() => (override && row.data && (override.model || override.harness)
@@ -225,7 +225,7 @@ function AskElsewhere({ qid, row, sentinel }) {
   const experiment = useExperiment(need.includes('experiment') ? dir : null)
   const oracleData = useOracle(need.includes('oracle') ? dir : null)
   const integrity = useIntegrity(need.includes('integrity') ? dir : null, defHarness(row))
-  const report = useReport(need.includes('report') ? dir : null)
+  const report = useReport(need.includes('report') ? dir : null, defHarness(row))
   const outcomes = useOutcomes(need.includes('outcomes') ? dir : null)
   const input = { dir, row, cond: { model: null, harness: null }, oracle, runs: null, metrics: null, experiment: experiment.data, oracleData: oracleData.data,
     integrity: integrity.data, sentinel, report: report.data, outcomes: outcomes.data }

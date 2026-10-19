@@ -8,7 +8,7 @@ how strongly they associate with failure (Ochiai, i.e. spectrum-based fault
 localisation applied to runs instead of statements).
 
     pip install datasets
-    python exercises/ex7_real_trajectories.py --n 500            # needs network, ~1-3 minutes
+    python exercises/ex7_real_trajectories.py --n 500            # needs network the first time (one 85 MB file, cached), then seconds
     python exercises/ex7_real_trajectories.py --offline          # the 500 real trajectories bundled in data/runs/real_swe_agent_500
     python exercises/ex7_real_trajectories.py --n 300 --model swe-agent-llama-70b
 """
@@ -43,18 +43,18 @@ elif args.offline:
     raw = None
 else:
     cache = args.cache or os.path.join(args.out, f"nebius_features_n{args.n}_s{args.seed}.jsonl")
-    if os.path.exists(cache):
+    if os.path.exists(cache) and not args.to_console:          # --to-console needs the trajectories themselves
         rows = [json.loads(l) for l in open(cache)]
         source = f"cache {cache}"
         raw = None
     else:
-        print(f"streaming {args.n} trajectories from nebius/SWE-agent-trajectories ...")
+        print(f"loading {args.n} trajectories from nebius/SWE-agent-trajectories (cached after the first download) ...")
         raw = load_nebius(args.n, seed=args.seed, model=args.model)
         rows = [features(r) for r in raw]
         if args.to_console:
-            from harnesslab.core.real_traj import to_results_dir
-            n_written = to_results_dir(raw, args.to_console)
-            print(f"wrote {n_written} real trajectories as a results directory: {args.to_console} (open it in the console)")
+            from harnesslab.backend.real_import import write_runs   # the same writer as the workbench's download
+            n_written = write_runs(raw, args.to_console)["n"]
+            print(f"wrote {n_written} real trajectories as a results directory: {args.to_console} (open it in the workbench)")
         with open(cache, "w") as f:
             for r in rows:
                 f.write(json.dumps(r) + "\n")

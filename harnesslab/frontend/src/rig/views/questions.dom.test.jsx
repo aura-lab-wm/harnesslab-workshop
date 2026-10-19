@@ -77,6 +77,18 @@ describe('questions', () => {
     expect(saved.map((x) => x.kind)).toEqual(['answer', 'figure'])
     expect(saved[0].value).toContain('40%')
   })
+  it('the report question asks for the dataset\'s own harness when it has no baseline (an imported SWE-agent set)', () => {
+    const data = rigFixture()
+    const sw = (x) => JSON.parse(JSON.stringify(x).replaceAll('"baseline"', '"swe-agent"').replaceAll('mock_ctl', 'swe'))
+    data['/overview'].results.push(sw(data['/overview'].results[1]))
+    data['/results/swe/runs'] = sw(data['/results/mock_ctl/runs'])
+    data['/outcomes/swe'] = sw(data['/outcomes/mock_ctl'])
+    data['/results/swe/report?harness=swe-agent'] = { card: { cell: { model: 'mock', harness: { id: 'swe-agent' }, runs: 2, repeats: 2, tasks: ['t1'] },
+      outcome: { pass1: 0.5, ci95: [0, 1], pass_at_k: {}, pass_pow_k: { 3: 0.1 }, pass1_strong: null } } }
+    const { container, requests } = renderRig('#/rig/q:swe:report', { data })
+    expect(container.querySelector('[data-el="answer"]').textContent).toContain('pass@1 50')
+    expect(requests.filter((r) => r.url.includes('/report'))).toEqual([])
+  })
   it('unknown question id is not found', () => {
     const { container } = renderRig('#/rig/q:mini:nope')
     expect(container.querySelector('[data-el="not-found"]')).toBeTruthy()

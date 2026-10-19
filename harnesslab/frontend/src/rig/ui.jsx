@@ -117,7 +117,8 @@ export function Stat({ label, el, children, className }) {
 }
 /** <Tag tone="sky|red|acc|amb|dash" nc?>…</Tag> — nc = no caps. acc = accent/selection, amb = caution. */
 export function Tag({ tone, nc, title, children, el }) {
-  return <span className={cx('rg-tag', tone, nc && 'nc')} title={title} data-el={el}>{children}</span>
+  const text = typeof children === 'string' || typeof children === 'number'
+  return <span className={cx('rg-tag', tone, nc && 'nc')} title={title} data-el={el}>{text ? <span className="rg-ell">{children}</span> : children}</span>
 }
 /** <Note tone="acc|amb|red|sky">…</Note> */
 export function Note({ tone, children, el }) { return <div className={cx('rg-note', tone)} data-el={el}>{children}</div> }

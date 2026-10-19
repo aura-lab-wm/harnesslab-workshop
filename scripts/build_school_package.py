@@ -20,8 +20,8 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[1]
 SCOPE = ROOT / 'harnesslab' / 'school-package.json'
 SKIP_PARTS = {'node_modules', '__pycache__', '.git', '.venv', '.pytest_cache', '.DS_Store'}
-#: Dot-directories that ship anyway: the dev container is how a workshop opens the package in
-#: GitHub Codespaces (docs/WORKSHOP.md). Every other hidden file or directory stays out.
+#: Dot-directories that ship anyway: the dev container is how the package opens in
+#: GitHub Codespaces (docs/CODESPACES.md). Every other hidden file or directory stays out.
 SHIPPED_DOT_DIRS = {'.devcontainer'}
 
 

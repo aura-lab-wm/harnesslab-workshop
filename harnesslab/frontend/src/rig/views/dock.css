@@ -56,3 +56,6 @@
 .rg-case-hint{margin:0;font-size:12.5px;color:var(--rig-mute)}
 .rg-case-bar .rg-why{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .rg-bud-sel+.rg-note{margin-top:var(--rig-s3)}
+
+.rig .pw-buddy-model-menu{border-radius:12px}
+.rig .pw-buddy-model-group-title{font:500 11px/1.2 var(--rig-mono);letter-spacing:.07em;text-transform:uppercase}

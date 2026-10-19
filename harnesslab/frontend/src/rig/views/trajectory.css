@@ -221,7 +221,7 @@
 .rg-traj-forkgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:var(--rig-s5);align-items:start}
 .rg-traj-forkopts{gap:var(--rig-s3)}
 .rg-traj-forkkv{margin-top:var(--rig-s3)}
-.rg-traj-unavail{display:flex;flex-direction:column;gap:var(--rig-s3);padding:var(--rig-s5);border:1px dashed var(--rig-line3);border-radius:10px}
+.rg-traj-unavail{display:flex;flex-direction:column;gap:var(--rig-s3);padding:var(--rig-s5);border:1px dashed var(--rig-line3);border-radius:14px}
 .rg-traj-unavail .rg-row{gap:var(--rig-s3)}
 .rg-traj-unavail p{margin:0;max-width:72ch}
 

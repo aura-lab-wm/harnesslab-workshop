@@ -156,7 +156,7 @@ describe('task investigator', () => {
     act(() => { fireEvent.click(within(notes).getByRole('button', { name: 'Export review' })) })
     expect(blobs).toHaveLength(1)
     const md = await blobs[0].text()
-    expect(md).toContain('# HarnessLab investigation')
+    expect(md).toContain('# TraceHarness investigation')
     expect(md).toContain('Failure mode (hidden suite): cut off · no patch')
     expect(md).toContain('Finding: ' + CUT)
     expect(md).toContain('Review status: reviewed')
@@ -176,15 +176,20 @@ describe('run, span, event log', () => {
     expect(facts.textContent).toContain('2,048')                    // max tokens / call from the harness config
     expect(facts.textContent).toContain('no_action')
     expect(q(container, 'failure-finding').textContent).toContain(CUT)
-    expect(q(container, 'timeline-scrubber').querySelectorAll('.rg-traj-blk')).toHaveLength(7)
-    // model replies ride the top row, everything the harness did the bottom one; the key names what is drawn
-    const scrub = q(container, 'timeline-scrubber')
-    const chats = scrub.querySelectorAll('.rg-traj-blk.chat')
-    expect(chats.length).toBeGreaterThan(0)
-    expect(scrub.querySelectorAll('.rg-traj-blk.r1')).toHaveLength(chats.length)
-    expect(scrub.querySelector('.rg-traj-scrubkey').textContent).toContain('model call')
-    act(() => { fireEvent.change(within(q(container, 'timeline-scrubber')).getByRole('slider'), { target: { value: '4' } }) })
-    expect(within(q(container, 'event-list')).getByRole('button', { name: /^#04/ }).getAttribute('aria-expanded')).toBe('true')
+    // the console is the main view: one row per tool call plus the reply that made none (the cut-off one)
+    const con = q(container, 'run-console')
+    expect(con.querySelectorAll('.rg-cx-st')).toHaveLength(3)
+    expect(con.textContent).toContain('step 3 / 3')
+    expect(con.textContent).toContain('cut off')
+    expect(con.textContent).toContain('sentinel replay')          // no replay in this fixture: nothing is invented
+    expect(con.textContent).toContain('No Sentinel replay')
+    // an evidence chip selects the matching console row instead of leaving the page
+    act(() => { fireEvent.click(within(q(container, 'failure-finding')).getAllByRole('button', { name: /#4/ })[0]) })
+    expect(con.querySelector('.rg-cx-st.cur').getAttribute('data-seq')).toBe('4')
+    expect(con.querySelector('.rg-cx-st.cur .rg-cx-rowb').getAttribute('aria-expanded')).toBe('true')
+    act(() => { fireEvent.click(con.querySelector('.rg-cx-st[data-seq="2"] .rg-cx-rowb')) })
+    expect(con.querySelector('.rg-cx-st.cur').getAttribute('data-seq')).toBe('2')
+    expect(con.querySelector('.rg-cx-xp').textContent).toContain('1| def a(): pass')   // the recorded observation
     act(() => { fireEvent.click(screen.getByRole('button', { name: /Replay as live/ })) })
     const live = q(container, 'live-run')
     expect(live.textContent).toContain('REPLAY')
@@ -225,6 +230,8 @@ describe('compare and fork', () => {
     expect(within(pc).getByRole('button', { name: 'cross-harness · 16' })).toBeTruthy()
     expect(within(pc).getByRole('button', { name: /seed-paired · this pair/ })).toBeTruthy()   // both ledgers carry seed 7313803
     expect(q(container, 'pair-headers').textContent).toContain('cut off · no patch')
+    // the aligned-steps header row names the runs, so the whole row keeps case (ids are case-sensitive)
+    expect(container.querySelectorAll('.rg-traj-aligned table.rg-keep th')).toHaveLength(4)
     const dv = q(container, 'divergence')
     expect(dv.textContent).toContain('step 4')                        // reply → read,read / read / read match; then reply(no call) vs reply → edit_file
     expect(dv.querySelector('tr.sel').textContent).toContain('reply · no tool call · length')

@@ -1,8 +1,8 @@
 cff-version: 1.2.0
-message: "If you use harnesslab or the agentlab harness in academic work, please cite it as below."
-title: "HarnessLab: treating the agent harness as a controlled experimental variable"
+message: "If you use TraceHarness or the agentlab harness in academic work, please cite it as below."
+title: "TraceHarness: treating the agent harness as a controlled experimental variable"
 abstract: >-
-  harnesslab is an open platform for measuring coding agents rather than only scoring them. It pairs a
+  TraceHarness is an open platform for measuring coding agents rather than only scoring them. It pairs a
   small, fully configurable coding-agent harness with a measurement ledger that records every model
   call, tool call, edit, and policy event, and a web platform that varies the harness as an
   experimental factor, reports outcomes with uncertainty, replays trajectories, and intervenes on a

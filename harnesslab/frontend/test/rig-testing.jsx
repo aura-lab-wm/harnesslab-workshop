@@ -104,7 +104,10 @@ export function rigFixture() {
       { task: 't1', probe: 'none', pass1: 0.83, patch_issue_similarity: 0.05 }, { task: 't2', probe: 'solution_leak', pass1: 0.5, patch_issue_similarity: 0.4 }] },
     '/sentinel': { active: 'mini_model', default_config: { threshold: 0.6 }, models: [
       { name: 'mini_model', active: true, meta: { sources: [MINI], n_runs: 16, auc_run_weighted: 0.7, operating_points: [{ threshold: 0.5, recall: 0.75, false_alarm: 0.3, mean_lead_steps: 2 }, { threshold: 0.6, recall: 0.5, false_alarm: 0.1, mean_lead_steps: 1.5 }] } }] },
-    [`/results/${MINI}/report`]: { card: { cell: { model: M1, harness: { id: 'baseline' }, runs: 8, repeats: 2, tasks: ['t1', 't2'] },
+    '/sentinel/plugins': { dir: 'plugins', errors: [], detectors: [
+      { id: 'repeat_loop', severity: 'medium', source: 'builtin', nudge: 'You repeated the same action. The result will not change; try a different step.' },
+      { id: 'unverified_edit_streak', severity: 'high', source: 'rule', nudge: 'Run the tests now and read the failure before editing again.' }] },
+    [`/results/${MINI}/report?harness=baseline`]: { card: { cell: { model: M1, harness: { id: 'baseline' }, runs: 8, repeats: 2, tasks: ['t1', 't2'] },
       outcome: { pass1: 5 / 7, ci95: [0.4, 1], pass_at_k: { 2: 0.9 }, pass_pow_k: { 2: 0.5, 3: 0.4 }, pass1_strong: 4 / 7 }, missing: ['Two toy tasks.'] } },
   }
 }

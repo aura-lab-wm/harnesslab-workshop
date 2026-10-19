@@ -15,6 +15,9 @@
                outcome pools every model under the harness; shown as "all N models · h (pooled)"
      setup     compose a cell; Launch = POST /jobs (same body as method/StepRun.jsx) behind
                ConfirmAction, never automatic; disabled in a static export
+     features  /real/<dir>/analysis (exercise 7) on an imported SWE-agent set: Ochiai attribution of
+               binary trajectory features with example runs, resolved vs unresolved against the
+               dataset card, exit status, action mix, resolve rate per model
    Every body sits under the AskingSentence; figures and cells carry PinButtons.
 
    Round 3 (breathing + dead ends): each view leads with its ANSWER sentence (Head `lead`),
@@ -30,7 +33,7 @@ import { makeSpec } from '../route'
 import { api, IS_STATIC } from '../../api'
 import {
   useDataset, useDatasets, useOverview, useRuns, useMetrics, useComparisons, useExperiment, useOracle, useIntegrity, useReport,
-  useTasks, useModels, useJobs, useApi, short, fmt, tally, tokStats, conditionRuns, resolveCondition, metricsCell,
+  useTasks, useModels, useJobs, useApi, useRealAnalysis, short, fmt, tally, tokStats, conditionRuns, resolveCondition, metricsCell,
   verdict, invalidate, paths,
 } from '../data'
 import { useRig, useTabState } from '../context'
@@ -47,11 +50,12 @@ const cx = (...a) => a.filter(Boolean).join(' ')
 export const AN_VIEWS = [
   ['family', 'Family matrix', 'Family matrix', '1'], ['outcomes', 'Outcomes', 'Outcomes · pass@1 with CI', '2'],
   ['delta', 'Comparison', 'Comparison · Δ-matrix vs baseline', '3'], ['traj', 'Trajectories', 'Trajectory explorer', '4'],
-  ['judge', 'Judge & integrity', 'Judge & integrity', '5'], ['fit', 'Experiment', 'Experiment · two-factor fit', '6'],
-  ['report', 'Report', 'Report card', '7'], ['setup', 'Run setup', 'Run setup · compose a cell', '8'],
+  ['features', 'Trajectory features', 'Trajectory features · failure attribution', '5'],
+  ['judge', 'Judge & integrity', 'Judge & integrity', '6'], ['fit', 'Experiment', 'Experiment · two-factor fit', '7'],
+  ['report', 'Report', 'Report card', '8'], ['setup', 'Run setup', 'Run setup · compose a cell', '9'],
 ]
 const AN_LABEL = Object.fromEntries(AN_VIEWS.map(([v, l]) => [v, l]))
-const PAL_KEYWORDS = { delta: 'compare comparison delta matrix baseline', judge: 'oracle integrity leakage kappa judge', fit: 'experiment anova two-factor contrasts', outcomes: 'pass@1 pass^k flip ci', family: 'family matrix models harnesses', report: 'report card export', setup: 'launch run setup compose' }
+const PAL_KEYWORDS = { delta: 'compare comparison delta matrix baseline', judge: 'oracle integrity leakage kappa judge', fit: 'experiment anova two-factor contrasts', outcomes: 'pass@1 pass^k flip ci', family: 'family matrix models harnesses', report: 'report card export', setup: 'launch run setup compose', features: 'features ochiai attribution sbfl failure swe-agent exit action mix' }
 const LIVE_CMD = 'python -m harnesslab'
 
 const probeLabel = (p) => String(p || '').replace(/_/g, ' ')
@@ -854,7 +858,7 @@ function Report({ dir, row, c }) {
   const ladder = [['pass@1', oc.pass1, 'point estimate'], ...Object.entries(oc.pass_at_k || {}).map(([k, v]) => ['pass@' + k, v, 'with retries']), ...Object.entries(oc.pass_pow_k || {}).map(([k, v]) => ['pass^' + k, v, 'every attempt'])]
   const note = pooled ? `The card's header names ${card.cell.model}, but its outcome pools every model's ${h} runs (n = ${int(n)}; ${short(card.cell.model)} alone has ${int(own)}). Labelled here as "${scope}".` : null
   const exportMd = () => {
-    const md = (note ? `> **Note (HarnessLab):** ${note}\n\n` : '') + (Rp.data.markdown || '')
+    const md = (note ? `> **Note (TraceHarness):** ${note}\n\n` : '') + (Rp.data.markdown || '')
     if (!download(`report-card-${dir}-${h}.md`, md, 'text/markdown')) toast('Download is not available in this browser.')
   }
   const exportJson = () => {
@@ -1018,7 +1022,119 @@ function Setup({ spec, dir, row, c }) {
   </>)
 }
 
-const BODY = { family: Family, outcomes: Outcomes, delta: Delta, judge: Judge, fit: Fit, report: Report, setup: Setup }
+/* ------------------------------------------------------------------ 5 · trajectory features */
+const FEATURE_LABEL = {
+  never_verified_after_edit: 'never verified after the last edit', no_test_run: 'never ran a test or script',
+  no_search: 'never searched the code', edited_tests: 'edited a test file', no_edit_at_all: 'never edited a file',
+  exit_context: 'ran out of context', did_not_submit: 'did not submit', 'steps>40': 'more than 40 steps',
+  'many_files(>2)': 'edited more than 2 files', 'big_patch(>60 lines)': 'patch over 60 lines', 'late_first_edit(>15)': 'first edit after step 15',
+}
+const featLabel = (f) => FEATURE_LABEL[f] || (/^repeated_commands>\d+$/.test(f) ? `repeated a command more than ${f.split('>')[1]} times` : String(f).replace(/_/g, ' '))
+const ACTIONS = ['view', 'search', 'edit', 'run', 'submit', 'other']
+const EX7_CMD = 'python exercises/ex7_real_trajectories.py --offline'
+/** A rate as a bar on a track: red for failed runs, sky for resolved ones (green means passed). */
+function Rate({ v, tone }) {
+  return <span className={cx('rg-an-rate', tone)} aria-hidden="true"><i style={{ width: `${Math.max(0, Math.min(1, v || 0)) * 100}%` }} /></span>
+}
+function Features({ dir }) {
+  const { datasets } = useRig()
+  const A = useRealAnalysis(dir)
+  const head = (lead, actions, about) => (
+    <Head eyebrow="More analysis · which trajectory features go with failure" title="Trajectory features" el="features-answer" lead={lead} actions={actions} about={about} />
+  )
+  if (A.error) return <ErrorState error={A.error} onRetry={A.reload} what={`/api/real/${dir}/analysis`} />
+  if (!A.data) return <Loading label={`Reading /api/real/${dir}/analysis…`} />
+  const d = A.data
+  if (d.error || !d.n) {
+    const alt = datasets.filter((x) => x.name !== dir && (x.harnesses || []).includes('swe-agent'))
+    return (<>
+      {head(null)}
+      <Empty title="No trajectory features for this dataset." actions={[
+        ...alt.slice(0, 2).map((x, i) => ({ label: `Open the features of ${x.name}`, spec: makeSpec('an', x.name, 'features'), primary: i === 0 })),
+        { label: 'Download a SWE-agent sample', spec: 'sources', primary: !alt.length },
+      ]}>Features are computed when SWE-agent trajectories are imported from nebius/SWE-agent-trajectories (Sources → Download a public sample). <span className="rg-mono">{dir}</span> holds none.</Empty>
+    </>)
+  }
+  const att = d.ochiai || []
+  const top = att[0]
+  const lead = !d.unresolved || !top
+    ? <>All {int(d.n)} runs resolved their issue, so there is no failure to attribute.</>
+    : <>{int(d.unresolved)} of {int(d.n)} runs did not resolve their issue. The feature that goes with failure most is <b>{featLabel(top.feature)}</b> (Ochiai {fx(top.ochiai)}): {pct(top.rate_in_failures, 0)} of failed runs show it, against {pct(top.rate_in_successes, 0)} of resolved ones.</>
+  const pin = top && <PinButton item={{ id: `figure:${dir}:features`, kind: 'figure', label: `Trajectory features · ${dir}`, value: `${featLabel(top.feature)} · Ochiai ${fx(top.ochiai)} · ${pct(top.rate_in_failures, 0)} of failed vs ${pct(top.rate_in_successes, 0)} of resolved`, spec: makeSpec('an', dir, 'features'), dir }} />
+  const exits = Object.entries(d.exit_status || {})
+  const mix = d.action_mix || {}
+  const models = [...(d.by_model || [])].sort((a, b) => b.n - a.n)
+  return (<>
+    {head(lead, pin, <>
+      <p>Spectrum-based fault localisation, applied to runs instead of statements. Each run is a row, each yes/no trajectory feature a column, and a run that did not resolve its issue plays the failing test: Ochiai = e<sub>f</sub> / √(F · (e<sub>f</sub> + e<sub>p</sub>)), where e<sub>f</sub> and e<sub>p</sub> count the failed and resolved runs that show the feature and F counts the failed runs.</p>
+      <p>Read the two rate columns, not only the score. A feature common in failures and in successes ranks high from its base rate alone; that is SBFL's coincidental-coverage weakness, and the score is a correlation, not a cause. Open the example runs to see the behaviour behind a row.</p>
+      <p>Features come from SWE-agent's command language (view, search, edit, run, submit); file paths are not recoverable from it, so read-before-write is not measured. For the bundled sample, exercise 7 prints the same numbers: <CopyCmd cmd={EX7_CMD} /></p>
+    </>)}
+    <Sec title="Failure attribution · Ochiai" meta={`${plural(att.length, 'feature')} · ${int(d.unresolved)} failed · ${int(d.resolved)} resolved`} el="feature-attribution">
+      <div className="rg-pnl"><div className="rg-tblwrap"><table className="rg-tbl rg-an-ft">
+        <thead><tr><th>feature</th><th className="rg-num">Ochiai</th><th>in failed runs</th><th>in resolved runs</th><th>open a run</th></tr></thead>
+        <tbody>{att.map((a) => {
+          const xf = a.examples_fail || [], xp = a.examples_pass || []
+          return (
+            <tr key={a.feature} data-el="feature-row">
+              <td><div className="rg-an-ftn">{featLabel(a.feature)}</div><div className="rg-tiny rg-mute rg-mono">{a.feature}</div></td>
+              <td className="rg-num">{fx(a.ochiai)}</td>
+              <td><div className="rg-an-ftr"><Rate v={a.rate_in_failures} tone="red" /><span className="rg-mono rg-small">{pct(a.rate_in_failures, 0)}</span><span className="rg-tiny rg-mute rg-mono">{int(a.ef)} runs</span></div></td>
+              <td><div className="rg-an-ftr"><Rate v={a.rate_in_successes} tone="sky" /><span className="rg-mono rg-small">{pct(a.rate_in_successes, 0)}</span><span className="rg-tiny rg-mute rg-mono">{int(a.ep)} runs</span></div></td>
+              <td><div className="rg-row rg-wrap rg-an-ftx">
+                {xf.map((id, k) => <Go key={id} spec={makeSpec('run', id)} className="rg-chip bad" title={id} label={`Open failed run ${k + 1} with this feature: ${id}`}>× {k + 1}</Go>)}
+                {xp.map((id, k) => <Go key={id} spec={makeSpec('run', id)} className="rg-chip ok" title={id} label={`Open resolved run ${k + 1} with this feature: ${id}`}>✓ {k + 1}</Go>)}
+                {!xf.length && !xp.length && <span className="rg-small rg-mute">—</span>}
+              </div></td>
+            </tr>
+          )
+        })}</tbody>
+      </table></div></div>
+    </Sec>
+    <Sec title="Resolved vs unresolved" meta={`per run · ${int(d.resolved)} resolved, ${int(d.unresolved)} unresolved · card: all 80,036 runs`} el="resolved-vs-unresolved">
+      <div className="rg-pnl"><div className="rg-tblwrap"><table className="rg-tbl">
+        <thead><tr><th>metric</th><th className="rg-num">resolved</th><th className="rg-num">unresolved</th><th className="rg-num rg-hide-sm">dataset card</th></tr></thead>
+        <tbody>{(d.table || []).map((t) => {
+          const f = (v) => (t.kind === 'rate' ? pct(v) : fx(v, 1))
+          return <tr key={t.key}><td>{t.metric}</td><td className="rg-num">{f(t.resolved)}</td><td className="rg-num">{f(t.unresolved)}</td><td className="rg-num rg-hide-sm rg-mute">{t.card || '—'}</td></tr>
+        })}</tbody>
+      </table></div></div>
+      {d.steps_ci_unresolved && d.steps_ci_unresolved[0] != null && <p className="rg-small rg-mute rg-an-ftnote">Unresolved runs: mean steps 95% CI [{fx(d.steps_ci_unresolved[0], 1)}, {fx(d.steps_ci_unresolved[1], 1)}] (bootstrap over runs). The card column is “resolved vs unresolved” over the full dataset.</p>}
+    </Sec>
+    <div className="rg-an-ftgrid">
+      <Sec title="How runs ended" meta="SWE-agent exit status" el="exit-status">
+        <div className="rg-pnl"><div className="rg-tblwrap"><table className="rg-tbl">
+          <thead><tr><th>exit status</th><th className="rg-num">runs</th><th>share</th></tr></thead>
+          <tbody>{exits.map(([k, n]) => <tr key={k}><td className="rg-mono rg-small">{k || '—'}</td><td className="rg-num">{int(n)}</td><td><div className="rg-an-ftr"><Rate v={n / d.n} /><span className="rg-mono rg-small">{pct(n / d.n, 0)}</span></div></td></tr>)}</tbody>
+        </table></div></div>
+      </Sec>
+      <Sec title="Resolve rate by model" meta={plural(models.length, 'model')} el="features-by-model">
+        <div className="rg-pnl"><div className="rg-tblwrap"><table className="rg-tbl">
+          <thead><tr><th>model</th><th className="rg-num">runs</th><th>resolved</th></tr></thead>
+          <tbody>{models.map((m) => <tr key={m.model}><td className="rg-mono rg-small">{m.model}</td><td className="rg-num">{int(m.n)}</td><td><div className="rg-an-ftr"><Rate v={m.resolved} tone="sky" /><span className="rg-mono rg-small">{pct(m.resolved)}</span></div></td></tr>)}</tbody>
+        </table></div></div>
+        <NextSteps actions={[{ label: 'Outcomes with CI per model', spec: makeSpec('an', dir, 'outcomes') }]} />
+      </Sec>
+    </div>
+    <Sec title="Action mix" meta="share of each run's actions, pooled" el="action-mix">
+      <div className="rg-pnl rg-pnl-b rg-an-mix">
+        {['resolved', 'unresolved'].map((g) => (
+          <div key={g} className="rg-an-mixr">
+            <span className="rg-lbl">{g}</span>
+            <span className="rg-an-mixb" role="img" aria-label={`${g}: ${ACTIONS.map((a) => `${a} ${pct((mix[g] || {})[a] || 0, 0)}`).join(', ')}`}>
+              {ACTIONS.map((a, i) => <i key={a} className={'a' + i} style={{ width: `${((mix[g] || {})[a] || 0) * 100}%` }} />)}
+            </span>
+          </div>
+        ))}
+        <div className="rg-row rg-wrap rg-an-mixk">{ACTIONS.map((a, i) => (
+          <span key={a} className="rg-row rg-small"><i className={'a' + i} aria-hidden="true" />{a} <span className="rg-mono rg-mute">{pct((mix.resolved || {})[a] || 0, 0)} · {pct((mix.unresolved || {})[a] || 0, 0)}</span></span>
+        ))}</div>
+      </div>
+    </Sec>
+  </>)
+}
+
+const BODY = { family: Family, outcomes: Outcomes, delta: Delta, features: Features, judge: Judge, fit: Fit, report: Report, setup: Setup }
 
 /* ------------------------------------------------------------------ tasks: trajectory explorer */
 const PAGE = 40
@@ -1124,7 +1240,7 @@ function TaskExplorer({ spec, args }) {
                   <div className="t-cnt rg-num"><span className="rg-sky">{x.o.p}</span> / <span className="rg-red-t">{x.o.f}</span>{x.o.u ? <> / <span className="rg-mute">{x.o.u}?</span></> : null}</div>
                   <div className="t-bar"><OutcomeBar p={x.o.p} f={x.o.f} u={x.o.u} /></div>
                   <div className="t-tok rg-num">{x.tk.mean == null ? '—' : int(x.tk.mean)}{x.tk.rec < x.tk.n && <div className="rg-tiny rg-mute">{x.tk.rec}/{x.tk.n} recorded</div>}</div>
-                  <div className="t-probe">{meta[x.t] ? <ProbeTag probe={pr} /> : <span className="rg-small rg-mute">no task card</span>}</div>
+                  <div className="t-probe">{meta[x.t] ? <ProbeTag probe={pr} /> : <span className="rg-small rg-mute" title="No task card: imported trajectories carry no probe">—</span>}</div>
                 </div>
               )
             })}
@@ -1169,7 +1285,7 @@ export const views = {
     crumbs: (a) => [[a[0], makeSpec('ds', a[0])], ['analysis', a[1] && a[1] !== 'family' ? makeSpec('an', a[0], 'family', a[2], a[3]) : null], [AN_LABEL[a[1] || 'family'] || a[1] || 'analysis']],
     retarget: (a, c) => makeSpec('an', c.dir, a[1] || 'family', short(c.model), c.harness),
     outsideGuided: (a) => a[1] === 'setup',
-    palette: (env) => env.datasets.flatMap((d) => AN_VIEWS.filter(([v]) => v !== 'traj').map(([v, , l]) => ({ group: 'view', title: l, detail: d.name, spec: makeSpec('an', d.name, v), keywords: PAL_KEYWORDS[v] || v }))),
+    palette: (env) => env.datasets.flatMap((d) => AN_VIEWS.filter(([v]) => v !== 'traj' && (v !== 'features' || (d.harnesses || []).includes('swe-agent'))).map(([v, , l]) => ({ group: 'view', title: l, detail: d.name, spec: makeSpec('an', d.name, v), keywords: PAL_KEYWORDS[v] || v }))),
     render: AnalysisDoc,
     Actions: OracleActions,
   },

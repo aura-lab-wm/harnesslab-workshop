@@ -21,7 +21,7 @@
 .rg-q-card .n{grid-area:n;font:600 11px/1 var(--rig-sans);font-variant-numeric:tabular-nums;color:var(--rig-sel-t);padding-top:2px}
 .rg-q-card .qq{grid-area:qq;font:600 14.5px/1.4 var(--rig-sans)}
 .rg-q-card .qv{grid-area:qv;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;min-width:0}
-.rg-q-card .qv b{font:500 22px/1 var(--rig-sans);color:var(--rig-sky-t);letter-spacing:-.02em}
+.rg-q-card .qv b{font:500 22px/1 var(--rig-mono);color:var(--rig-sky-t);letter-spacing:-.03em}
 .rg-q-card .qv small{font:500 12px/1.3 var(--rig-sans);color:var(--rig-mute)}
 .rg-q-card .qa{grid-area:qa;font-size:13px;line-height:1.55;color:var(--rig-dim)}
 .rg-q-card.na .qa{color:var(--rig-mute)}
@@ -32,7 +32,7 @@
 .rg-q-answer{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--rig-s6);align-items:center;padding:var(--rig-s2) 0 var(--rig-s2) var(--rig-s5);border-left:3px solid var(--rig-sel);margin-bottom:var(--rig-s4);padding-right:var(--rig-s5)}
 .rg-q-answer .a{margin:0;font-size:17px;line-height:1.55;color:var(--rig-text);max-width:62ch}
 .rg-q-answer .big{text-align:right;min-width:0}
-.rg-q-answer .big .v{font:600 36px/1 var(--rig-sans);font-variant-numeric:tabular-nums;color:var(--rig-text);letter-spacing:-.03em}
+.rg-q-answer .big .v{font:500 36px/1 var(--rig-mono);font-variant-numeric:tabular-nums;color:var(--rig-text);letter-spacing:-.03em}
 .rg-q-answer .big .l{font:500 11.5px/1.35 var(--rig-sans);color:var(--rig-mute);margin-top:6px;max-width:260px}
 @container rgdoc (max-width:640px){.rg-q-answer{grid-template-columns:minmax(0,1fr)}.rg-q-answer .big{text-align:left}}
 .rg-q-next{display:flex;align-items:center;gap:var(--rig-s4);flex-wrap:wrap;margin-top:var(--rig-s6)}
@@ -51,7 +51,7 @@
 @container rgdoc (max-width:640px){.rg-q-strip{grid-template-columns:minmax(0,1fr) auto;row-gap:4px}.rg-q-strip .rg-q-rib{grid-column:1/-1}}
 .rg-q-probe{flex:none;min-width:0}
 .rg-q-list{margin:0;padding-left:0;list-style:none}
-.rg-q-lesson{border:1px solid var(--rig-sel);background:var(--rig-sel-bg);padding:var(--rig-s4) var(--rig-s5);margin-bottom:var(--rig-s6);border-radius:10px}
+.rg-q-lesson{border:1px solid var(--rig-sel);background:var(--rig-sel-bg);padding:var(--rig-s4) var(--rig-s5);margin-bottom:var(--rig-s6);border-radius:14px}
 .rg-q-lesson ol{margin:8px 0 0;padding-left:18px;display:grid;gap:6px;font-size:12.5px}
 .rg-q-lesson b{display:inline-block;min-width:120px;color:var(--rig-text);font-weight:600;margin-right:6px}
 .rg-q-runsbar{width:min(240px,100%)}

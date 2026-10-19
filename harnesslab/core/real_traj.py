@@ -6,15 +6,14 @@ per-run `target` (resolved or not), `exit_status`, `generated_patch`, `eval_logs
 and the full `trajectory` (system / user / ai turns; each `ai` turn is a thought
 plus one fenced command in SWE-agent's command language).
 
-Loading needs network and either `datasets` or `pandas` + `pyarrow` +
-`huggingface_hub`:
+Loading needs network the first time (each parquet shard is cached) and `pyarrow`:
 
-    pip install datasets            # or: pip install pandas pyarrow huggingface_hub
+    pip install datasets            # brings pyarrow; or: pip install pyarrow
 
 Everything else here is pure Python so the parsing can be tested offline.
 """
 from __future__ import annotations
-import json, re
+import json, os, random, re, urllib.error, urllib.request
 from collections import Counter
 from typing import Iterable, Optional
 
@@ -132,20 +131,72 @@ def binary_features(f: dict) -> dict:
 
 
 # ---------------------------------------------------------------- loading
-def load_nebius(n: int = 500, seed: int = 0, model: Optional[str] = None) -> list[dict]:
-    """Stream the first `n` rows (optionally for one model name). Needs network."""
+#: The dataset's parquet shards on the Hub, read directly over HTTPS with pyarrow. `datasets`
+#: streaming returned the rows in seconds but then kept the process from exiting for minutes
+#: (datasets 5.1, fsspec 2026.7), so exercise 7 looked hung after printing its results.
+SHARDS = 12
+SHARD_URL = "{endpoint}/datasets/" + DATASET + "/resolve/main/data/train-{i:05d}-of-00012.parquet"
+COLUMNS = ("instance_id", "model_name", "target", "trajectory", "exit_status", "generated_patch")
+
+
+def cache_dir() -> str:
+    return os.environ.get("HARNESSLAB_NEBIUS_CACHE") or os.path.join(os.path.expanduser("~"), ".cache", "harnesslab", "nebius")
+
+
+def fetch_shard(i: int, progress=None) -> str:
+    """Path of shard `i` (about 90 MB, about 6,700 runs), downloaded once into cache_dir(). A
+    download goes to a .part file renamed on completion, so an interrupted one is never read.
+    `progress(done_mb, total_mb, "MB")` follows it."""
+    path = os.path.join(cache_dir(), f"train-{i:05d}-of-00012.parquet")      # the Hub's own file name
+    if os.path.exists(path):
+        return path
+    os.makedirs(cache_dir(), exist_ok=True)
+    url = SHARD_URL.format(endpoint=os.environ.get("HF_ENDPOINT", "https://huggingface.co").rstrip("/"), i=i)
+    tmp = path + ".part"
     try:
-        from datasets import load_dataset  # type: ignore
+        with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "harnesslab"}), timeout=60) as r, open(tmp, "wb") as f:
+            total, done = int(r.headers.get("Content-Length") or 0), 0
+            while True:
+                b = r.read(1 << 20)
+                if not b:
+                    break
+                f.write(b)
+                done += len(b)
+                if progress:
+                    progress(done >> 20, total >> 20, "MB")
+    except (OSError, urllib.error.URLError) as e:
+        if os.path.exists(tmp):
+            os.remove(tmp)
+        raise RuntimeError(f"could not download {url}: {e}") from e
+    os.replace(tmp, path)
+    return path
+
+
+def load_nebius(n: int = 500, seed: int = 0, model: Optional[str] = None, progress=None) -> list[dict]:
+    """The first `n` rows (optionally of one model) in the dataset's own order. With a seed, the
+    shards are visited in a seeded order and each shard's rows are shuffled. Needs network the
+    first time. `progress(done, total, unit)` follows the download ("MB"), then the rows kept
+    ("trajectories")."""
+    try:
+        import pyarrow.parquet as pq  # type: ignore
     except ImportError as e:
-        raise RuntimeError("pip install datasets   (or pass --offline to use the mock ledgers)") from e
-    ds = load_dataset(DATASET, split="train", streaming=True)
-    if seed:
-        ds = ds.shuffle(seed=seed, buffer_size=2000)
-    rows = []
-    for r in ds:
-        if model and r.get("model_name") != model:
-            continue
-        rows.append({k: r[k] for k in ("instance_id", "model_name", "target", "trajectory", "exit_status", "generated_patch")})
+        raise RuntimeError("pip install datasets   (it brings pyarrow; or pass --offline to use the bundled sample)") from e
+    order = list(range(SHARDS))
+    rng = random.Random(seed) if seed else None
+    if rng:
+        rng.shuffle(order)
+    rows: list[dict] = []
+    for i in order:
+        got: list[dict] = []
+        for batch in pq.ParquetFile(fetch_shard(i, progress)).iter_batches(batch_size=200, columns=list(COLUMNS)):
+            got += [r for r in batch.to_pylist() if not model or r.get("model_name") == model]
+            if not rng and len(rows) + len(got) >= n:
+                break
+        if rng:
+            rng.shuffle(got)
+        rows += got[: n - len(rows)]
+        if progress:
+            progress(len(rows), n, "trajectories")
         if len(rows) >= n:
             break
     return rows

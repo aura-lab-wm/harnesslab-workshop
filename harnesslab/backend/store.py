@@ -358,9 +358,11 @@ def overview(runs_root: Optional[str] = None, db_path: Optional[str] = None) -> 
         def distinct(col):
             return [r[0] for r in cx.execute(
                 f"SELECT DISTINCT {col} FROM runs WHERE dir = ? ORDER BY {col}", (name,)) if r[0] is not None]
+        model_runs = {r[0]: r[1] for r in cx.execute(
+            "SELECT model, COUNT(*) FROM runs WHERE dir = ? AND model IS NOT NULL GROUP BY model ORDER BY model", (name,))}
         out.append({
             "name": name, "runs": agg["n"],
-            "harnesses": distinct("harness_id"), "models": distinct("model"), "tasks": distinct("task_id"),
+            "harnesses": distinct("harness_id"), "models": distinct("model"), "model_runs": model_runs, "tasks": distinct("task_id"),
             "pass_rate": (agg["p"] if agg["n"] else None),
             "updated": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(src["mtime"])),
         })

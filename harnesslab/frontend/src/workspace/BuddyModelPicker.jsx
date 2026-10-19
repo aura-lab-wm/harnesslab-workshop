@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { Mark } from './WorkspaceUI'
 
-// Editorial starting points, not measured HarnessLab rankings. IDs verified against
+// Editorial starting points, not measured TraceHarness rankings. IDs verified against
 // https://openrouter.ai/api/v1/models on 2026-09-22; only live catalog matches appear.
 // Intent: help investigators choose a reader for patches, runs and failure evidence.
 // Retain Paper/Graphite surfaces, quiet borders, Plex type and the existing 4px grid.
@@ -77,7 +77,7 @@ export default function BuddyModelPicker({value,onChange,disabled=false,variant=
    {models&&<small className="pw-buddy-model-count">{matches.length?`${Math.min(limit,matches.length)} of ${matches.length} matching models`:'No matching text models.'}</small>}
    {matches.length>limit&&<button type="button" onClick={()=>setLimit(n=>n+40)}>Show more models</button>}
    {validCustom&&!models?.some(m=>m.id===custom)&&<button type="button" className="pw-buddy-custom-model" onClick={()=>choose(custom)}>Use model ID: {custom}<small>Not verified in the catalog</small></button>}
-   <footer>{!!suggested.length&&<>Suggestions based on model descriptions, not HarnessLab evaluations. </>}OpenRouter catalog · availability and charges depend on your account. <a href="https://openrouter.ai/models" target="_blank" rel="noreferrer">Model details and pricing</a></footer>
+   <footer>{!!suggested.length&&<>Suggestions based on model descriptions, not TraceHarness evaluations. </>}OpenRouter catalog · availability and charges depend on your account. <a href="https://openrouter.ai/models" target="_blank" rel="noreferrer">Model details and pricing</a></footer>
   </section>}
  </div>
 }

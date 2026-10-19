@@ -5,7 +5,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-_spec = importlib.util.spec_from_file_location('publish_workshop_repo', ROOT / 'scripts/publish_workshop_repo.py')
+_spec = importlib.util.spec_from_file_location('publish_public_repo', ROOT / 'scripts/publish_public_repo.py')
 pub = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(pub)
 

@@ -47,6 +47,11 @@ describe('normalisation', () => {
     expect(defaultCondition(ov.results[0])).toEqual({ model: 'mock', harness: 'baseline' })
     expect(resolveCondition(ov.results[1], 'm2', 'nope')).toEqual({ dir: 'b', model: 'z/m2', harness: 'x' })
     expect(resolveCondition(ov.results[1], null, null)).toEqual({ dir: 'b', model: 'z/m1', harness: 'x' })
+    // with per-model counts the dataset opens on its biggest model, not the first name (a 1,000-run
+    // SWE-agent sample adds llama-405b with a few runs, which sorts before llama-70b)
+    const sw = normOverview({ results: [{ name: 's', models: ['swe-agent-llama-405b', 'swe-agent-llama-70b', 'swe-agent-llama-8b'], harnesses: ['swe-agent'],
+      model_runs: { 'swe-agent-llama-405b': 28, 'swe-agent-llama-70b': 900, 'swe-agent-llama-8b': 72 } }] })
+    expect(defaultCondition(sw.results[0])).toEqual({ model: 'swe-agent-llama-70b', harness: 'swe-agent' })
   })
   it('short names and run handles', () => {
     expect(short('openai/gpt-5.6-luna')).toBe('gpt-5.6-luna'); expect(short('mock')).toBe('mock')

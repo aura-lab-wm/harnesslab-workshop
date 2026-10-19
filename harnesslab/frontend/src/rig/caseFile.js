@@ -62,7 +62,7 @@ const KIND_TITLE = { answer: 'Answers', figure: 'Figures', cell: 'Cells', run: '
 /** The Markdown review a reader exports. Only what was pinned, verbatim; nothing inferred. */
 export function caseMarkdown(list = items, meta = {}) {
   const out = ['# Case file', '']
-  out.push(`Exported ${meta.at || new Date().toISOString()} from HarnessLab · Rig${meta.oracle ? ` · graded by the ${meta.oracle} suite` : ''}.`)
+  out.push(`Exported ${meta.at || new Date().toISOString()} from TraceHarness · Rig${meta.oracle ? ` · graded by the ${meta.oracle} suite` : ''}.`)
   out.push('Pinned evidence only: every value below is what the workbench showed when it was pinned.', '')
   if (!list.length) { out.push('_Nothing pinned._'); return out.join('\n') + '\n' }
   for (const kind of ['answer', 'figure', 'cell', 'run', 'event']) {

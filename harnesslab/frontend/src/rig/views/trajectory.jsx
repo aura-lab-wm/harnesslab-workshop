@@ -16,7 +16,7 @@
    review key (workspaceFacts.reviewKey) and Export review keeps its Markdown format, with the
    failure mode added.
    ==================================================================================== */
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { makeSpec } from '../route'
 import { useDataset, useOverview, useRuns, useOutcomes, useRunDetail, useFindRun, short, sfx, verdict, tally, tokStats, fmt, resolveCondition, paths } from '../data'
 import { useRig, useTabState } from '../context'
@@ -24,6 +24,7 @@ import { Panel, Loading, ErrorState, Empty, NextSteps, Btn, About, FailureChip, 
 import { downloadText, useCaseFile } from '../caseFile'
 import { reviewKey, reviewReport } from '../../workspace/workspaceFacts'
 import { findings as checkpoints } from '../../directions/investigationFacts'
+import { RunConsole } from './console'
 import './trajectory.css'
 
 const { int, usd, plural } = fmt
@@ -89,7 +90,7 @@ function spanTech(s) {
   if (s.span === 'chat') return 'chat · ' + (finishOf(s).join(',') || '—')
   return (s.span || '') + (s.status ? ' · ' + s.status : '')
 }
-const TOOLCODE = { list_files: 'L', read_file: 'R', search: 'F', grep: 'F', write_file: 'W', edit_file: 'E', str_replace: 'E', run_tests: 'T', bash: 'B', submit: 'S' }
+export const TOOLCODE = { list_files: 'L', read_file: 'R', search: 'F', grep: 'F', write_file: 'W', edit_file: 'E', str_replace: 'E', run_tests: 'T', bash: 'B', submit: 'S' }
 
 /** Attempts of one cell on one task, in repeat order (Run 01 = lowest repeat index). */
 export function attemptsOf(runs, model, harness, task) {
@@ -198,7 +199,7 @@ const runPin = (r, oracle, meta) => {
     dir: r.ds, run: r.id, model: r.model, harness: r.harness, task: r.task,
   }
 }
-const eventPin = (r, s, n) => ({
+export const eventPin = (r, s, n) => ({
   id: `event:${r.id}:${s.seq}`, kind: 'event', label: `${sfx(r.id)} #${s.seq} · ${spanDesc(s, n)}`.slice(0, 120), spec: makeSpec('span', r.id, s.seq),
   value: spanTech(s), dir: r.ds, run: r.id, seq: s.seq, model: r.model, harness: r.harness, task: r.task,
 })
@@ -211,7 +212,8 @@ const taskSpecFor = (r, runs, facet) => {
 
 /* ================================================================== small components */
 function Ki({ s }) { return <span className={`rg-traj-ki ${spanKind(s)}`} aria-hidden="true" /> }
-function Ev({ run, seq, children, title }) {
+function Ev({ run, seq, children, title, onPick }) {
+  if (onPick) return <button type="button" className="rg-traj-evl" title={title || `show #${seq} in the console`} onClick={() => onPick(seq)}>#{seq} {children}</button>
   return <Go spec={makeSpec('span', run.id, seq)} className="rg-traj-evl" title={title || `open event #${seq}`}>#{seq} {children}</Go>
 }
 /** Not-found document WITH the ways forward that fit this family (a run that exists, the pair
@@ -350,7 +352,7 @@ function Scrubber({ spans, sel, onSel }) {
 }
 
 /** The concrete failure finding (red note) with its evidence links. */
-function WhyFailed({ run, detail, oracle, meta, el = 'failure-finding', chip = true }) {
+function WhyFailed({ run, detail, oracle, meta, el = 'failure-finding', chip = true, onPick }) {
   const story = detail ? failureStory(run, detail, oracle, meta) : null
   if (!story) return null
   return (
@@ -360,7 +362,7 @@ function WhyFailed({ run, detail, oracle, meta, el = 'failure-finding', chip = t
         {chip && <FailureChip run={run} />}
       </div>
       <p className="rg-traj-why-t">{story.text}</p>
-      {story.refs.length > 0 && <div className="rg-row rg-wrap rg-traj-why-ev"><span className="rg-small rg-mute">Evidence</span>{story.refs.map((r) => <Ev key={r.seq + r.label} run={run} seq={r.seq}>{r.label}</Ev>)}</div>}
+      {story.refs.length > 0 && <div className="rg-row rg-wrap rg-traj-why-ev"><span className="rg-small rg-mute">Evidence</span>{story.refs.map((r) => <Ev key={r.seq + r.label} run={run} seq={r.seq} onPick={onPick}>{r.label}</Ev>)}</div>}
     </div>
   )
 }
@@ -901,11 +903,11 @@ function RunDoc({ spec, args }) {
     ['Behaviour', [['calls · tools · edits', `${run.steps ?? '—'} · ${run.tools ?? '—'} · ${run.edits ?? '—'}`], ['boundary', `${run.bnd ?? 0}${run.bkinds && run.bkinds.length ? ' · ' + run.bkinds.join(', ') : ''}`], ['exit reason', run.exit || '—']]],
     ['Recorded setup', [['seed', det.data ? (seedOf(spans) ?? '—') : '…'], ['max tokens / call', cfg && cfg.max_tokens_per_call != null ? int(cfg.max_tokens_per_call) : '—'], ['max steps', cfg && cfg.max_steps != null ? int(cfg.max_steps) : '—']]],
   ]
-  const onSel = (s) => { setSel(s); requestAnimationFrame(() => { const e = listRef.current && listRef.current.querySelector(`.rg-traj-ev[data-seq="${s}"]`); if (e && e.scrollIntoView) e.scrollIntoView({ block: 'nearest' }) }) }
+  const onSel = (s) => { setSel(s); requestAnimationFrame(() => { const e = listRef.current && listRef.current.querySelector('[data-el="run-console"]'); if (e && e.scrollIntoView) e.scrollIntoView({ block: 'nearest' }) }) }
   return (
     <div className="rg-dpad rg-traj-doc rg-traj-stack">
       <header className="rg-dh rg-traj-dh">
-        <div className="t"><div className="rg-eyebrow">{run.task} · {short(run.model)} · {run.harness} · run {pad2(ai + 1)} of {att.length || '—'}</div>
+        <div className="t"><div className="rg-eyebrow"><Crumbs parts={[run.task, short(run.model), run.harness, `run ${pad2(ai + 1)} of ${att.length || '—'}`]} /></div>
           <h1 className="rg-mono rg-row rg-wrap rg-traj-h1"><Verdict v={v} /><span className="rg-traj-id">{run.id}</span><FailureChip run={run} /></h1></div>
         <div className="rg-row rg-wrap">
           {spans.length > 0 && <button type="button" className={cx('rg-btn', replay ? 'pri' : '')} aria-pressed={replay} onClick={() => setReplay(!replay)}>▶ Replay as live</button>}
@@ -915,20 +917,19 @@ function RunDoc({ spec, args }) {
         </div>
       </header>
       {replay && spans.length ? <ReplayLanes run={run} spans={spans} onExit={() => setReplay(false)} /> : (<>
-        {v === false && det.data && <WhyFailed run={run} detail={det.data} oracle={oracle} meta={meta} />}
+        {v === false && det.data && <WhyFailed run={run} detail={det.data} oracle={oracle} meta={meta} onPick={onSel} />}
+        <DetailGate det={det} run={run} what="event list" runs={runs}>
+          <section className="rg-traj-stack-s" aria-label="Recorded events">
+            <h2 className="rg-traj-sh">What it did <span className="rg-traj-h-m">{plural(spans.length, 'recorded event')} in ledger order</span></h2>
+            <div ref={listRef}><RunConsole run={run} spans={spans} replay={det.data && det.data.replay} sel={sel} onSel={onSel} verdictOf={v} /></div>
+          </section>
+        </DetailGate>
         <section data-el="run-facts" aria-label="Run facts">
           <h2 className="rg-traj-sh">Run facts <span className="rg-traj-h-m">{run.ds} · repeat {run.rep ?? '—'}</span></h2>
           <div className="rg-traj-fgroups">{groups.map(([g, fs]) => (
             <dl key={g} className="rg-traj-fg"><div className="rg-traj-fg-h">{g}</div>{fs.map(([l, x]) => <div key={l} className="rg-traj-fg-r"><dt>{l}</dt><dd className="rg-mono">{x}</dd></div>)}</dl>
           ))}</div>
         </section>
-        <DetailGate det={det} run={run} what="event list" runs={runs}>
-          <section className="rg-traj-stack-s" aria-label="Recorded events">
-            <h2 className="rg-traj-sh">What it did <span className="rg-traj-h-m">{plural(spans.length, 'recorded event')} in ledger order</span></h2>
-            <Scrubber spans={spans} sel={sel} onSel={onSel} />
-            <div ref={listRef}><EventList run={run} spans={spans} open={sel} onToggle={setSel} label="Events" meta="click one to expand, or scrub the timeline" /></div>
-          </section>
-        </DetailGate>
       </>)}
     </div>
   )
@@ -980,7 +981,7 @@ function SpanDoc({ spec, args }) {
   return (
     <div className="rg-dpad rg-traj-doc rg-traj-stack">
       <header className="rg-dh rg-traj-dh">
-        <div className="t"><div className="rg-eyebrow">{run.task} · {short(run.model)} · {run.harness} · run {sfx(run.id)} · event {i + 1} of {spans.length}</div>
+        <div className="t"><div className="rg-eyebrow"><Crumbs parts={[run.task, short(run.model), run.harness, `run ${sfx(run.id)}`, `event ${i + 1} of ${spans.length}`]} /></div>
           <h1 className="rg-mono rg-row rg-wrap rg-traj-h1"><Ki s={s} />Event #{s.seq} · {KIND_WORD[spanKind(s)]}</h1></div>
         <div className="rg-row rg-wrap">
           {i > 0 && <button type="button" className="rg-btn" onClick={() => step(-1)}>↑ prev</button>}
@@ -1187,7 +1188,7 @@ function CmpDoc({ spec, args }) {
           <Note><div><b>What this pair does not license.</b> One pair is one anecdote. A claim about {cls === 'same' ? 'run-to-run variance' : 'the difference'} comes from the {int(cls === 'cross' ? pc.cross : pc.same)} pairs of this class read as a paired set, not from this pair.</div></Note>
         </div>
         <Panel label="Aligned steps" meta={`${xa.length} vs ${xb.length} actions`} flush>
-          <div className="rg-tblwrap rg-traj-aligned"><table className="rg-tbl"><thead><tr><th className="rg-num">step</th><th>A · {sfx(A.id)}</th><th>B · {sfx(B.id)}</th><th>aligned</th></tr></thead><tbody>{rows}</tbody></table></div>
+          <div className="rg-tblwrap rg-traj-aligned"><table className="rg-tbl rg-keep"><thead><tr><th className="rg-num">step</th><th>A · {sfx(A.id)}</th><th>B · {sfx(B.id)}</th><th>aligned</th></tr></thead><tbody>{rows}</tbody></table></div>
           <p className="rg-tiny rg-mute rg-traj-pad">Steps align by position; a step matches when its span kind and tool name match, so “same” means the same action, not the same text.</p>
         </Panel>
       </div>
@@ -1480,6 +1481,11 @@ function runCrumbs(a, env, tail) {
   const att = cachedAttempts(env, r.ds, r.model, r.harness, r.task)
   const i = att ? att.findIndex((x) => x.run_id === r.id) : -1
   return [[r.ds, makeSpec('field', r.ds)], [r.task, taskSpecOf(r, i >= 0 ? i : null)], ...tail(r)]
+}
+
+/** An eyebrow's ' · '-separated parts, wrapping only between parts (never "run 01 of" / "46"). */
+function Crumbs({ parts }) {
+  return <span>{parts.map((x, i) => <Fragment key={i}>{i ? '\u00a0· ' : ''}<span className="rg-nw">{x}</span></Fragment>)}</span>
 }
 
 export const views = {

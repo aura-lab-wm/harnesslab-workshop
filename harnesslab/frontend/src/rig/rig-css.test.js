@@ -69,7 +69,7 @@ describe('rig tokens', () => {
     const all = [...root.matchAll(/--(rig-[\w-]+):\s*(#[0-9a-fA-F]{6})/g)].map((m) => [m[1], m[2]])
     expect(all.length).toBeGreaterThan(30)
     const green = (h) => { const c = hsl(h); return c.s > 0.15 && c.h >= 75 && c.h <= 165 }
-    for (const [name, h] of all) expect(green(h), `${name} ${h}`).toBe(/^rig-sky(-t)?-[dl]$/.test(name))
+    for (const [name, h] of all) expect(green(h), `${name} ${h}`).toBe(/^rig-sky(-t)?-[dl]$|^rig-cx-(ok|k-t|k-t-bg)-[dl]$/.test(name))   // the console's own palette: its pass (ok) and run_tests (k-t) hues
   })
 })
 
@@ -93,6 +93,55 @@ for (const f of classicCss()) {
     for (const part of m[1].split(',')) { const x = part.trim().match(/^\.([a-zA-Z][\w-]*)(:[\w-]+(\([^)]*\))?)*$/); if (x) RISKY.add(x[1]) }
   }
 }
+describe('console tokens (traceharness.dev --cx-*)', () => {
+  const CX = ['bg', 'bg2', 'bg3', 'line', 'line2', 'text', 'dim', 'mute', 'acc', 'ok', 'bad', 'amb', 'k-i-bg', 'k-i', 'k-e-bg', 'k-e', 'k-t-bg', 'k-t', 'k-b-bg', 'k-b', 'k-s-bg', 'k-s']
+  it('each exists in both themes with the SAME dark value', () => {
+    for (const n of CX) {
+      expect(tok(`rig-cx-${n}-d`), `--rig-cx-${n}-d`).toMatch(/^#[0-9a-fA-F]{6}$/)
+      expect(tok(`rig-cx-${n}-l`), `--rig-cx-${n}-l`).toBe(tok(`rig-cx-${n}-d`))
+    }
+    expect(root.match(/--rig-cx-shadow-d:([^;]+);/)[1]).toBe(root.match(/--rig-cx-shadow-l:([^;]+);/)[1])
+  })
+  it('console text reaches 4.5:1 on every console ground', () => {
+    for (const fg of ['text', 'dim', 'mute', 'acc', 'ok', 'bad', 'amb']) for (const bg of ['bg', 'bg2', 'bg3']) {
+      expect(ratio(tok(`rig-cx-${fg}-d`), tok(`rig-cx-${bg}-d`)), `${fg} on ${bg}`).toBeGreaterThanOrEqual(4.5)
+    }
+    for (const k of ['i', 'e', 't', 'b', 's']) expect(ratio(tok(`rig-cx-k-${k}-d`), tok(`rig-cx-k-${k}-bg-d`)), `kind ${k}`).toBeGreaterThanOrEqual(4.5)
+  })
+  it('the page dot grid and the primary hover exist in both themes', () => {
+    expect(root).toMatch(/--rig-dot-d:rgba\(255,255,255,\.07\)/)
+    expect(root).toMatch(/--rig-dot-l:rgba\(0,0,0,\.075\)/)
+    expect(tok('rig-sel-h-d')).toBe('#0a6cf5'); expect(tok('rig-sel-h-l')).toBe('#0a6cf5')
+  })
+})
+
+describe('the run console stays dark when the app is light', () => {
+  const rigCss = strip(readFileSync(join(RIG, 'rig.css'), 'utf8'))
+  const cxCss = strip(readFileSync(join(RIG, 'views', 'console.css'), 'utf8'))
+  const block = rigCss.match(/\.rig \.rg-cx\{([^}]*)\}/)[1]
+  it('re-points every page token at its -d primitive and sets color-scheme:dark', () => {
+    for (const n of ['bg', 'panel', 'panel2', 'panel3', 'line', 'line2', 'line3', 'text', 'dim', 'mute', 'unk', 'sel', 'sel-t', 'sel-ink', 'sky', 'sky-t', 'red', 'red-t', 'amb', 'amb-t', 'on-accent', 'shadow']) {
+      expect(block, `--rig-${n}`).toContain(`--rig-${n}:var(--rig-${n}-d);`)
+    }
+    expect(block).toContain('color-scheme:dark')
+  })
+  it('maps --rig-cx-* to the same value in the dark and the light theme', () => {
+    const dark = rigCss.match(/\.rig,\.rig\[data-rig-theme="dark"\]\{([^}]*)\}/)[1]
+    const light = rigCss.match(/\.rig\[data-rig-theme="light"\]\{([^}]*)\}/)[1]
+    const cxOf = (b, s) => [...b.matchAll(/--rig-cx-([\w-]+):var\(--rig-cx-[\w-]+-([dl])\)/g)].map((m) => m[1] + ':' + (m[2] === s))
+    expect(cxOf(dark, 'd').every((x) => x.endsWith('true'))).toBe(true)
+    expect(cxOf(light, 'l').every((x) => x.endsWith('true'))).toBe(true)
+    expect(cxOf(dark, 'd').map((x) => x.split(':')[0])).toEqual(cxOf(light, 'l').map((x) => x.split(':')[0]))
+  })
+  it('console.css paints the card from the cx tokens, not the page tokens', () => {
+    const body = cxCss.match(/\.rig \.rg-cx\{([^}]*)\}/)[1]
+    expect(body).toContain('background:var(--rig-cx-bg)')
+    expect(body).toContain('border:1px solid var(--rig-cx-line2)')
+    expect(body).toContain('box-shadow:var(--rig-cx-shadow)')
+    expect(cxCss).not.toMatch(/var\(--rig-(bg|panel2?3?|line[23]?|text|dim|mute)\)/)
+  })
+})
+
 describe('rig stylesheets', () => {
   for (const f of files) {
     const text = strip(readFileSync(f, 'utf8'))
@@ -121,4 +170,27 @@ describe('rig stylesheets', () => {
       expect(bad).toEqual([])
     })
   }
+})
+
+describe('table headers and chips (traceharness.dev table.data thead th, .cx-chip)', () => {
+  const all = files.map((f) => [f.slice(RIG.length), strip(readFileSync(f, 'utf8'))])
+  const rigCss = all.find(([n]) => n === 'rig.css')[1]
+  const HEAD = '.rg-tbl th,.rg-an-mx thead th,.rg-an-trow.th>*'
+  it('one rule sets the font of every table and grid header row, with the site values', () => {
+    const body = rigCss.match(/\.rg-tbl th,\.rg-an-mx thead th,\.rg-an-trow\.th>\*\{([^}]*)\}/)[1]
+    for (const d of ['font:500 11.5px/1.3 var(--rig-mono)', 'letter-spacing:.04em', 'text-transform:uppercase', 'color:var(--rig-mute)', 'white-space:nowrap']) expect(body).toContain(d)
+  })
+  it('no other rule gives a header cell its own font', () => {
+    const bad = []
+    for (const [name, text] of all) {
+      for (const [, sel, body] of text.matchAll(/([^{}@]+)\{([^}]*)\}/g)) {
+        if (sel.trim() === HEAD || !/(^|[\s,>])th\b|\.th\b/.test(sel)) continue
+        if (/(^|;)font(-family|-weight|-size)?:/.test(body)) bad.push(`${name}: ${sel.trim()}`)
+      }
+    }
+    expect(bad).toEqual([])
+  })
+  it('a chip never grows past its cell', () => {
+    expect(rigCss).toMatch(/\.rg-tag,\.rg-fchip,\.rg-chip\{[^}]*max-width:100%/)
+  })
 })

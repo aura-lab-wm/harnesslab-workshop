@@ -1,4 +1,4 @@
-<title>The Field · harnesslab</title>
+<title>The Field · TraceHarness</title>
 <!-- No webfont link. The exported Field must open with zero network requests, and a Google
      Fonts stylesheet is a request. The deck faces are named first in --sans/--mono below and
      degrade to the system stack where they are not installed. -->
@@ -15,8 +15,8 @@ __FONTS__
      There WAS a green here. Retiring it also fixed a defect nobody had measured:
      the light theme's #1E9E5C sat at 3.29:1 against this document's paper, below
      WCAG AA. The cyanotype clears it on both grounds, and a test now says so. */
-  --bg:#05070B;--bg2:#0A0F17;--panel:#0C1119;--line:rgba(139,153,173,.22);--line2:rgba(139,153,173,.4);
-  --ink:#E4EBF5;--ink2:#C1CCDC;--muted:#8B99AD;--faint:#6B7787;
+  --bg:#000000;--bg2:#070707;--panel:#0a0a0a;--line:#1c1c1c;--line2:#2a2a2a;
+  --ink:#ededed;--ink2:#c8c8c8;--muted:#a1a1a1;--faint:#8f8f8f;
   --pass:#4D8DFF;--fail:#F0616D;--unres:#6B7787;--A:#79E0FF;--B:#E4EBF5;--amber:#9FC6FF;
   --passBg:rgba(77,141,255,.16);--failBg:rgba(240,97,109,.16);--ABg:rgba(121,224,255,.16);--BBg:rgba(228,235,245,.14);--amberBg:rgba(159,198,255,.14);
   /* three washes/borders that were spelled out as raw rgba() literals at their one call site each
@@ -28,8 +28,8 @@ __FONTS__
 }
 :root[data-theme="light"]{
   /* chart-recorder paper: bone, not a blue-grey UI white */
-  --bg:#FAFAFB;--bg2:#F0F2F6;--panel:#FFFFFF;--line:rgba(12,17,25,.14);--line2:rgba(12,17,25,.26);
-  --ink:#0C1119;--ink2:#39424F;--muted:#5C6878;--faint:#8B99AD;
+  --bg:#fafafa;--bg2:#f3f3f3;--panel:#ffffff;--line:#e8e8e8;--line2:#dadada;
+  --ink:#171717;--ink2:#4d4d4d;--muted:#666666;--faint:#8a8a8a;
   --pass:#1D53C4;--fail:#B32A34;--unres:#8B99AD;--A:#0E6E8C;--B:#0C1119;--amber:#1D53C4;
   --passBg:rgba(29,83,196,.13);--failBg:rgba(179,42,52,.13);--ABg:rgba(14,110,140,.13);--BBg:rgba(12,17,25,.08);--amberBg:rgba(29,83,196,.12);
 }
@@ -169,7 +169,7 @@ svg .badge{font-family:var(--mono);font-size:10px;fill:var(--fail)}
 
 <div id="app">
   <div class="top">
-    <span class="wm"><i></i>HARNESSLAB · FIELD</span>
+    <span class="wm"><i></i>TRACEHARNESS · FIELD</span>
     <span class="state" id="state"></span>
     <span class="sp"></span>
     <span class="lbl">oracle</span>

@@ -222,7 +222,7 @@ function Sources({ spec }) {
       </div>
       <Sec title="Add runs" el="add-runs" lead="Three ways in. Pick the one that matches what you have.">
         <ImportTrace spec={spec} datasets={all} />
-        <SweAgentImport datasets={all} />
+        <SweAgentImport spec={spec} datasets={all} />
         <Road n={3} title="Record your own sessions" el="road-capture">
           <p className="rg-ws-lead">Session capture follows Claude Code, Codex, Cursor, Gemini CLI and Qwen Code on this machine by itself, so nobody types a path for those.</p>
           <NextSteps actions={[{ label: 'Open Session capture', spec: 'capture' }]} />
@@ -437,12 +437,14 @@ function ImportResult({ r, onAgain }) {
 /** Port of method/Sources.jsx SweAgentImport: POST /real/import {n, model, out} behind a confirm.
  *  The server names the directory real_swe_agent_<n>[_<model>] when `out` is blank, and REWRITES the
  *  index of a directory that already exists (backend/real_import.py opens index.jsonl with "w"). */
-function SweAgentImport({ datasets }) {
+function SweAgentImport({ spec, datasets }) {
   const [pollOn, setPollOn] = useState(false)
   const st = useApi(IS_STATIC ? null : '/real/status', { poll: pollOn ? 1500 : 0 })
-  const [n, setN] = useState(500)
-  const [model, setModel] = useState('')
-  const [out, setOut] = useState('')
+  // Tab state, not useState: a finished download refreshes the dataset list, Sources shows its
+  // loading state meanwhile, and the form remounts; plain state would reset Runs to 500 beside the result.
+  const [n, setN] = useTabState(spec, 'swe.n', 500)
+  const [model, setModel] = useTabState(spec, 'swe.model', '')
+  const [out, setOut] = useTabState(spec, 'swe.out', '')
   const [msg, setMsg] = useState('')
   const s = st.data || {}
   const running = s.status === 'running'
@@ -453,41 +455,44 @@ function SweAgentImport({ datasets }) {
     was.current = s.status
   }, [s.status])
   if (IS_STATIC) return null
-  const auto = `real_swe_agent_${n}` + (model ? `_${model.split('/').pop()}` : '')
+  const has = (x) => datasets.some((d) => d.name === x)
+  const freeOf = (b) => { let k = 2; while (has(`${b}_${k}`)) k++; return `${b}_${k}` }
+  const auto0 = `real_swe_agent_${n}` + (model ? `_${model.split('/').pop()}` : '')
+  // A blank name never lands on a directory that exists: the package ships real_swe_agent_500, so
+  // the default download would otherwise rewrite the bundled sample's index.
+  const auto = has(auto0) ? freeOf(auto0) : auto0
   const name = out || auto
-  const taken = datasets.some((x) => x.name === name)
-  let k = 2
-  while (datasets.some((x) => x.name === `${name}_${k}`)) k++
-  const free = `${name}_${k}`
+  const taken = has(name)
+  const free = freeOf(name)
   const known = [...new Set(datasets.filter((x) => /^real_swe_agent/.test(x.name)).flatMap((x) => x.models || []))].sort()
   const failed = s.status === 'error' || !!msg
   const go = async () => {
     setMsg('')
-    try { await api('/real/import', { method: 'POST', body: { n, model: model || null, out: out || null } }); setPollOn(true); st.reload() } catch (e) { setMsg(errText(e)) }
+    try { await api('/real/import', { method: 'POST', body: { n, model: model || null, out: name } }); setPollOn(true); st.reload() } catch (e) { setMsg(errText(e)) }
   }
   return (
     <Road n={2} title="Download a public sample" el="swe-agent-import">
-      <p className="rg-ws-lead">Streams trajectories from the public nebius/SWE-agent-trajectories set on Hugging Face and writes them as a results directory. The server needs network access.</p>
+      <p className="rg-ws-lead">Downloads trajectories from the public nebius/SWE-agent-trajectories set on Hugging Face and writes them as a results directory. The server needs network access.</p>
       <About summary="About the SWE-agent sample">
         <p>Imported runs have no cost ledger and no strengthened oracle; the views that need those say so instead of showing $0. The server also needs the <span className="rg-mono">datasets</span> package (<span className="rg-mono">pip install datasets</span>). The model filter matches a model name exactly.</p>
       </About>
       <div className="rg-ws-form">
         <div className="rg-ws-trip">
           <label className="rg-fld">Runs<input className="rg-inp" type="number" min={10} max={5000} value={n} onChange={(e) => setN(Math.max(10, Math.min(5000, +e.target.value || 10)))} /></label>
-          <label className="rg-fld">Model (optional)<input className="rg-inp" value={model} spellCheck={false} placeholder="e.g. swe-agent-llama-70b · blank: all" onChange={(e) => setModel(e.target.value.trim())} /></label>
+          <label className="rg-fld">Model (blank = all)<input className="rg-inp" value={model} spellCheck={false} placeholder="e.g. swe-agent-llama-70b" onChange={(e) => setModel(e.target.value.trim())} /></label>
           <label className="rg-fld">Results directory (optional)<input className="rg-inp" value={out} spellCheck={false} placeholder="e.g. swe_sample" onChange={(e) => setOut(e.target.value.replace(/[^a-zA-Z0-9_-]/g, ''))} /></label>
         </div>
         {known.length > 0 && <div className="rg-ws-chips" data-el="model-suggestions">
           <span className="rg-ws-chipsl">Models in the sample already on disk:</span>
           {known.map((m) => <button type="button" key={m} className={cx('rg-ws-chip', model === m && 'on')} aria-pressed={model === m} onClick={() => setModel(model === m ? '' : m)}><span className="rg-mono">{m}</span></button>)}
         </div>}
-        <p className="rg-small rg-dim">Writes <span className="rg-mono">data/runs/{name}</span>{out ? '' : ', named from the run count and the model'}.</p>
+        <p className="rg-small rg-dim">Writes <span className="rg-mono">data/runs/{name}</span>{out ? '' : auto === auto0 ? ', named from the run count and the model' : <>, because <span className="rg-mono">data/runs/{auto0}</span> already exists</>}.</p>
         {taken && <Note el="swe-dir-taken"><div><b>data/runs/{name} already exists.</b> This download would rewrite its index. Keep it by naming a new directory. <button type="button" className="rg-tlink" onClick={() => setOut(free)}>Use {free}</button></div></Note>}
         <div className="rg-row rg-wrap rg-ws-acts rg-ws-quiet">
           <ConfirmAction label={running ? 'Downloading…' : failed ? 'Retry the download' : 'Download SWE-agent sample'} confirmLabel="Download & import" disabled={running} why="A download is already running" el="swe-agent-download"
             detail={`Streams ${int(n)} trajectories and ${taken ? 'rewrites the index of' : 'writes'} data/runs/${name}.`} onConfirm={go} />
         </div>
-        {running && <p className="rg-mono rg-small rg-dim" role="status">Downloading: {Array.isArray(s.progress) ? `${int(s.progress[0])} of ${int(s.progress[1])} trajectories` : 'starting'}</p>}
+        {running && <p className="rg-mono rg-small rg-dim" role="status" data-el="swe-agent-progress">{s.phase === 'write' ? 'Writing runs' : 'Downloading from Hugging Face'}: {Array.isArray(s.progress) ? `${int(s.progress[0])}${s.progress[1] ? ` of ${int(s.progress[1])}` : ''} ${s.unit || (s.phase === 'write' ? 'runs' : 'trajectories')}` : 'starting'}</p>}
         {failed && !running && (
           <div className="rg-ws-err" role="alert">
             <p><b>{msg ? 'The server refused the download.' : 'The last download did not finish.'}</b> {msg || s.error}</p>
@@ -497,7 +502,7 @@ function SweAgentImport({ datasets }) {
         {st.error && <Failed what="Could not read the download status." error={st.error} onRetry={st.reload} />}
         {s.status === 'done' && s.result && !running && (
           <div className="rg-ws-result" data-el="swe-agent-result">
-            <p className="rg-small">Downloaded {plural(s.result.n, 'trajectory', 'trajectories')}{Number.isFinite(s.result.resolved) ? ` (${int(s.result.resolved)} resolved)` : ''} into <span className="rg-mono">data/runs/{s.result.out}</span>.</p>
+            <p className="rg-small">Downloaded {int(s.result.n)} {s.result.n === 1 ? 'trajectory' : 'trajectories'}{Number.isFinite(s.result.resolved) ? ` (${int(s.result.resolved)} resolved)` : ''} into <span className="rg-mono">data/runs/{s.result.out}</span>.</p>
             <NextSteps actions={[{ label: openLabelOf(s.result.out), spec: openSpecOf(s.result.out), primary: true }]} />
           </div>
         )}
@@ -1388,7 +1393,7 @@ function Guide() {
           </Go></li>))}
       </ol>
       <Sec title="What the included results are">
-        <p className="rg-ws-lead">HarnessLab treats the agent harness — tool surface, permission policy, context window, stopping rule — as an experimental variable, and measures how much it moves a fixed model on fixed tasks. The recorded datasets replay from disk, so reanalysing them needs no API key.</p>
+        <p className="rg-ws-lead">TraceHarness treats the agent harness — tool surface, permission policy, context window, stopping rule — as an experimental variable, and measures how much it moves a fixed model on fixed tasks. The recorded datasets replay from disk, so reanalysing them needs no API key.</p>
         <NextSteps actions={[{ label: 'Reference materials', spec: 'package' }]} />
       </Sec>
       <Sec title="Reproduce from the terminal" lead="HANDOUT.md walks through exercises 1–8.">

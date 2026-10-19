@@ -157,6 +157,41 @@ describe('sources', () => {
     expect(within(box).getByLabelText(/Results directory/).value).toBe('mini_2')
     for (const i of box.querySelectorAll('input')) if (i.placeholder) expect(i.placeholder).toMatch(/^e\.g\. /)
   })
+  it('the SWE-agent download never defaults onto the bundled sample: a blank name picks a free directory and posts it', async () => {
+    const data = { ...rigFixture(), ...IMPORT }
+    data['/overview'] = { ...data['/overview'], results: [...data['/overview'].results, { name: 'real_swe_agent_500', runs: 500, harnesses: ['swe-agent'], models: ['swe-agent-llama-70b'], tasks: ['t1'], pass_rate: 0.1, updated: '2026-01-03T00:00:00Z' }] }
+    const { container } = renderRig('#/rig/sources', { data })
+    const calls = stubFetch((u) => (u === '/api/real/import' ? { status: 'running', out: 'real_swe_agent_500_2' } : u === '/api/real/status' ? IMPORT['/real/status'] : undefined))
+    const box = el(container, 'swe-agent-import')
+    expect(box.textContent).toContain('Writes data/runs/real_swe_agent_500_2, because data/runs/real_swe_agent_500 already exists.')
+    expect(box.querySelector('[data-el="swe-dir-taken"]')).toBeNull()
+    fireEvent.click(within(box).getByRole('button', { name: 'Download SWE-agent sample' }))
+    fireEvent.click(within(box).getByRole('button', { name: 'Download & import' }))
+    await waitFor(() => expect(calls.filter((c) => c.method === 'POST').map((c) => c.body)).toEqual([{ n: 500, model: null, out: 'real_swe_agent_500_2' }]))
+  })
+  it('the SWE-agent download says which phase it is in: downloading from the Hub (MB, then trajectories), then writing runs', () => {
+    const run = (phase, progress, unit) => {
+      resetRig()
+      const { container } = renderRig('#/rig/sources', { data: { ...rigFixture(), ...IMPORT, '/real/status': { status: 'running', progress, phase, unit, error: null, result: null } } })
+      return el(container, 'swe-agent-progress').textContent
+    }
+    expect(run('download', [34, 85], 'MB')).toBe('Downloading from Hugging Face: 34 of 85 MB')
+    expect(run('download', [340, 1000], 'trajectories')).toBe('Downloading from Hugging Face: 340 of 1,000 trajectories')
+    expect(run('write', [250, 1000], 'runs')).toBe('Writing runs: 250 of 1,000 runs')
+    expect(run('download', null, null)).toBe('Downloading from Hugging Face: starting')
+    resetRig()
+    const { container } = renderRig('#/rig/sources', { data: { ...rigFixture(), ...IMPORT, '/real/status': { status: 'done', progress: [1000, 1000], phase: 'write', unit: 'runs', error: null, result: { n: 1000, resolved: 169, out: 'real_swe_agent_1000' } } } })
+    expect(el(container, 'swe-agent-result').textContent).toContain('Downloaded 1,000 trajectories (169 resolved) into data/runs/real_swe_agent_1000.')
+  })
+  it('the SWE-agent form keeps what was typed when the dataset list refreshes after a download', async () => {
+    const data = { ...rigFixture(), ...IMPORT }
+    const { container } = renderRig('#/rig/sources', { data })
+    fireEvent.change(within(el(container, 'swe-agent-import')).getByLabelText(/^Runs/), { target: { value: '1000' } })
+    stubFetch((u) => (u === '/api/overview' ? data['/overview'] : u === '/api/real/status' ? IMPORT['/real/status'] : undefined))
+    act(() => { invalidate('/overview') })                      // what a finished download does
+    await waitFor(() => expect(el(container, 'swe-agent-import')).toBeTruthy())
+    expect(within(el(container, 'swe-agent-import')).getByLabelText(/^Runs/).value).toBe('1000')
+  })
   it('import: detect a path, arm the confirm, cancel (no POST), then confirm posts to /api/import', async () => {
     const { container } = renderRig('#/rig/sources', { data: { ...rigFixture(), ...IMPORT } })
     const calls = stubFetch((u) => (u.startsWith('/api/import/detect') ? { exists: true, path: '/tmp/x', source: 'codex', sessions: 3, candidates: [{ source: 'codex', confidence: 0.9 }], is_dir: true } : u === '/api/import' ? { ok: true } : u === '/api/import/status' ? IMPORT['/import/status'] : undefined))
@@ -466,7 +501,7 @@ describe('guide and package', () => {
     const p = el(container, 'package-contents')
     expect(p.textContent).toContain('Exercises and task probes')
     expect(p.textContent).toContain('not present on disk')
-    expect(p.textContent).toContain('Captured coding sessions and capture watcher state')
+    expect(p.textContent).toContain('Captured coding sessions (except one curated sample) and capture watcher state')
     expect(within(p).getByRole('button', { name: /t2/ }).getAttribute('data-spec')).toBe('task:mini:alpha-1:baseline:t2')
   })
 })

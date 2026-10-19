@@ -4,6 +4,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { act, fireEvent, screen, within } from '@testing-library/react'
 import { renderRig, resetRig, rigFixture, MINI } from '../../../test/rig-testing'
+import { views } from './analysis.jsx'
 
 afterEach(resetRig)
 
@@ -33,7 +34,7 @@ function data() {
   integ.weak_tests = { per_task: [{ task: 't1', lost: 0.4 }, { task: 't2', lost: 0 }] }
   integ.self_report = [{ harness: 'baseline', overclaim: 0.1 }, { harness: 'terse', overclaim: 0 }]
   f['/judge'] = { status: 'idle', stage: null, error: null, report: null, history: [] }
-  f[`/results/${MINI}/report?harness=baseline`] = { ...f[`/results/${MINI}/report`], markdown: '# Evaluation report card\n' }
+  f[`/results/${MINI}/report?harness=baseline`] = { ...f[`/results/${MINI}/report?harness=baseline`], markdown: '# Evaluation report card\n' }
   f['/models'] = { models: [{ id: M1, price_in: 0.1, price_out: 0.4 }, { id: 'mock', price_in: null, price_out: null }], observed: { [M1]: { cost_per_run: 0.01, runs: 8 } } }
   return f
 }
@@ -46,7 +47,7 @@ describe('an: shell', () => {
     expect(el(container, 'asking-sentence').textContent).toContain('Asking')
     const nav = el(container, 'analysis-nav')
     expect(within(nav).getAllByRole('button').map((b) => b.textContent.replace(/\d$/, ''))).toEqual(
-      ['Family matrix', 'Outcomes', 'Comparison', 'Trajectories', 'Judge & integrity', 'Experiment', 'Report', 'Run setup'])
+      ['Family matrix', 'Outcomes', 'Comparison', 'Trajectories', 'Trajectory features', 'Judge & integrity', 'Experiment', 'Report', 'Run setup'])
     act(() => { fireEvent.click(within(nav).getByText('Judge & integrity')) })
     expect(location.hash).toBe('#/rig/an:mini:judge:alpha-1:baseline')     // replaces the tab in place
   })
@@ -475,5 +476,40 @@ describe('round 3 · breathing: every view leads with its answer and keeps metho
   it('the family answer names the highest and lowest family with denominators', () => {
     const { container } = renderRig('#/rig/an:mini:family', { data: data() })
     expect(el(container, 'family-answer').textContent).toBe('Highest: alpha-1 under terse at 100.0% (4/4); lowest: beta-2 under baseline at 33.3% (1/3) — hidden-suite grades among known ones, over 4 families.')
+  })
+})
+
+describe('features (exercise 7 on an imported SWE-agent set)', () => {
+  const RA = {
+    n: 4, resolved: 1, unresolved: 3, steps_ci_unresolved: [12, 28],
+    table: [{ metric: 'steps', key: 'steps', kind: 'mean', resolved: 10, unresolved: 20.5, card: '31.3 vs 58.4' },
+      { metric: 'submitted', key: 'submitted', kind: 'rate', resolved: 1, unresolved: 0.5, card: '94.6% vs 57.6%' }],
+    exit_status: { submitted: 3, exit_context: 1 }, action_mix: { resolved: { view: 0.5, edit: 0.5 }, unresolved: { view: 0.25, edit: 0.75 } },
+    ochiai: [
+      { feature: 'never_verified_after_edit', ochiai: 0.71, ef: 2, ep: 0, rate_in_failures: 2 / 3, rate_in_successes: 0, examples_fail: ['r-1', 'r-2'], examples_pass: [] },
+      { feature: 'repeated_commands>3', ochiai: 0.4, ef: 1, ep: 1, rate_in_failures: 1 / 3, rate_in_successes: 1, examples_fail: ['r-3'], examples_pass: ['r-4'] }],
+    by_model: [{ model: 'm70', n: 3, resolved: 1 / 3 }, { model: 'm8', n: 1, resolved: 0 }],
+  }
+  it('names the feature that goes with failure most, and each example opens its run in the console', () => {
+    const { container } = renderRig('#/rig/an:mini:features', { data: { ...data(), [`/real/${MINI}/analysis`]: RA } })
+    expect(el(container, 'features-answer').textContent).toBe('3 of 4 runs did not resolve their issue. The feature that goes with failure most is never verified after the last edit (Ochiai 0.71): 67% of failed runs show it, against 0% of resolved ones.')
+    const rows = container.querySelectorAll('[data-el="feature-row"]')
+    expect(rows).toHaveLength(2)
+    expect(rows[1].textContent).toContain('repeated a command more than 3 times')
+    expect(within(rows[0]).getByRole('button', { name: 'Open failed run 1 with this feature: r-1' }).getAttribute('data-spec')).toBe('run:r-1')
+    expect(within(rows[1]).getByRole('button', { name: 'Open resolved run 1 with this feature: r-4' }).getAttribute('data-spec')).toBe('run:r-4')
+    expect(el(container, 'resolved-vs-unresolved').textContent).toContain('94.6% vs 57.6%')
+    expect(el(container, 'exit-status').textContent).toContain('exit_context')
+  })
+  it('the command palette offers the features view only for datasets with SWE-agent runs', () => {
+    const env = { datasets: [{ name: 'lab', harnesses: ['baseline'] }, { name: 'swe', harnesses: ['swe-agent'] }] }
+    const feats = views.an.palette(env).filter((e) => /^an:[^:]+:features$/.test(e.spec)).map((e) => e.spec)
+    expect(feats).toEqual(['an:swe:features'])
+  })
+  it('a dataset recorded by the lab has no features: it says so and offers the download', () => {
+    const { container } = renderRig('#/rig/an:mini:features', { data: { ...data(), [`/real/${MINI}/analysis`]: { error: 'no real_features.jsonl in this directory' } } })
+    const empty = el(container, 'empty-state')
+    expect(empty.textContent).toContain('No trajectory features for this dataset.')
+    expect(within(empty).getByRole('button', { name: 'Download a SWE-agent sample' }).getAttribute('data-spec')).toBe('sources')
   })
 })

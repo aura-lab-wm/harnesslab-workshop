@@ -1,7 +1,7 @@
-# HarnessLab workshop: start in a browser
+# TraceHarness in GitHub Codespaces
 
-The practical part of the lab runs in **GitHub Codespaces**: a Linux machine in the cloud with
-Python 3.12 and HarnessLab already installed. There is nothing to install on your laptop, and every
+TraceHarness runs in **GitHub Codespaces**: a Linux machine in the cloud with
+Python 3.12 and TraceHarness already installed. There is nothing to install on your laptop, and every
 seat in the room runs the same environment. You need a browser and a GitHub account.
 
 ## Three steps
@@ -10,9 +10,12 @@ seat in the room runs the same environment. You need a browser and a GitHub acco
    GitHub Codespaces** button at the top of the README goes to the same page.
 2. **Paste your own OpenRouter key into `OPENROUTER_API_KEY`** (see *Your key* below), or leave it
    empty to work offline for now. Then click **Create codespace**.
-3. **Wait about a minute.** The workbench opens in a new browser tab. If it doesn't, open the
-   **Ports** tab at the bottom of the editor and click the globe next to *HarnessLab workbench*
+3. **Wait about a minute.** TraceHarness opens in a new browser tab. If it doesn't, open the
+   **Ports** tab at the bottom of the editor and click the globe next to *TraceHarness*
    (port 8765).
+
+**Then follow the guide:** <https://traceharness.dev/guide/> walks you through loading real SWE-agent
+trajectories and analysing them, step by step, with screenshots.
 
 That's it. The editor tab behind it holds the repository: `exercises/`, `tasks/`, `harnesses/`
 and a terminal.
@@ -31,11 +34,11 @@ python -m harnesslab run --provider mock --tasks t01_slugify --repeats 3 --out d
 python exercises/ex1_variance.py --results data/runs/mine
 ```
 
-New results appear under **Datasets** in the workbench.
+New results appear under **Datasets** in TraceHarness.
 
 ## Your key
 
-The workshop provides the platform. Live model calls go on **your own OpenRouter account**.
+TraceHarness itself needs no account. Live model calls go on **your own OpenRouter account**.
 
 1. Create an account at <https://openrouter.ai> and add a few dollars of credit. A small model
    costs well under a cent per run. The whole lab on a frontier model costs a few dollars.
@@ -47,7 +50,7 @@ The workshop provides the platform. Live model calls go on **your own OpenRouter
 
 ## Live runs
 
-Launch runs from **Analysis → Run setup** in the workbench, or from the terminal:
+Launch runs from **Analysis → Run setup** in TraceHarness, or from the terminal:
 
 ```bash
 python -m harnesslab run --provider openrouter --model deepseek/deepseek-v4-flash \
@@ -60,14 +63,14 @@ named `OPENROUTER_API_KEY` (github.com → Settings → Codespaces), then restar
 
 ## Good to know
 
-- **Privacy.** The workbench URL (`…-8765.app.github.dev`) is private to your GitHub account.
+- **Privacy.** The TraceHarness URL (`…-8765.app.github.dev`) is private to your GitHub account.
   Nobody else can open it unless you change the port's visibility.
 - **Stopping.** A codespace stops by itself after 30 minutes idle. Reopen it from
-  github.com/codespaces and the workbench starts again. Your runs under `data/runs/` are kept.
+  github.com/codespaces and TraceHarness starts again. Your runs under `data/runs/` are kept.
 - **Free allowance.** A personal GitHub account includes 60 hours a month on the default 2-core
-  machine, far more than the workshop uses. Delete the codespace afterwards from
+  machine, far more than you need here. Delete the codespace afterwards from
   github.com/codespaces.
-- **If the workbench is not there,** run `bash .devcontainer/start.sh` in the terminal. It starts
+- **If TraceHarness is not there,** run `bash .devcontainer/start.sh` in the terminal. It starts
   the server, or tells you it is already running. The server log is `/tmp/harnesslab.log`.
 
 ## Other ways in
@@ -87,7 +90,7 @@ named `OPENROUTER_API_KEY` (github.com → Settings → Codespaces), then restar
   capture store. Anyone with a GitHub account can open it without being invited,
   and each codespace counts against the student's own free monthly allowance, not yours.
 - **Updating it.** The development repository stays private. After changing anything students
-  should see, commit it there and run `python3 scripts/publish_workshop_repo.py` (add `--dry-run`
+  should see, commit it there and run `python3 scripts/publish_public_repo.py` (add `--dry-run`
   first to see the diff). It rebuilds the package and pushes one commit that names its source.
 - **Hidden tests are readable.** `tasks/*/hidden_tests/` ship with the package, so a student who
   looks can read them. They are hidden from the *agent* (never copied into its workspace), which

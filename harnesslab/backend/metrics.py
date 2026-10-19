@@ -37,6 +37,7 @@ def results_dirs() -> list[dict]:
         out.append({"name": name, "runs": len(rows),
                     "harnesses": sorted({r["harness_id"] for r in rows}),
                     "models": sorted({r["model"] for r in rows}),
+                    "model_runs": dict(sorted(Counter(r["model"] for r in rows).items())),
                     "tasks": sorted({r["task_id"] for r in rows}),
                     "pass_rate": mean(1.0 if r.get("hidden_pass") else 0.0 for r in rows) if rows else None,
                     "updated": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(os.path.getmtime(idx)))})

@@ -216,8 +216,7 @@
   /* ==========================================================================
      Rig workbench (#/rig). Both themes are defined here as primitives, -d for
      the dark ground and -l for paper; src/rig/rig.css maps them onto the
-     theme-neutral --rig-<name> tokens under [data-rig-theme]. "Geist", after
-     Vercel: black page, grey surfaces; one deep-blue accent (sel) for focus, selection and the
+     theme-neutral --rig-<name> tokens under [data-rig-theme]. The TraceHarness look: black page, grey surfaces; one deep-blue accent (sel) for focus, selection and the
      primary action; passed (sky, green despite the name) ; red = failed;
      amber (amb) = caution only. Status colours stay small (marks, thin bars,
      tinted chips). qty = a quantity that is not a verdict; ser1-3 = factors
@@ -226,7 +225,7 @@
      every panel of its own theme (src/rig/rig-css.test.js measures it).
      ========================================================================== */
   --rig-bg-d:#000000; --rig-panel-d:#0a0a0a; --rig-panel2-d:#111111; --rig-panel3-d:#1a1a1a;
-  --rig-line-d:#1f1f1f; --rig-line2-d:#2e2e2e; --rig-line3-d:#454545;
+  --rig-line-d:#1c1c1c; --rig-line2-d:#2a2a2a; --rig-line3-d:#454545;
   --rig-text-d:#ededed; --rig-dim-d:#a1a1a1; --rig-mute-d:#8f8f8f; --rig-unk-d:#8f8f8f;
   --rig-sel-d:#0062e6; --rig-sel-t-d:#52a8ff; --rig-sel-ink-d:#ffffff;
   --rig-sky-d:#2ea043; --rig-sky-t-d:#3fb950;
@@ -238,7 +237,7 @@
   --rig-shadow-d:0 12px 32px rgba(0,0,0,.5);
   --rig-scrim-d:rgba(0,0,0,.6);
   --rig-bg-l:#fafafa; --rig-panel-l:#ffffff; --rig-panel2-l:#f5f5f5; --rig-panel3-l:#ededed;
-  --rig-line-l:#eaeaea; --rig-line2-l:#dcdcdc; --rig-line3-l:#a8a8a8;
+  --rig-line-l:#e8e8e8; --rig-line2-l:#dadada; --rig-line3-l:#a8a8a8;
   --rig-text-l:#171717; --rig-dim-l:#4d4d4d; --rig-mute-l:#666666; --rig-unk-l:#666666;
   --rig-sel-l:#0062e6; --rig-sel-t-l:#005bc0; --rig-sel-ink-l:#ffffff;
   --rig-sky-l:#2da44e; --rig-sky-t-l:#156b2d;
@@ -249,8 +248,16 @@
   --rig-on-accent-l:#ffffff;
   --rig-shadow-l:0 12px 32px rgba(24,24,27,.12);
   --rig-scrim-l:rgba(24,24,27,.25);
-  --rig-font-sans:'Geist',system-ui,-apple-system,'Segoe UI',sans-serif;
-  --rig-font-mono:'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  /* console: the product console is one always-dark surface (traceharness.dev --cx-*), identical in both app themes.
+     cx-mute is #828288, not the site's #76767c (4.36/4.18/3.93:1 on the console grounds); this clears 4.5:1 on all three. */
+  --rig-cx-bg-d:#0b0b0c; --rig-cx-bg2-d:#111113; --rig-cx-bg3-d:#18181b; --rig-cx-line-d:#232326; --rig-cx-line2-d:#303034; --rig-cx-text-d:#ededed; --rig-cx-dim-d:#a1a1a1; --rig-cx-mute-d:#828288; --rig-cx-acc-d:#52a8ff; --rig-cx-ok-d:#3fb950; --rig-cx-bad-d:#ff6166; --rig-cx-amb-d:#ffb224; --rig-cx-k-i-bg-d:#1f1f22; --rig-cx-k-i-d:#a1a1a1; --rig-cx-k-e-bg-d:#16254a; --rig-cx-k-e-d:#a9c1ff; --rig-cx-k-t-bg-d:#12301c; --rig-cx-k-t-d:#6fd48a; --rig-cx-k-b-bg-d:#3a2a0c; --rig-cx-k-b-d:#ffc861; --rig-cx-k-s-bg-d:#ededed; --rig-cx-k-s-d:#000000;
+  --rig-cx-shadow-d:0 0 0 1px #1f1f22,0 30px 80px -20px rgba(0,98,230,.28);
+  --rig-cx-bg-l:#0b0b0c; --rig-cx-bg2-l:#111113; --rig-cx-bg3-l:#18181b; --rig-cx-line-l:#232326; --rig-cx-line2-l:#303034; --rig-cx-text-l:#ededed; --rig-cx-dim-l:#a1a1a1; --rig-cx-mute-l:#828288; --rig-cx-acc-l:#52a8ff; --rig-cx-ok-l:#3fb950; --rig-cx-bad-l:#ff6166; --rig-cx-amb-l:#ffb224; --rig-cx-k-i-bg-l:#1f1f22; --rig-cx-k-i-l:#a1a1a1; --rig-cx-k-e-bg-l:#16254a; --rig-cx-k-e-l:#a9c1ff; --rig-cx-k-t-bg-l:#12301c; --rig-cx-k-t-l:#6fd48a; --rig-cx-k-b-bg-l:#3a2a0c; --rig-cx-k-b-l:#ffc861; --rig-cx-k-s-bg-l:#ededed; --rig-cx-k-s-l:#000000;
+  --rig-cx-shadow-l:0 0 0 1px #1f1f22,0 30px 80px -20px rgba(0,98,230,.28);
+  --rig-sel-h-d:#0a6cf5; --rig-sel-h-l:#0a6cf5;
+  --rig-dot-d:rgba(255,255,255,.07); --rig-dot-l:rgba(0,0,0,.075);
+  --rig-font-sans:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --rig-font-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   color-scheme:dark;
 }
 

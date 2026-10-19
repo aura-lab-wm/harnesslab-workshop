@@ -1,11 +1,12 @@
-# HarnessLab — school replication package
+# TraceHarness — replication package
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/aura-lab-wm/harnesslab-workshop)
 
 This is the teaching handoff for the coding-agent evaluation lab.
 
-**Workshop: open it in GitHub Codespaces** (the button above). Nothing to install; bring your own
-OpenRouter key, or none for the recorded datasets. See [`docs/WORKSHOP.md`](docs/WORKSHOP.md).
+**Open it in GitHub Codespaces** (the button above). Nothing to install; bring your own
+OpenRouter key, or none for the recorded datasets. See [`docs/CODESPACES.md`](docs/CODESPACES.md); the step-by-step
+guide to loading real SWE-agent trajectories and analysing them is at <https://traceharness.dev/guide/>.
 
 **Start with [`docs/STUDENT_GUIDE.md`](docs/STUDENT_GUIDE.md).** It covers installing, a first
 offline run, the web interface, running experiments, reading the results, the exercises, testing
@@ -37,7 +38,7 @@ python3 -m harnesslab --no-browser
 Open **http://127.0.0.1:8765**. No API key is needed to inspect the included results.
 The built frontend is included; Node.js is only needed if you change its source.
 
-The app (the keyboard-first **Rig workbench**) opens on **Datasets**: every results directory
+TraceHarness opens on **Datasets**: every results directory
 under `data/runs/`, which in this package means the included datasets below plus any runs you
 make yourself. Teaching material (a reading guide and a lesson beside each attempt) is an
 opt-in preference under **Settings → Student Lab · Guided Analysis**.
@@ -200,20 +201,20 @@ mock model without changing local configuration.
 
 ## How to cite
 
-If you use HarnessLab in academic work, please cite the website and the version you used.
+If you use TraceHarness in academic work, please cite the website and the version you used.
 GitHub's **Cite this repository** button gives the same entry from `CITATION.cff`.
 
 ```bibtex
-@software{mastropaolo2026harnesslab,
+@software{mastropaolo2026traceharness,
   author  = {Antonio Mastropaolo},
-  title   = {{HarnessLab}: Treating the Agent Harness as a Controlled Experimental Variable},
+  title   = {{TraceHarness}: Treating the Agent Harness as a Controlled Experimental Variable},
   year    = {2026},
   version = {0.3.0},
   url     = {https://traceharness.dev}
 }
 ```
 
-Plain text: Mastropaolo, A. (2026). *HarnessLab: Treating the agent harness as a controlled
+Plain text: Mastropaolo, A. (2026). *TraceHarness: Treating the agent harness as a controlled
 experimental variable* (Version 0.3.0) [Computer software]. https://traceharness.dev
 
 If you use the 500 runs in `data/runs/real_swe_agent_500`, also cite Nebius,

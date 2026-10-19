@@ -2,7 +2,7 @@ import { Component, useEffect } from 'react'
 import RigApp from './rig/RigApp'
 import { isRigHash, makeSpec } from './rig/route'
 
-/* One UI. HarnessLab serves the Rig workbench and nothing else.
+/* One UI. TraceHarness serves the Rig workbench and nothing else.
 
    The console that used to live at #/ is retired, but its links are not: a bookmark, a handout
    or an exported report may still carry #/s/<dir>/judge or #/run/<dir>/<id>. Each old address is
@@ -75,15 +75,15 @@ export class AppBoundary extends Component {
   }
   render() {
     if (!this.state.error) return this.props.children
-    const box = { position: 'fixed', inset: 0, display: 'grid', placeItems: 'center', background: 'var(--pw-night-canvas)', color: 'var(--pw-night-ink)', font: '15px/1.55 system-ui, sans-serif', padding: 24 }
-    const btn = { font: 'inherit', padding: '8px 14px', borderRadius: 6, border: '1px solid var(--pw-night-rule-strong)', background: 'var(--pw-night-raised)', color: 'inherit', cursor: 'pointer', marginRight: 8 }
+    const box = { position: 'fixed', inset: 0, display: 'grid', placeItems: 'center', background: 'var(--rig-bg-d)', color: 'var(--rig-text-d)', font: '15px/1.55 var(--font-sans)', padding: 24 }
+    const btn = { font: 'inherit', padding: '8px 14px', borderRadius: 8, border: '1px solid var(--rig-line2-d)', background: 'var(--rig-panel2-d)', color: 'inherit', cursor: 'pointer', marginRight: 8 }
     return (
       <div style={box} data-el="app-crash" role="alert">
         <div style={{ maxWidth: 560 }}>
-          <h1 style={{ font: '600 20px/1.3 system-ui, sans-serif', margin: '0 0 8px' }}>HarnessLab hit an error while drawing the workbench.</h1>
-          <p style={{ margin: '0 0 16px', color: 'var(--pw-night-secondary)' }}>Your recorded runs are untouched: this is the page, not the data. Reset the layout to reopen the workbench on the datasets page, or reload to try the same address again.</p>
-          <p style={{ margin: '0 0 20px', font: '12.5px/1.5 ui-monospace, monospace', color: 'var(--pw-night-tertiary)', overflowWrap: 'anywhere' }}>{String(this.state.error.message || this.state.error)}</p>
-          <button type="button" style={{ ...btn, background: 'var(--pw-cobalt)', borderColor: 'var(--pw-cobalt)', color: 'var(--pw-paper)' }} onClick={this.reset}>Reset layout</button>
+          <h1 style={{ font: '600 20px/1.3 var(--font-sans)', margin: '0 0 8px' }}>TraceHarness hit an error while drawing the workbench.</h1>
+          <p style={{ margin: '0 0 16px', color: 'var(--rig-dim-d)' }}>Your recorded runs are untouched: this is the page, not the data. Reset the layout to reopen the workbench on the datasets page, or reload to try the same address again.</p>
+          <p style={{ margin: '0 0 20px', font: '12.5px/1.5 var(--font-mono)', color: 'var(--rig-mute-d)', overflowWrap: 'anywhere' }}>{String(this.state.error.message || this.state.error)}</p>
+          <button type="button" style={{ ...btn, background: 'var(--rig-sel-d)', borderColor: 'var(--rig-sel-d)', color: 'var(--rig-sel-ink-d)' }} onClick={this.reset}>Reset layout</button>
           <button type="button" style={btn} onClick={() => location.reload()}>Reload</button>
         </div>
       </div>

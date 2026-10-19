@@ -1,6 +1,6 @@
-# HarnessLab: student guide
+# TraceHarness: student guide
 
-This guide takes you from downloading HarnessLab to running, reading and testing it on your own
+This guide takes you from downloading TraceHarness to running, reading and testing it on your own
 machine. Follow it in order the first time. Later you can jump to the section you need.
 
 Everything below was checked on 23 September 2026 by unzipping the same `harnesslab-school.zip`
@@ -17,7 +17,7 @@ cleanly, this guide says so.
 
 ## Contents
 
-1. [What HarnessLab is (in five minutes)](#1-what-harnesslab-is-in-five-minutes)
+1. [What TraceHarness is (in five minutes)](#1-what-traceharness-is-in-five-minutes)
 2. [What you need](#2-what-you-need)
 3. [Get the code](#3-get-the-code)
 4. [Install](#4-install)
@@ -37,7 +37,7 @@ cleanly, this guide says so.
 
 ---
 
-## 1. What HarnessLab is (in five minutes)
+## 1. What TraceHarness is (in five minutes)
 
 A **coding agent** is a language model that is given a GitHub-style issue and a small repository.
 It has tools such as "read a file", "edit a file", "run the tests" and "submit", and it tries to
@@ -55,7 +55,7 @@ The central claim of this lab is that **changing the harness can move results as
 changing the model**. So the harness should be treated as an experimental variable, not a hidden
 constant.
 
-HarnessLab has three parts:
+TraceHarness has three parts:
 
 | part | what it does |
 |---|---|
@@ -147,7 +147,7 @@ personal data. `PACKAGE_MANIFEST.json` lists every file with its checksum.
 
 ## 4. Install
 
-A *virtual environment* keeps HarnessLab's packages separate from the rest of your system. Create
+A *virtual environment* keeps TraceHarness's packages separate from the rest of your system. Create
 one once, then activate it every time you open a new terminal.
 
 **macOS / Linux**
@@ -300,12 +300,12 @@ need to restart the server.
 
 ## 7. A tour of the interface
 
-HarnessLab has one interface, the **Rig workbench**, at `http://127.0.0.1:8765/`. It is
+TraceHarness has one interface, the **TraceHarness app**, at `http://127.0.0.1:8765/`. It is
 keyboard-first, with tabs and split panes, and was built for investigation. Old addresses from
 earlier versions of this guide or the handout (`#/`, `#/s/<dataset>/judge`, `#/field/<dataset>`, …)
 still work: each one opens the Rig page that replaced it.
 
-### 7.1 The Rig workbench
+### 7.1 The TraceHarness app
 
 ![Rig: datasets](img/student-guide/rig-datasets.png)
 
@@ -408,7 +408,7 @@ On macOS use **⌘** wherever this table says Ctrl.
 Buddy is an assistant that answers questions about the evidence you are looking at. It needs an
 **OpenRouter** API key, which you paste in Settings. The key is kept **only in your browser**:
 
-- it is never sent to the HarnessLab server
+- it is never sent to the TraceHarness server
 - it is never written into files or exports
 
 Use a key with a spending limit. Pick Buddy's model in Settings. When this guide was tested,
@@ -732,7 +732,7 @@ There are three kinds of tests. Knowing which is which saves confusion.
 
 These are part of exercise 3. They assert things about runs, such as "never modified a test
 file" or "verified after the last edit". **Failures here are findings about the agent, not bugs
-in HarnessLab.**
+in TraceHarness.**
 
 ```bash
 HARNESSLAB_RESULTS=data/runs/prerecorded_mock HARNESSLAB_HARNESS=baseline python -m unittest discover -s trajectory_tests -v
@@ -752,7 +752,7 @@ $env:HARNESSLAB_HARNESS="baseline"
 
 ### 11.2 The infrastructure test suite (Python)
 
-This checks HarnessLab itself: the runner, ledger, grader, analysis, backend routes and so on.
+This checks TraceHarness itself: the runner, ledger, grader, analysis, backend routes and so on.
 
 ```bash
 python -m unittest discover -s tests_agentlab -q        # or: make test   (macOS/Linux)
@@ -869,7 +869,7 @@ serves no page. Exercise 3's script and the trajectory tests (section 11.1) cove
 |---|---|---|
 | `ERROR: Package 'harnesslab' requires a different Python: 3.9.6 not in '>=3.10'` | you are on the system Python 3.9 (common on macOS) | install Python 3.12 and recreate the venv with `python3.12 -m venv .venv` (section 2) |
 | `ModuleNotFoundError: No module named 'fastapi'` | the virtual environment is not active, or the install did not run | `source .venv/bin/activate` (Windows: `.venv\Scripts\Activate.ps1`), then `python -m pip install -e .` |
-| `address already in use` / port 8765 busy | another HarnessLab (or another app) is running | stop it with Ctrl+C, or use `python -m harnesslab --port 8766` |
+| `address already in use` / port 8765 busy | another TraceHarness (or another app) is running | stop it with Ctrl+C, or use `python -m harnesslab --port 8766` |
 | the browser did not open | `--no-browser`, or no default browser | open <http://127.0.0.1:8765> yourself |
 | blank page, or `"dist_built": false` in `--paths` | the built interface is missing (a partial or damaged unzip) | unzip the archive again, or run `cd harnesslab/frontend && npm ci && npm run build` |
 | **every run grades `fail`, but the agent's own tests pass in the transcript** | the grader could not run Python in the task sandbox. Typical with **pyenv**, where a `python` shim exists but exits with an error. | Run the task's test command yourself in a fresh folder. Fix your pyenv global version or use a plain venv. Check a mock sweep gives 14 / 24 (section 8.3). **Never believe a 0 % or 100 % mock sweep.** |

@@ -74,7 +74,7 @@
 .rg-ws-s5{grid-template-columns:repeat(5,minmax(0,1fr))}
 .rg-ws .rg-stat{padding:var(--rig-s4)}
 .rg-ws .rg-stat .rg-lbl{white-space:normal}
-.rg-ws .rg-stats{border-radius:10px}
+.rg-ws .rg-stats{border-radius:14px}
 .rg-ws .rg-tbl th{padding:10px 12px}
 .rg-ws .rg-tbl td{padding:8px 12px;height:40px}
 .rg-ws .rg-note{font-size:13px;line-height:1.55;border-radius:0 8px 8px 0}

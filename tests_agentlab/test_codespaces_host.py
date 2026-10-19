@@ -1,4 +1,4 @@
-"""harnesslab.backend.guard in GitHub Codespaces -- the workshop's main route.
+"""harnesslab.backend.guard in GitHub Codespaces, where students run TraceHarness.
 
 Inside a codespace the student's browser reaches the server through GitHub's port-forwarding proxy
 at https://<CODESPACE_NAME>-<port>.<GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN>, and that name arrives
