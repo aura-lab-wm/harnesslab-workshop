@@ -305,8 +305,8 @@ keyboard-first, with tabs and split panes, and was built for investigation. Old 
 earlier versions of this guide or the handout (`#/`, `#/s/<dataset>/judge`, `#/field/<dataset>`, …)
 still work: each one opens the page that replaced it.
 
-**Step by step, with screenshots:** <https://traceharness.dev/guide/> loads 1,000 real SWE-agent trajectories and
-walks through the analyses below.
+**Step by step, with screenshots:** [GUIDE.md](GUIDE.md) (online at <https://traceharness.dev/guide/>) loads 1,000 real
+SWE-agent trajectories and walks through the analyses below.
 
 ### 7.1 The TraceHarness app
 
@@ -975,4 +975,4 @@ These were observed on 23 September 2026. None of them changes the recorded data
   security checks, and the included datasets.
 - **[docs/student-lab.md](student-lab.md)**: how Student Lab · Guided Analysis works.
 - In TraceHarness, press **Ctrl K** and type *reading guide*.
-- **<https://traceharness.dev/guide/>**: load real SWE-agent trajectories and analyse them, step by step, with screenshots.
+- **[docs/GUIDE.md](GUIDE.md)** (online at <https://traceharness.dev/guide/>): load real SWE-agent trajectories and analyse them, step by step, with screenshots.

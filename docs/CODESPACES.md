@@ -14,7 +14,7 @@ seat in the room runs the same environment. You need a browser and a GitHub acco
    **Ports** tab at the bottom of the editor and click the globe next to *TraceHarness*
    (port 8765).
 
-**Then follow the guide:** <https://traceharness.dev/guide/> walks you through loading real SWE-agent
+**Then follow the guide:** [GUIDE.md](GUIDE.md) (online at <https://traceharness.dev/guide/>) walks you through loading real SWE-agent
 trajectories and analysing them, step by step, with screenshots.
 
 That's it. The editor tab behind it holds the repository: `exercises/`, `tasks/`, `harnesses/`

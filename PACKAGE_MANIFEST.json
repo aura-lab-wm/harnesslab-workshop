@@ -27,6 +27,7 @@
       {
         "title": "Start here",
         "paths": [
+          "docs/GUIDE.md",
           "docs/STUDENT_GUIDE.md",
           "docs/CODESPACES.md",
           "README.md",
@@ -34,7 +35,7 @@
           "HANDOUT.md",
           "LAB_1H.md"
         ],
-        "description": "The step-by-step student guide, setup, the lab handout, and the one-hour teaching plan."
+        "description": "The guide to analysing 1,000 real SWE-agent runs, the step-by-step student guide, setup, the lab handout, and the one-hour teaching plan."
       },
       {
         "title": "Exercises and task probes",
@@ -89,8 +90,10 @@
       "Dockerfile",
       "docker-compose.yml",
       "SCHOOL_PACKAGE.md",
+      "docs/img/guide/",
       "docs/img/student-guide/",
       "docs/student-lab.md",
+      "docs/GUIDE.md",
       "docs/STUDENT_GUIDE.md",
       "docs/CODESPACES.md",
       "exercises/",
@@ -142,8 +145,8 @@
     },
     {
       "path": "HANDOUT.md",
-      "bytes": 24165,
-      "sha256": "df0439417410197c627de3cec39026a57113f976dbfcec837151b9bd96fd2bbe"
+      "bytes": 24207,
+      "sha256": "97e43b3647c82426ed8ba5cb92123d0bddcba4481c17ceeb3a48a1cbf6cb2c47"
     },
     {
       "path": "LAB_1H.md",
@@ -162,13 +165,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 11389,
-      "sha256": "01abbb1a6f844af3832438325430464a9abbe3b1ac858e5d228069fe224e98f8"
+      "bytes": 11464,
+      "sha256": "031a7dd378ef9c5f67ca8e1beb5b58fda78f54576c81aa333ac72c4aad7c4875"
     },
     {
       "path": "SCHOOL_PACKAGE.md",
-      "bytes": 11389,
-      "sha256": "01abbb1a6f844af3832438325430464a9abbe3b1ac858e5d228069fe224e98f8"
+      "bytes": 11464,
+      "sha256": "031a7dd378ef9c5f67ca8e1beb5b58fda78f54576c81aa333ac72c4aad7c4875"
     },
     {
       "path": "data/runs/captured_claude_code/imp-claude-code-5a95de19f443/ledger.jsonl",
@@ -69277,13 +69280,93 @@
     },
     {
       "path": "docs/CODESPACES.md",
-      "bytes": 5272,
-      "sha256": "01b0aad8b05858a1b663c434d5f0b120c7502ba983e5fd376f1198366b06acd8"
+      "bytes": 5305,
+      "sha256": "93d8691186e9742bedf933a798884632fc3a4ac08e5d09db8fdd9eebd0ffff0c"
+    },
+    {
+      "path": "docs/GUIDE.md",
+      "bytes": 15122,
+      "sha256": "6bcfcce592ee5bb19985ce8cb1ebf4a84eae2f356d5867414c35391e13d83695"
     },
     {
       "path": "docs/STUDENT_GUIDE.md",
-      "bytes": 45254,
-      "sha256": "7dd31d709656fa69b4dbc7e4b12abec516322c9ca007c9a62a3ec15e202e38f3"
+      "bytes": 45325,
+      "sha256": "4e822f55dc47b064c5ecd8deffb42276190f92b5a26e5615298c95a3760f94e1"
+    },
+    {
+      "path": "docs/img/guide/compare.png",
+      "bytes": 331058,
+      "sha256": "369a391458ca0f82dee8ce9769d36c4d91fa3e533c5c3930ef1163936222edfe"
+    },
+    {
+      "path": "docs/img/guide/datasets.png",
+      "bytes": 307830,
+      "sha256": "64eadc291b0495d28aaa90e2d4304debbd4eba38e37c2f37cea615ded6120ecc"
+    },
+    {
+      "path": "docs/img/guide/download-done.png",
+      "bytes": 118219,
+      "sha256": "202bc7ac581a53c815e0ca2d9fa0a9eea546377c126fda70b0dea5fd73d950f3"
+    },
+    {
+      "path": "docs/img/guide/download-form.png",
+      "bytes": 93472,
+      "sha256": "3fc1aa55008be751e7766da842e6ce0b4332ec8a7368e48ab7a2ea14e0e48fe6"
+    },
+    {
+      "path": "docs/img/guide/download-progress.png",
+      "bytes": 101178,
+      "sha256": "8059b6f4ac3a51a0a31835e922ba97e62971a29952d9c5a25ad4ebb00a665426"
+    },
+    {
+      "path": "docs/img/guide/outcomes.png",
+      "bytes": 352354,
+      "sha256": "ef98b6dfa292c856afcb1fe479bdd75586dbedf839481ef41fb2fd4d04587123"
+    },
+    {
+      "path": "docs/img/guide/overview.png",
+      "bytes": 445130,
+      "sha256": "0cf7c641c6e36e4720019cf3d674edd4d1e138375186ab1426013936a485c9ef"
+    },
+    {
+      "path": "docs/img/guide/report.png",
+      "bytes": 368834,
+      "sha256": "d4900beebd468d1e60aff8e063f2aa604187f01dd94779fa0366bc112803cb60"
+    },
+    {
+      "path": "docs/img/guide/run-console.png",
+      "bytes": 228808,
+      "sha256": "4a4cc9a297fc6c113fa538931ef993ccd07227982a5ab9299e78705a371ec75f"
+    },
+    {
+      "path": "docs/img/guide/run.png",
+      "bytes": 352751,
+      "sha256": "664e1ddda01ac75a16cb2dda856076278539a030ceb1caecdf4dcad9cf963770"
+    },
+    {
+      "path": "docs/img/guide/search.png",
+      "bytes": 536819,
+      "sha256": "654a4bb9d14b2f20ce21ba2b11b577a6dd369f2dd3448dda3284794622998f04"
+    },
+    {
+      "path": "docs/img/guide/sources.png",
+      "bytes": 289968,
+      "sha256": "f054f1b92b51f0d67a661b14c9ed490a740ad5acf7557a1697aa9a7c721604b3"
+    },
+    {
+      "path": "docs/img/guide/trajectory-explorer.png",
+      "bytes": 327843,
+      "sha256": "501b2abb9ddf7c01d36245f948edcfd8edd915e38c2b3de2aafb5a28ebcbe678"
+    },
+    {
+      "path": "docs/img/guide/trajectory-features-tables.png",
+      "bytes": 319799,
+      "sha256": "e2a8d45b35034f1f33c8a53d6f90bdefb4bb9d5d616d51bfc54e8fb9d5843ff7"
+    },
+    {
+      "path": "docs/img/guide/trajectory-features.png",
+      "bytes": 391368,
+      "sha256": "eead948cd65cb7e05717760b3c7a2a797ce8c9d7106f24f6a41587e7b3404ac0"
     },
     {
       "path": "docs/img/student-guide/dataset.png",
@@ -70442,8 +70525,8 @@
     },
     {
       "path": "harnesslab/school-package.json",
-      "bytes": 4356,
-      "sha256": "bdf44ef450079b557f72a774e69f261ca1fc8086671d4a9d48a32c60849cd3d5"
+      "bytes": 4475,
+      "sha256": "939f481e72eddd759027afaf78c1ab16cbfad5df643dc36d6142219b1966b9ee"
     },
     {
       "path": "pyproject.toml",

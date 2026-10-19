@@ -5,10 +5,12 @@
 This is the teaching handoff for the coding-agent evaluation lab.
 
 **Open it in GitHub Codespaces** (the button above). Nothing to install; bring your own
-OpenRouter key, or none for the recorded datasets. See [`docs/CODESPACES.md`](docs/CODESPACES.md); the step-by-step
-guide to loading real SWE-agent trajectories and analysing them is at <https://traceharness.dev/guide/>.
+OpenRouter key, or none for the recorded datasets. See [`docs/CODESPACES.md`](docs/CODESPACES.md).
 
-**Start with [`docs/STUDENT_GUIDE.md`](docs/STUDENT_GUIDE.md).** It covers installing, a first
+**Then follow [`docs/GUIDE.md`](docs/GUIDE.md):** load 1,000 real SWE-agent trajectories and analyse them,
+step by step, with screenshots (also online at <https://traceharness.dev/guide/>).
+
+**For everything else, [`docs/STUDENT_GUIDE.md`](docs/STUDENT_GUIDE.md)** covers installing, a first
 offline run, the web interface, running experiments, reading the results, the exercises, testing
 and troubleshooting, step by step. `HANDOUT.md` holds the lab exercises and their questions;
 `LAB_1H.md` is the one-hour teaching plan.

@@ -279,7 +279,7 @@ trajectories become a results directory, the same one **Sources & capture → Do
 Open it in TraceHarness: Analysis → **Trajectory features** shows this ranking with example runs you can open, next
 to the action sequences and queries, and every run replays in the run console (paths are not recoverable from the
 command language, so read-before-write is n/a there; the rest holds). Step by step, with screenshots:
-<https://traceharness.dev/guide/>.
+[`docs/GUIDE.md`](docs/GUIDE.md), also at <https://traceharness.dev/guide/>.
 
 Read the two rate columns, not only the score. A feature that is common in failures and successes ranks high
 from base rate alone; that is SBFL's coincidental-coverage weakness, inherited intact.

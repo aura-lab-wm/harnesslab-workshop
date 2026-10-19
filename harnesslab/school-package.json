@@ -25,6 +25,7 @@
     {
       "title": "Start here",
       "paths": [
+        "docs/GUIDE.md",
         "docs/STUDENT_GUIDE.md",
         "docs/CODESPACES.md",
         "README.md",
@@ -32,7 +33,7 @@
         "HANDOUT.md",
         "LAB_1H.md"
       ],
-      "description": "The step-by-step student guide, setup, the lab handout, and the one-hour teaching plan."
+      "description": "The guide to analysing 1,000 real SWE-agent runs, the step-by-step student guide, setup, the lab handout, and the one-hour teaching plan."
     },
     {
       "title": "Exercises and task probes",
@@ -87,8 +88,10 @@
     "Dockerfile",
     "docker-compose.yml",
     "SCHOOL_PACKAGE.md",
+    "docs/img/guide/",
     "docs/img/student-guide/",
     "docs/student-lab.md",
+    "docs/GUIDE.md",
     "docs/STUDENT_GUIDE.md",
     "docs/CODESPACES.md",
     "exercises/",
