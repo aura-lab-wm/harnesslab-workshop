@@ -1,6 +1,6 @@
 # TraceHarness — replication package
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/aura-lab-wm/harnesslab-workshop)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/aura-lab-wm/traceharness)
 
 This is the teaching handoff for the coding-agent evaluation lab.
 

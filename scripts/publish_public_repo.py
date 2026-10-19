@@ -20,7 +20,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-REPO = 'aura-lab-wm/harnesslab-workshop'
+REPO = 'aura-lab-wm/traceharness'
 DESCRIPTION = ('TraceHarness: measure coding agents from their trajectories. '
                'Open in GitHub Codespaces; no key needed for the recorded datasets.')
 PACKAGE_DIR = 'harnesslab-school'

@@ -16,7 +16,7 @@ authors:
     given-names: Antonio
     affiliation: "William & Mary"
     orcid: "https://orcid.org/0000-0002-7965-7712"
-repository-code: "https://github.com/aura-lab-wm/harnesslab-workshop"
+repository-code: "https://github.com/aura-lab-wm/traceharness"
 url: "https://traceharness.dev"
 keywords:
   - large language models

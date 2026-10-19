@@ -132,8 +132,8 @@
     },
     {
       "path": "CITATION.cff",
-      "bytes": 1542,
-      "sha256": "2effcab3ed570c3aba06eeff2907f722425086fba21b0f3b09b0c18cc2f641e8"
+      "bytes": 1535,
+      "sha256": "7eb675b5af102fa19419d0be4f206a71d2918fcacfd3679cf342b12f875051cc"
     },
     {
       "path": "Dockerfile",
@@ -142,8 +142,8 @@
     },
     {
       "path": "HANDOUT.md",
-      "bytes": 24179,
-      "sha256": "bb439a740c5143cba247224ac0b0fcee9954ed07e2e115ea718cd46938792b98"
+      "bytes": 24165,
+      "sha256": "df0439417410197c627de3cec39026a57113f976dbfcec837151b9bd96fd2bbe"
     },
     {
       "path": "LAB_1H.md",
@@ -162,13 +162,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 11396,
-      "sha256": "8f69d501e80ff47a506bab5c932840f5447d871c171c71cddbe53e37105b701f"
+      "bytes": 11389,
+      "sha256": "01abbb1a6f844af3832438325430464a9abbe3b1ac858e5d228069fe224e98f8"
     },
     {
       "path": "SCHOOL_PACKAGE.md",
-      "bytes": 11396,
-      "sha256": "8f69d501e80ff47a506bab5c932840f5447d871c171c71cddbe53e37105b701f"
+      "bytes": 11389,
+      "sha256": "01abbb1a6f844af3832438325430464a9abbe3b1ac858e5d228069fe224e98f8"
     },
     {
       "path": "data/runs/captured_claude_code/imp-claude-code-5a95de19f443/ledger.jsonl",
@@ -69277,8 +69277,8 @@
     },
     {
       "path": "docs/CODESPACES.md",
-      "bytes": 5286,
-      "sha256": "53ea8ccf0879c67efd4cc48803b59f433116bf48c0918d4567e0c8fb1c05c9c3"
+      "bytes": 5272,
+      "sha256": "01b0aad8b05858a1b663c434d5f0b120c7502ba983e5fd376f1198366b06acd8"
     },
     {
       "path": "docs/STUDENT_GUIDE.md",
@@ -70477,8 +70477,8 @@
     },
     {
       "path": "scripts/publish_public_repo.py",
-      "bytes": 4750,
-      "sha256": "503ea4799b0bddc00eb688a4407e7d73be7732fdcdbca0822cdb234f24e91564"
+      "bytes": 4743,
+      "sha256": "29c905637f7bc7429173e9a1441dc4e4d29ec1afef36a815b7aad3c26b68b1e9"
     },
     {
       "path": "scripts/smoke_rig.py",

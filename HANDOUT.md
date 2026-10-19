@@ -1,6 +1,6 @@
 # Lab: Measuring a coding agent that will not hold still
 
-**Duration:** 2 hours. **Format:** pairs. **Prerequisites:** Python 3.10+, a terminal, a browser, the OpenRouter key you received
+**Duration:** 2 hours. **Format:** pairs. **Prerequisites:** Python 3.10+, a terminal, a browser, your own OpenRouter key
 (Anthropic or OpenAI keys, or any OpenAI-compatible endpoint, also work), and `pip install datasets` for exercise 7.
 Everything also runs offline against pre-recorded runs, so a missing key never blocks you.
 
@@ -72,19 +72,20 @@ model needs the key, from the terminal that started TraceHarness or under Settin
 second terminal:
 
 ```bash
-export OPENROUTER_API_KEY=...                      # the key you received (one per participant, $20 limit)
-python -m harnesslab run --provider openrouter --model anthropic/claude-sonnet-5 \
+export OPENROUTER_API_KEY=...                      # your own key; give it a credit limit, e.g. $5
+python -m harnesslab run --provider openrouter --model google/gemini-2.5-flash \
     --harness harnesses/baseline.json,harnesses/no_test_tool.json \
     --tasks t01_slugify,t03_ratelimit,t06_injected_config,t07_cache_cleanup,t08_ambiguous_handler \
     --repeats 4 --out data/runs/live
 ```
 
-Frontier models only: `anthropic/claude-sonnet-5`, `openai/gpt-5.6-sol`, `deepseek/deepseek-v4-pro`,
-`z-ai/glm-5.3` are the recommended ids (about $0.05–0.15 per run; the cost per call is the exact charge
-OpenRouter reports). `anthropic/claude-opus-5` costs about 2.5× and is worth one small comparison, not the
-whole plan. `--provider anthropic` or `--provider openai` with your own keys also work. Both harnesses write
-into `data/runs/live`, so its **Family matrix** shows both cells, and runs appear as they are written. Expected spend for the
-whole afternoon: $5–10 of your $20. The runs take 5–10 minutes; do not wait for them.
+A cheap model is enough: `google/gemini-2.5-flash` cost about $0.004 per run on these tasks and
+`google/gemini-2.5-flash-lite` about $0.001 (the cost per call is the exact charge OpenRouter reports), so the
+whole afternoon costs a few dollars. A frontier model (`anthropic/claude-sonnet-5`, `openai/gpt-5.6-sol`, about
+$0.05–0.15 per run) is worth one small comparison, not the whole plan. `--provider anthropic` or `--provider openai`
+with your own keys also work. Both harnesses write
+into `data/runs/live`, so its **Family matrix** shows both cells, and runs appear as they are written. The runs take
+5–10 minutes; do not wait for them.
 
 While they run, skim `harnesslab/core/harness.py::run_task` (the control loop, 120 lines) and `harnesslab/core/tools.py`
 (the tool surface and the policy). Find: where the stopping rule is; where a boundary event is recorded; what

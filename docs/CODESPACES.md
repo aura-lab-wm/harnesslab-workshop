@@ -6,7 +6,7 @@ seat in the room runs the same environment. You need a browser and a GitHub acco
 
 ## Three steps
 
-1. **Sign in to GitHub and open <https://codespaces.new/aura-lab-wm/harnesslab-workshop>.** The **Open in
+1. **Sign in to GitHub and open <https://codespaces.new/aura-lab-wm/traceharness>.** The **Open in
    GitHub Codespaces** button at the top of the README goes to the same page.
 2. **Paste your own OpenRouter key into `OPENROUTER_API_KEY`** (see *Your key* below), or leave it
    empty to work offline for now. Then click **Create codespace**.
@@ -84,7 +84,7 @@ named `OPENROUTER_API_KEY` (github.com → Settings → Codespaces), then restar
 
 - **Keys.** Students bring their own OpenRouter key (above). The platform never needs one to show the
   recorded datasets.
-- **The public repository.** Students open <https://github.com/aura-lab-wm/harnesslab-workshop>,
+- **The public repository.** Students open <https://github.com/aura-lab-wm/traceharness>,
   a public copy of the school package: the same allow-list, so no instructor solutions, keys or
   Git history, and one captured session (`captured_claude_code`, paths scrubbed) instead of the
   capture store. Anyone with a GitHub account can open it without being invited,
